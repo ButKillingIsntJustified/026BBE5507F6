@@ -1,1 +1,3395 @@
+script.Disabled = true
+local VR = game:GetService('VRService')
 
+if _G.IsVr == true then return end
+_G.IsVr = true
+
+repeat _G.IsVr = true task.wait(-1) until game:GetService('Players').LocalPlayer and game:GetService('Players').LocalPlayer.Character and game:GetService('Players').LocalPlayer.Character:FindFirstChild('Head')
+
+_G.BrewVersion = "v1.332"
+local Advanced = {
+	Scripts_To_Remove = {
+		"NexusVRCharacterModelClientLoader",
+		"VR",
+	};
+	RemoveLocals = true;
+	GamesList = {
+		{6708206173,"Rate My Avatar"},
+		{7115420363,"The Booth Plaza"},
+		{155615604,"Prison Life"},
+		{189707,"Natural Disaster"},
+		{192800,"Work at a Pizza Place"},
+		{47324,"Sword Fights"},
+		{12109643,"Fencing"}
+	}
+}
+local User = game:GetService('Players').LocalPlayer
+local AlternativeSpawn = task.spawn
+
+local Part0 = Instance.new("Part")
+local Highlight0 = Instance.new("Highlight",Part0)
+local BillboardGui1 = Instance.new("BillboardGui")
+local TextLabel2 = Instance.new("TextLabel")
+Part0.Name = "ClickToInitiate"
+Part0.CFrame = CFrame.new(7.5, 2, 24.125, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+Part0.Position = Vector3.new(7.5, 2, 24.125)
+Part0.Color = Color3.new(0.972549, 0.972549, 0.972549)
+Part0.Size = Vector3.new(0.5,0.5,0.5)
+Part0.BottomSurface = Enum.SurfaceType.Smooth
+Part0.BrickColor = BrickColor.new("Institutional white")
+Part0.Material = Enum.Material.SmoothPlastic
+Part0.TopSurface = Enum.SurfaceType.Smooth
+Part0.brickColor = BrickColor.new("Institutional white")
+BillboardGui1.Name = "InitiateBillboard"
+BillboardGui1.Parent = Part0
+BillboardGui1.LightInfluence = 1
+BillboardGui1.Size = UDim2.new(8, 0, 0.5, 0)
+BillboardGui1.Active = true
+BillboardGui1.ClipsDescendants = true
+BillboardGui1.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+BillboardGui1.Adornee = Part0
+BillboardGui1.AlwaysOnTop = true
+BillboardGui1.StudsOffset = Vector3.new(0, 1.2000000476837158, 0)
+TextLabel2.Name = "InitiateLabel"
+TextLabel2.Parent = BillboardGui1
+TextLabel2.Size = UDim2.new(1, 0, 1, 0)
+TextLabel2.BackgroundColor = BrickColor.new("Institutional white")
+TextLabel2.BackgroundColor3 = Color3.new(1, 1, 1)
+TextLabel2.BackgroundTransparency = 1
+TextLabel2.Font = Enum.Font.TitilliumWeb
+TextLabel2.FontSize = Enum.FontSize.Size14
+TextLabel2.Text = "Click to initiate script"
+TextLabel2.TextColor = BrickColor.new("Institutional white")
+TextLabel2.TextColor3 = Color3.new(1, 1, 1)
+TextLabel2.TextScaled = true
+TextLabel2.TextSize = 14
+TextLabel2.TextStrokeColor3 = Color3.new(0, 0.6, 1)
+TextLabel2.TextStrokeTransparency = 0.5
+TextLabel2.TextWrap = true
+TextLabel2.TextWrapped = true
+Highlight0.FillTransparency = 1
+Highlight0.OutlineColor = Color3.fromRGB(0,150,255)
+Highlight0.Adornee = Part0
+local  ClickedInit = false
+local CanClick = false
+local SelfClick = nil
+SelfClick = game:GetService('RunService').RenderStepped:Connect(function()
+	Part0.Position = (workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(-0.5,-0.5,-2.5)).Position
+	Part0.Anchored = true
+	Part0.Velocity = Vector3.new(0,0,0)
+	local yeah = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.LeftHand),Vector3.new(1,1,1),OverlapParams.new({['MaxParts']=100}))
+	local yeah2 = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.RightHand),Vector3.new(1,1,1),OverlapParams.new({['MaxParts']=100}))
+	if table.find(yeah,Part0) or table.find(yeah2,Part0) then
+		CanClick = true
+		BillboardGui1.Enabled = true
+		Highlight0.Enabled = false
+	else
+		BillboardGui1.Enabled = false
+		Highlight0.Enabled = true
+		CanClick = false
+	end
+end)
+Part0.Parent = workspace.CurrentCamera
+local TempInput = nil
+TempInput = game:GetService('UserInputService').InputBegan:Connect(function(key)
+	if CanClick and (key.KeyCode == Enum.KeyCode.ButtonL2 or key.KeyCode == Enum.KeyCode.ButtonR2) then
+		ClickedInit = true
+		Highlight0.Enabled = false
+		Highlight0:Destroy()
+		Part0:Destroy()
+		TempInput:Disconnect()
+		SelfClick:Disconnect()
+	end
+end)
+if game:GetService("RunService"):IsStudio() then
+	ClickedInit = true
+	Highlight0.Enabled = false
+	Highlight0:Destroy()
+	Part0:Destroy()
+	TempInput:Disconnect()
+	SelfClick:Disconnect()
+end
+
+repeat task.wait(-1) until ClickedInit==true
+
+function Destroy(Obj,Delay_)
+	if Delay_ then
+		task.delay(Delay_,function()
+			pcall(function()
+				Obj:Destroy()
+			end)
+		end)
+	else
+		pcall(function()
+			Obj:Destroy()
+		end)
+	end
+end
+local CreateTemporaryLoopWithRunServiceType = function(Type,Seconds,func)
+	local Type = game:GetService("RunService")[Type]
+	local Start = os.clock()
+	if not Seconds then return warn("Please put a length in argument 2.") end
+	local X = nil
+	X = Type:Connect(function()
+		if os.clock()-Start >= Seconds then
+			X:Disconnect()
+			return
+		else
+			func()
+		end
+	end)
+end
+local Create = function(Class,Parent,Properties)
+	local A = Instance.new(Class)
+	for i,v in pairs(Properties)do
+		A[i]=v
+	end
+	A.Parent = Parent
+	return A
+end
+local LastMessageInstances = {}
+function PromptMessage(Message,lasts,BackgroundTransparency)
+	for _,x in pairs(LastMessageInstances)do
+		Destroy(x,-1)
+	end
+	if game:GetService("RunService"):IsStudio() then
+		local H = Instance.new("Hint")
+		H.Text = Message
+		H.Parent = workspace
+		task.delay(lasts,function()
+			H.Parent=nil
+		end)
+		table.insert(LastMessageInstances,H)
+		return
+	end
+	local Init_Message = Create("TextLabel",nil,{
+		Text = Message,
+		TextSize = 30,
+		Font = Enum.Font.SourceSansBold,
+		TextColor3 = Color3.new(1,1,1),
+		BackgroundTransparency=1,
+		Size = UDim2.new(1,0,1,0),
+	})
+	local Splash = Create("Part",workspace.CurrentCamera,{
+		Size = Vector3.new(0,0,0),
+		Anchored = true,
+		CanCollide = false,
+	})
+	local BillboardGui = Create("BillboardGui",Splash,{
+		Size = UDim2.new(20,0,20,0),
+		AlwaysOnTop = true
+	})
+	local Darken = Create("ColorCorrectionEffect",game:GetService("Lighting"),{
+		Brightness = -(1-BackgroundTransparency),
+	})
+	LastMessageInstances = {
+		Init_Message,Splash,BillboardGui,Darken
+	}
+	Init_Message.Parent = BillboardGui
+	CreateTemporaryLoopWithRunServiceType("RenderStepped",lasts,function()
+		Splash.CFrame = workspace.CurrentCamera.CFrame*game:GetService('VRService'):GetUserCFrame(Enum.UserCFrame.Head) * CFrame.new(0,0,-10)
+	end)
+	task.wait(lasts)
+	game:GetService('TweenService'):Create(Init_Message,TweenInfo.new(0.5),{
+		Transparency=1,
+		TextTransparency=1,
+		TextStrokeTransparency=1,
+	}):Play()
+	game:GetService('TweenService'):Create(Darken,TweenInfo.new(0.5),{
+		Brightness = 0,
+	}):Play()
+	Destroy(Init_Message,0.5)
+	Destroy(BillboardGui,0.5)
+	Destroy(Splash,0.5)
+	Destroy(Darken,0.5)
+end
+for i,v in pairs(User:GetDescendants())do
+	if v:IsA("LocalScript") then
+		for _,n in pairs(Advanced.Scripts_To_Remove)do
+			if v.Name:lower():find(n:lower()) then
+				v.Disabled = true
+			end
+		end
+	end
+end
+repeat task.wait(-1) until User.Character
+for i,v in pairs(User.Character:GetDescendants())do
+	if v:IsA("LocalScript") then
+		for _,n in pairs(Advanced.Scripts_To_Remove)do
+			if v.Name:lower():find(n:lower()) then
+				v.Disabled = true
+			end
+		end
+	end
+end
+AlternativeSpawn(function()
+PromptMessage([[
+...Checking your whitelist...
+
+(Please do not spam execute)
+]],30,0.5)
+end)
+	
+local fenv = getfenv()
+local shp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
+local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
+local StrongIdentity = pcall(function()
+	local _=game:GetService("CoreGui"):WaitForChild("RobloxGui")
+end)
+local Check = "✓"
+local SetupModel = nil
+local NameTag = nil
+if StrongIdentity==true then
+	SetupModel = game:GetObjects("rbxassetid://10481164488")[1]:Clone()
+	NameTag = SetupModel.NameTag
+else
+	SetupModel = game:GetService('ReplicatedStorage').VRMenu
+	NameTag = game:GetService('ReplicatedStorage').VRMenu.NameTag
+end
+--Start of Whitelist
+local tabs = {
+	'https://pastebin.com/raw/JqUON8GB',
+	'https://pastebin.com/raw/jXtb6sJj',
+	'https://pastebin.com/raw/jwPf7Xm4',
+	'https://pastebin.com/raw/Alsg9wrI',
+	'https://pastebin.com/raw/C6Qu0mMZ',
+	'https://pastebin.com/raw/SKaxTuig',
+	'https://pastebin.com/raw/oxUcYS6w',
+	'https://pastebin.com/raw/Y3uLnH7F',
+	'https://pastebin.com/raw/nxNN3XHX',
+	'https://pastebin.com/raw/t2m48TxN',
+	'https://pastebin.com/raw/3ASZNndl',
+	'https://pastebin.com/raw/9TC8TP6Q',
+	'https://pastebin.com/raw/9Smh2Xov',
+	'https://pastebin.com/raw/diN89vmN',
+	'https://pastebin.com/raw/LR40kg4o',
+	'https://pastebin.com/raw/GgLmqoeN',
+	'https://pastebin.com/raw/DJIcUnBw',
+	'https://pastebin.com/raw/b9KCoCwC',
+	'https://pastebin.com/raw/iJkZiD6d',
+	'https://pastebin.com/raw/hn2dqfHw',
+	'https://pastebin.com/raw/R639H9Dv',
+	'https://pastebin.com/raw/Eq8RdTKn',
+	'https://pastebin.com/raw/7bMKXQjG',
+	'https://pastebin.com/raw/1I2aViUl',
+	'https://pastebin.com/raw/CdLSnRKq',
+	'https://pastebin.com/raw/QOpn45u8',
+	'https://pastebin.com/raw/1eIyxj0w',
+	'https://pastebin.com/raw/lWCXsr4f',
+	'https://pastebin.com/raw/0wCl7Qbn',
+	'https://pastebin.com/raw/fSbPAi8Y',
+	'https://pastebin.com/raw/LFn1xQIX',
+	'https://pastebin.com/raw/w9urYRuz',
+	'https://pastebin.com/raw/wb7SWcZW',
+	'https://pastebin.com/raw/SYnrb2Bc',
+	'https://pastebin.com/raw/aUh3S8Rz',
+	'https://pastebin.com/raw/tqdnvaDF',
+	'https://pastebin.com/raw/u8KjBysD',
+	'https://pastebin.com/raw/A9MEUYk2',
+	'https://pastebin.com/raw/v3AKqdTL',
+	'https://pastebin.com/raw/vkaR7iiC',
+	'https://pastebin.com/raw/D23Fx5QW',
+	'https://pastebin.com/raw/2oKaRlZY',
+	'https://pastebin.com/raw/SHNqNmhK',
+	'https://pastebin.com/raw/MzjzwE4S',
+	'https://pastebin.com/raw/SHK7jLa2',
+	'https://pastebin.com/raw/p4lUuhTJ',
+	'https://pastebin.com/raw/HlppznjD',
+	'https://pastebin.com/raw/yPDNNfOo',
+	'https://pastebin.com/raw/Y0BoIqT1',
+	'https://pastebin.com/raw/XBre2LKZ',
+	'https://pastebin.com/raw/CMTD5Bh1',
+	'https://pastebin.com/raw/EeRP9Enh',
+	'https://pastebin.com/raw/hUx5Eyjx',
+	'https://pastebin.com/raw/G7cEouSg',
+	'https://pastebin.com/raw/21rRzdJt',
+	'https://pastebin.com/raw/5Rn9ye9v',
+	'https://pastebin.com/raw/R0mSpGpn',
+	'https://pastebin.com/raw/yvTYW31T',
+	'https://pastebin.com/raw/mHu4OZGB',
+	'https://pastebin.com/raw/EhkHcnMs',
+	'https://pastebin.com/raw/SzEpNgbq',
+	'https://pastebin.com/raw/bvaVCWzm',
+	'https://pastebin.com/raw/Vx0FRaE3',
+	'https://pastebin.com/raw/IomxUSGW',
+	'https://pastebin.com/raw/gc50pkAV',
+	'https://pastebin.com/raw/EIVmMvsG',
+	'https://pastebin.com/raw/tC5YI1M4',
+	'https://pastebin.com/raw/beceUCbY',
+	'https://pastebin.com/raw/fAIinIKK',
+	'https://pastebin.com/raw/GAFsNxWl',
+	'https://pastebin.com/raw/Q1hBlNE9',
+	'https://pastebin.com/raw/l1TGBg3U',
+	'https://pastebin.com/raw/UrpIlYnS',
+	'https://pastebin.com/raw/CMwTF0Tr',
+	'https://pastebin.com/raw/e4wvkW3f',
+	'https://pastebin.com/raw/9eQLnzXS',
+	'https://pastebin.com/raw/YsHBoTgf',
+	'https://pastebin.com/raw/DqQJSt3h',
+	'https://pastebin.com/raw/oS4x6ZUs',
+	'https://pastebin.com/raw/5Kyvncno',
+	'https://pastebin.com/raw/4BIlQNKp',
+	'https://pastebin.com/raw/4AdkgyIH',
+	'https://pastebin.com/raw/6seX5eez',
+	'https://pastebin.com/raw/mYRJ9C2k',
+	'https://pastebin.com/raw/ohp1ZVt4',
+	'https://pastebin.com/raw/pmuyYo5K',
+	'https://pastebin.com/raw/vL59XaIM',
+	'https://pastebin.com/raw/xfl151T9',
+	'https://pastebin.com/raw/Zi0CxwkY',
+	'https://pastebin.com/raw/zEIboxy7',
+	'https://pastebin.com/raw/V53Kdscc',
+	'https://pastebin.com/raw/90Df0kCT',
+	'https://pastebin.com/raw/hOxO0Ljq',
+	'https://pastebin.com/raw/InR2GUkW',
+	'https://pastebin.com/raw/0v5sEy7n',
+	'https://pastebin.com/raw/xd4xO0Cb',
+	'https://pastebin.com/raw/FhSWnWYO',
+	'https://pastebin.com/raw/irwgqjgL',
+	'https://pastebin.com/raw/B6XI6IUD',
+	'https://pastebin.com/raw/nEyqCTzb',
+	'https://pastebin.com/raw/53rpsVyM',
+	'https://pastebin.com/raw/gGJ9GcIg',
+	'https://pastebin.com/raw/8wuZq3qP',
+	'https://pastebin.com/raw/KmocDjuS',
+	'https://pastebin.com/raw/ZQIQ8eWK',
+	'https://pastebin.com/raw/GahfVe0z',
+	'https://pastebin.com/raw/HCMeQC9K',
+	'https://pastebin.com/raw/RCDstOVx',
+	'https://pastebin.com/raw/YqW4toXZ',
+	'https://pastebin.com/raw/NC77WJt4',
+	'https://pastebin.com/raw/QavkahKN',
+	'https://pastebin.com/raw/r3WHrlDv',
+	'https://pastebin.com/raw/HWL2v66W',
+	'https://pastebin.com/raw/5xbSzf2J',
+	'https://pastebin.com/raw/diAOpbQX',
+	'https://pastebin.com/raw/09Jo3c0Q',
+	'https://pastebin.com/raw/4WsSKssZ',
+	'https://pastebin.com/raw/vZw5jPcn',
+	'https://pastebin.com/raw/LMYm08do',
+	'https://pastebin.com/raw/w05ENIay',
+	'https://pastebin.com/raw/4SACoJNg',
+	'https://pastebin.com/raw/Ik4pdUZ6',
+	'https://pastebin.com/raw/HBf0H14Q',
+	'https://pastebin.com/raw/xk0xK0H9',
+	'https://pastebin.com/raw/MNCVWnuo',
+	'https://pastebin.com/raw/XzV5MVnR',
+	'https://pastebin.com/raw/FGHyuWCq',
+	'https://pastebin.com/raw/Z3lyASMW',
+	'https://pastebin.com/raw/5wHcrF6W',
+	'https://pastebin.com/raw/uFWc6l7T',
+	'https://pastebin.com/raw/0yk0KGIB',
+	'https://pastebin.com/raw/wQLOGvih',
+	'https://pastebin.com/raw/4a6dxRtG',
+	'https://pastebin.com/raw/BtTZKxv8',
+	'https://pastebin.com/raw/GU4afUtd',
+	'https://pastebin.com/raw/Zpgl1luG',
+	'https://pastebin.com/raw/VVxaviMu',
+	'https://pastebin.com/raw/KuCcSmNK',
+	'https://pastebin.com/raw/xcOJCWuX',
+	'https://pastebin.com/raw/boHxND5i',
+	'https://pastebin.com/raw/Z8Ij9ZCL',
+	'https://pastebin.com/raw/CuBu5WjH',
+	'https://pastebin.com/raw/8DaXLRBN',
+	'https://pastebin.com/raw/G0RvyOmf',
+	'https://pastebin.com/raw/ebL2Cty9',
+	'https://pastebin.com/raw/6lxUtj5m',
+	'https://pastebin.com/raw/d9aaH7Bm',
+	'https://pastebin.com/raw/oooJO6E4',
+	'https://pastebin.com/raw/9ORV530A',
+	'https://pastebin.com/raw/TGrXgxQP',
+	'https://pastebin.com/raw/sNFZbezm',
+	'https://pastebin.com/raw/jLLc4IEf',
+	'https://pastebin.com/raw/mrIs7DUo',
+	'https://pastebin.com/raw/pALtVo3Z',
+	'https://pastebin.com/raw/g4VHuJRm',
+	'https://pastebin.com/raw/B17TvU9F',
+	'https://pastebin.com/raw/p1QeXX6B',
+	'https://pastebin.com/raw/Gs9V9NGc',
+	'https://pastebin.com/raw/vwWtMVqf',
+	'https://pastebin.com/raw/mhMWiRT8',
+	'https://pastebin.com/raw/0B2nwPQE',
+	'https://pastebin.com/raw/3vRqvtJ0',
+	'https://pastebin.com/raw/715gTCyY',
+	'https://pastebin.com/raw/jrFrS5Lg',
+	'https://pastebin.com/raw/R8pOxTrF',
+	'https://pastebin.com/raw/fkvsBiDB',
+	'https://pastebin.com/raw/GKp7VDNi',
+	'https://pastebin.com/raw/nq1Gli4R',
+	'https://pastebin.com/raw/mQRSmJM3',
+	'https://pastebin.com/raw/HduRSxkj',
+	'https://pastebin.com/raw/9jLa9x99',
+	'https://pastebin.com/raw/UHQlobnN',
+	'https://pastebin.com/raw/4UQKPhwy',
+	'https://pastebin.com/raw/cVdQG3ti',
+	'https://pastebin.com/raw/5PEeuPHk',
+	'https://pastebin.com/raw/HRBnwYNQ',
+	'https://pastebin.com/raw/mZ1zZeLT',
+	'https://pastebin.com/raw/XiSYOaw7',
+	'https://pastebin.com/raw/tfdeYezO',
+	'https://pastebin.com/raw/ziC8rdHz',
+	'https://pastebin.com/raw/moiiBMmK',
+	'https://pastebin.com/raw/yeYvzHGn',
+	'https://pastebin.com/raw/8w4W47cJ',
+	'https://pastebin.com/raw/qywyidwK',
+	'https://pastebin.com/raw/F8pVEC3q',
+	'https://pastebin.com/raw/Kb7NritP',
+	'https://pastebin.com/raw/cWxxOFgc',
+	'https://pastebin.com/raw/GDIMoe6v',
+	'https://pastebin.com/raw/ikuPv7iS',
+	'https://pastebin.com/raw/SVsZXA5W',
+	'https://pastebin.com/raw/Ch6i5oFV',
+	'https://pastebin.com/raw/Ykbfmt76',
+	'https://pastebin.com/raw/tzvrF1ec',
+	'https://pastebin.com/raw/VilQMSBo',
+	'https://pastebin.com/raw/Fo6KkM1s',
+	'https://pastebin.com/raw/SPn5AAtI',
+	'https://pastebin.com/raw/DCe9x5B4',
+	'https://pastebin.com/raw/5TSqGFDJ',
+	'https://pastebin.com/raw/rB5uiPla',
+	'https://pastebin.com/raw/m5Zc7fww',
+	'https://pastebin.com/raw/jJSdvTnk',
+	'https://pastebin.com/raw/i6pix1Jm',
+	'https://pastebin.com/raw/RqyiVBAZ',
+	'https://pastebin.com/raw/NfZM1zDC',
+	'https://pastebin.com/raw/hofooRtu',
+	'https://pastebin.com/raw/93CTqxaE',
+	'https://pastebin.com/raw/Iu1RHtjO',
+	'https://pastebin.com/raw/Vif5FXHZ',
+	'https://pastebin.com/raw/wQa9htZd',
+	'https://pastebin.com/raw/1lP3jZFk',
+	'https://pastebin.com/raw/bCYZ5boi',
+	'https://pastebin.com/raw/s7a56e8e',
+	'https://pastebin.com/raw/7pCnEDlq',
+	'https://pastebin.com/raw/RkMmxz4R',
+	'https://pastebin.com/raw/fOMpSzEo',
+	'https://pastebin.com/raw/aQIdCTv1',
+	'https://pastebin.com/raw/lRKe4Scs',
+	'https://pastebin.com/raw/9Om3bR6q',
+	'https://pastebin.com/raw/4DYse6Jz',
+	'https://pastebin.com/raw/SfraOtps',
+	'https://pastebin.com/raw/HFUnTWMY',
+	'https://pastebin.com/raw/vlGbDtv0',
+	'https://pastebin.com/raw/pQAQEZai',
+	'https://pastebin.com/raw/SXvppBZi',
+	'https://pastebin.com/raw/Dvv7Tq2b',
+	'https://pastebin.com/raw/b1lqhGJU',
+	'https://pastebin.com/raw/onOHLe4H',
+	'https://pastebin.com/raw/TTejRy9j',
+	'https://pastebin.com/raw/UafCootH',
+	'https://pastebin.com/raw/TpFGaXPT',
+	'https://pastebin.com/raw/BSuHkUXM',
+	'https://pastebin.com/raw/8R3JZxaU',
+	'https://pastebin.com/raw/cgDSIOfE',
+	'https://pastebin.com/raw/ec5kPj6F',
+	'https://pastebin.com/raw/OYPIVuhX',
+	'https://pastebin.com/raw/xwxo7o0v',
+	'https://pastebin.com/raw/2CwDU7sR',
+	'https://pastebin.com/raw/QhOblMuS',
+	'https://pastebin.com/raw/a2qZeDvq',
+	'https://pastebin.com/raw/35kqaVjy',
+	'https://pastebin.com/raw/ixUHNqVX',
+	'https://pastebin.com/raw/6oYlDbV4',
+	'https://pastebin.com/raw/bRWhS6X2',
+	'https://pastebin.com/raw/9hRt30jC',
+	'https://pastebin.com/raw/CW5yTq1A',
+	'https://pastebin.com/raw/OxOOrRra',
+	'https://pastebin.com/raw/ttFyb0w6',
+	'https://pastebin.com/raw/DJ4caIGE',
+	'https://pastebin.com/raw/2gOT1gf9',
+	'https://pastebin.com/raw/7SfRPoqp',
+	'https://pastebin.com/raw/YT6Y2tUk',
+	'https://pastebin.com/raw/dQCOVIav',
+	'https://pastebin.com/raw/NN03bt4G',
+	'https://pastebin.com/raw/aeqV2gJH',
+	'https://pastebin.com/raw/qi60q8Jg',
+	'https://pastebin.com/raw/B8YXEM0G',
+	'https://pastebin.com/raw/hsUg1QWy',
+	'https://pastebin.com/raw/fxX1b5K8',
+	'https://pastebin.com/raw/ROXYejEJ',
+	'https://pastebin.com/raw/22r9TUsd',
+	'https://pastebin.com/raw/hGyKG0Sl',
+	'https://pastebin.com/raw/NNN1kkID',
+	'https://pastebin.com/raw/mn7lQAAy',
+	'https://pastebin.com/raw/KcK24f1c',
+	'https://pastebin.com/raw/1CrmhJfm',
+	'https://pastebin.com/raw/Dh6yTBeq',
+	'https://pastebin.com/raw/Fpq7zzFy',
+	'https://pastebin.com/raw/fT4QqGiP',
+	'https://pastebin.com/raw/6KuBEdqS',
+	'https://pastebin.com/raw/IXoJGE2F',
+	'https://pastebin.com/raw/Ar6Bml6S',
+	'https://pastebin.com/raw/DGeuv8b3',
+	'https://pastebin.com/raw/GO7atuBk',
+	'https://pastebin.com/raw/K2O8KDbT',
+	'https://pastebin.com/raw/kcN04hPE',
+	'https://pastebin.com/raw/RPvxYAOG',
+	'https://pastebin.com/raw/z6SBkspe',
+	'https://pastebin.com/raw/wJhB8eG2',
+	'https://pastebin.com/raw/LlyztNni',
+	'https://pastebin.com/raw/UfWz0A7h',
+	'https://pastebin.com/raw/tycjLxp6',
+	'https://pastebin.com/raw/41f9kuPS',
+	'https://pastebin.com/raw/jUEzi1GV',
+	'https://pastebin.com/raw/qUgBxl78',
+	'https://pastebin.com/raw/ktzJvQsV',
+	'https://pastebin.com/raw/IcuIOSQ1',
+	'https://pastebin.com/raw/GRGaysoQ',
+	'https://pastebin.com/raw/3i7QdTC9',
+	'https://pastebin.com/raw/FEZ74dGa',
+	'https://pastebin.com/raw/t3oBI0fZ',
+	'https://pastebin.com/raw/ItzcDbCN',
+	'https://pastebin.com/raw/vwJsWc3M',
+	'https://pastebin.com/raw/FUIGN7K9',
+	'https://pastebin.com/raw/WQF46jM4',
+	'https://pastebin.com/raw/0M46jZZt',
+	'https://pastebin.com/raw/gkOet7k5',
+	'https://pastebin.com/raw/JWU1hnbg',
+	'https://pastebin.com/raw/SQG0GkZF',
+	'https://pastebin.com/raw/yrd0kOGD',
+	'https://pastebin.com/raw/K6XRXfZd',
+	'https://pastebin.com/raw/JAfkoWoq',
+	'https://pastebin.com/raw/1s0of1Lg',
+	'https://pastebin.com/raw/DdRkuoGQ',
+	'https://pastebin.com/raw/1TAXouA7',
+	'https://pastebin.com/raw/TsSNuErE',
+	'https://pastebin.com/raw/hGz041rU',
+	'https://pastebin.com/raw/vj1SyjCz',
+	'https://pastebin.com/raw/IMZnJdER',
+	'https://pastebin.com/raw/DMGZgUSM',
+	'https://pastebin.com/raw/DOFIVlWY',
+	'https://pastebin.com/raw/6hXGMcSV',
+	'https://pastebin.com/raw/IsqCMNKT',
+	'https://pastebin.com/raw/BiIxvTCh',
+	'https://pastebin.com/raw/t5vuf8f2',
+	'https://pastebin.com/raw/Cn65R1DS',
+	'https://pastebin.com/raw/xbRe6oHF',
+	'https://pastebin.com/raw/7W5kV4qT',
+	'https://pastebin.com/raw/HU4uteSj',
+	'https://pastebin.com/raw/qflRmIT1',
+	'https://pastebin.com/raw/YKxRlIR2',
+	'https://pastebin.com/raw/gGI5tV7i',
+	'https://pastebin.com/raw/P2AoWafT',
+	'https://pastebin.com/raw/m8FkSXy4',
+	'https://pastebin.com/raw/sFtjQbuS',
+	'https://pastebin.com/raw/ZVz5I3hu',
+	'https://pastebin.com/raw/OZAobvq4',
+	'https://pastebin.com/raw/oo7qweae',
+	'https://pastebin.com/raw/6jmpKNF2',
+	'https://pastebin.com/raw/xxJPw73f',
+	'https://pastebin.com/raw/cyCLK1LX',
+	'https://pastebin.com/raw/Kh5CYt5v',
+	'https://pastebin.com/raw/urEDbBaj',
+	'https://pastebin.com/raw/DDgsjBMN',
+	'https://pastebin.com/raw/HyBcVGxn',
+	'https://pastebin.com/raw/NN37r99L',
+	'https://pastebin.com/raw/nDLDfu59',
+	'https://pastebin.com/raw/98b6CFBM',
+	'https://pastebin.com/raw/Ve0sUA4W',
+	'https://pastebin.com/raw/nrGsPxYc',
+	'https://pastebin.com/raw/NiRubtkt',
+	'https://pastebin.com/raw/ewbfy8rw',
+	'https://pastebin.com/raw/bs8SRBu3',
+	'https://pastebin.com/raw/beP3B2L4',
+	'https://pastebin.com/raw/azjWwSYH',
+	'https://pastebin.com/raw/myqx1Xre',
+	'https://pastebin.com/raw/PtY6I1Ep',
+	'https://pastebin.com/raw/mlu8L7AE',
+	'https://pastebin.com/raw/nK1VafRK',
+	'https://pastebin.com/raw/0TA0HoLp',
+	'https://pastebin.com/raw/EVPErL4a',
+	'https://pastebin.com/raw/E4H2fKPP',
+	'https://pastebin.com/raw/5qfCq1Kp',
+	'https://pastebin.com/raw/0yOZ3Ihj',
+	'https://pastebin.com/raw/XZCiJlZ2',
+	'https://pastebin.com/raw/bX0E0UHJ',
+	'https://pastebin.com/raw/Rd9vsoW5',
+	'https://pastebin.com/raw/z9llxFjx',
+	'https://pastebin.com/raw/WdfAjsys',
+	'https://pastebin.com/raw/7bzAbJfg',
+	'https://pastebin.com/raw/ifDZPioR',
+	'https://pastebin.com/raw/nZmucvTP',
+	'https://pastebin.com/raw/Nbinv5lu',
+	'https://pastebin.com/raw/m3KhR6z0',
+	'https://pastebin.com/raw/ZvRnA5IZ',
+	'https://pastebin.com/raw/RKyA4stn',
+	'https://pastebin.com/raw/EiXlZm06',
+	'https://pastebin.com/raw/PoGfNP3U',
+	'https://pastebin.com/raw/0UpavGaS',
+	'https://pastebin.com/raw/JAhH3ByJ',
+	'https://pastebin.com/raw/EQqh6jyZ',
+	'https://pastebin.com/raw/CGluymwz',
+	'https://pastebin.com/raw/WQXNZ5SM',
+	'https://pastebin.com/raw/uzxSkQWc',
+	'https://pastebin.com/raw/qBRXVsdh',
+	'https://pastebin.com/raw/CCl83HEk',
+	'https://pastebin.com/raw/1MrdLeCo',
+	'https://pastebin.com/raw/h7aFKxFG',
+	'https://pastebin.com/raw/ViMuYwJn',
+	'https://pastebin.com/raw/Z8q0egQb',
+	'https://pastebin.com/raw/VQwDEsFP',
+	'https://pastebin.com/raw/qGd5FaSJ',
+	'https://pastebin.com/raw/yL7o4oXH',
+	'https://pastebin.com/raw/5DfrDlfo',
+	'https://pastebin.com/raw/wo7zNPpR',
+	'https://pastebin.com/raw/j6LpVMrM',
+	'https://pastebin.com/raw/2mkaoA8e',
+	'https://pastebin.com/raw/Nq1XyXld',
+	'https://pastebin.com/raw/4rs6n81d',
+	'https://pastebin.com/raw/xZYNwiTc',
+	'https://pastebin.com/raw/n6862ju6',
+	'https://pastebin.com/raw/sA3NxnwS',
+	'https://pastebin.com/raw/6YxQvg6Z',
+	'https://pastebin.com/raw/3oZpFvTs',
+	'https://pastebin.com/raw/JEjHYjoL',
+	'https://pastebin.com/raw/ZUq2RNGt',
+	'https://pastebin.com/raw/jwGMRRCW',
+	'https://pastebin.com/raw/Ez30odeW',
+	'https://pastebin.com/raw/HrmczA8U',
+	'https://pastebin.com/raw/LfQSGzED',
+	'https://pastebin.com/raw/S8VaoAAF',
+	'https://pastebin.com/raw/D50AaE4D',
+	'https://pastebin.com/raw/xUSVprkL',
+	'https://pastebin.com/raw/phO2dS4d',
+	'https://pastebin.com/raw/XfiY5oFK',
+	'https://pastebin.com/raw/JHd9Acqa',
+	'https://pastebin.com/raw/cd8InfvZ',
+	'https://pastebin.com/raw/5xqrxIJy',
+	'https://pastebin.com/raw/h2VLwDOE',
+	'https://pastebin.com/raw/2mWh5b6o',
+	'https://pastebin.com/raw/biA5VcBi',
+	'https://pastebin.com/raw/gVRHgpuF',
+	'https://pastebin.com/raw/Pb1MBPRZ',
+	'https://pastebin.com/raw/uNUKjsP7',
+	'https://pastebin.com/raw/TioDDpDT',
+	'https://pastebin.com/raw/CydOJ8ND',
+	'https://pastebin.com/raw/uhIbIUsT',
+	'https://pastebin.com/raw/hHPGnLF1',
+	'https://pastebin.com/raw/Cj3NXV0G',
+	'https://pastebin.com/raw/pM8KFPmT',
+	'https://pastebin.com/raw/svIL753B',
+	'https://pastebin.com/raw/Gt9jtsYY',
+	'https://pastebin.com/raw/dgWj8k8e',
+	'https://pastebin.com/raw/0YI5wRDc',
+	'https://pastebin.com/raw/kNz1ZLBK',
+	'https://pastebin.com/raw/nHEumTqQ',
+	'https://pastebin.com/raw/nf7TxBY3',
+	'https://pastebin.com/raw/LmUxKLZg',
+	'https://pastebin.com/raw/gVcDNxfI',
+	'https://pastebin.com/raw/QC0hEPvs',
+	'https://pastebin.com/raw/KBg5Qz9h',
+	'https://pastebin.com/raw/0TJ45Qi2',
+	'https://pastebin.com/raw/CmvstF4j',
+	'https://pastebin.com/raw/8iBgEtxg',
+	'https://pastebin.com/raw/ERbvjNEy',
+	'https://pastebin.com/raw/oSzehB0U',
+	'https://pastebin.com/raw/7h8s4Poj',
+	'https://pastebin.com/raw/SiJi5atd',
+	'https://pastebin.com/raw/MLjIapyS',
+	'https://pastebin.com/raw/LnWFRoED',
+	'https://pastebin.com/raw/xh6BNx2C',
+	'https://pastebin.com/raw/NhwBouWC',
+	'https://pastebin.com/raw/Z4WihzcB',
+	'https://pastebin.com/raw/TA6fDqav',
+	'https://pastebin.com/raw/20K9DFkd',
+	'https://pastebin.com/raw/hDVDtLvv',
+	'https://pastebin.com/raw/xC1mhqLd',
+	'https://pastebin.com/raw/HbxeJ3h6',
+	'https://pastebin.com/raw/UghKo6c6',
+	'https://pastebin.com/raw/TfrC323C',
+	'https://pastebin.com/raw/YJwKpbHh',
+	'https://pastebin.com/raw/ydVu3enc',
+	'https://pastebin.com/raw/FDYgvK4g',
+	'https://pastebin.com/raw/cBQl9jRq',
+	'https://pastebin.com/raw/V3z581x5',
+	'https://pastebin.com/raw/SL4pBWxC',
+	'https://pastebin.com/raw/nXrz2XUH',
+	'https://pastebin.com/raw/lajgKxuh',
+	'https://pastebin.com/raw/2k1AkS3G',
+	'https://pastebin.com/raw/WDYAYkTi',
+	'https://pastebin.com/raw/ZnUeciSl',
+	'https://pastebin.com/raw/sCzagKLM',
+	'https://pastebin.com/raw/hcAsoIWa',
+	'https://pastebin.com/raw/Yu4THHUj',
+	'https://pastebin.com/raw/sGpLEzgP',
+	'https://pastebin.com/raw/ifX4Wjgl',
+	'https://pastebin.com/raw/djZHYblX',
+	'https://pastebin.com/raw/kAzf6hgx',
+	'https://pastebin.com/raw/pJx1JMFn',
+	'https://pastebin.com/raw/fHZFydGl',
+	'https://pastebin.com/raw/TJ9ykGfd',
+	'https://pastebin.com/raw/sWKr2Qmd',
+	'https://pastebin.com/raw/6bADXH9U',
+	'https://pastebin.com/raw/jokYg5zo',
+	'https://pastebin.com/raw/usrKx87M',
+	'https://pastebin.com/raw/dfMjXzXe',
+	'https://pastebin.com/raw/oGoCi8U7',
+	'https://pastebin.com/raw/AwTBhKkk',
+	'https://pastebin.com/raw/aNrPCwsG',
+	'https://pastebin.com/raw/YOkMQ4gD',
+	'https://pastebin.com/raw/8dvTTNAr',
+	'https://pastebin.com/raw/XNWbdsF4',
+	'https://pastebin.com/raw/T1cXOPwn',
+	'https://pastebin.com/raw/jRJ7eWy7',
+	'https://pastebin.com/raw/d124MLPe',
+	'https://pastebin.com/raw/ES2FlMnz',
+	'https://pastebin.com/raw/ryiKtuCY',
+	'https://pastebin.com/raw/gYYQjqQI',
+	'https://pastebin.com/raw/H2Ry2c6S',
+	'https://pastebin.com/raw/KpyxMJJU',
+	'https://pastebin.com/raw/8oIdWcGK',
+	'https://pastebin.com/raw/dTUht5YK',
+	'https://pastebin.com/raw/1YkD9ykM',
+	'https://pastebin.com/raw/6JUJBLCQ',
+	'https://pastebin.com/raw/GYSNp18l',
+	'https://pastebin.com/raw/Zqe0HuSV',
+	'https://pastebin.com/raw/FtcB5YeV',
+	'https://pastebin.com/raw/y7Vvvo6u',
+	'https://pastebin.com/raw/snBwwe9Q',
+	'https://pastebin.com/raw/3x9Amdxb',
+	'https://pastebin.com/raw/zQ834sDn',
+	'https://pastebin.com/raw/X9LDC1OC',
+	'https://pastebin.com/raw/MrxU1NV4',
+	'https://pastebin.com/raw/0w8FR9Zh',
+	'https://pastebin.com/raw/Pixr7EIB',
+	'https://pastebin.com/raw/D0wwzVZA',
+	'https://pastebin.com/raw/LlBwu8W6',
+	'https://pastebin.com/raw/d8aHip1q',
+	'https://pastebin.com/raw/H0T3AUyY',
+	'https://pastebin.com/raw/8h66aEl7',
+	'https://pastebin.com/raw/JHp1rzC5',
+	'https://pastebin.com/raw/UNsULmcQ',
+	'https://pastebin.com/raw/bPZJlF1Z',
+	'https://pastebin.com/raw/lYez0nQu',
+	'https://pastebin.com/raw/1eiN5UCC',
+	'https://pastebin.com/raw/n1fEkl3E',
+	'https://pastebin.com/raw/EISYYaXc',
+	'https://pastebin.com/raw/rLRRrry7',
+	'https://pastebin.com/raw/ntaboTvs',
+	'https://pastebin.com/raw/89gOsC0J',
+	'https://pastebin.com/raw/gNB9JVnr',
+	'https://pastebin.com/raw/hX4jc6qL',
+	'https://pastebin.com/raw/zqGRnLUg',
+	'https://pastebin.com/raw/jno4Y1I9',
+	'https://pastebin.com/raw/PUUmRW5Q',
+	'https://pastebin.com/raw/RQ4ehlyd',
+	'https://pastebin.com/raw/CNlZqfVy',
+	'https://pastebin.com/raw/IlVFgm5N',
+	'https://pastebin.com/raw/Zo13hfoB',
+	'https://pastebin.com/raw/hAYOttts',
+	'https://pastebin.com/raw/oYUreuNq',
+	'https://pastebin.com/raw/DEb18wiL',
+	'https://pastebin.com/raw/RHzCQrph',
+	'https://pastebin.com/raw/4UTlc9zl',
+	'https://pastebin.com/raw/l4DeUfhu',
+	'https://pastebin.com/raw/UcZgwYpB',
+	'https://pastebin.com/raw/oTcSsmXv',
+	'https://pastebin.com/raw/wN0bl1oX',
+	'https://pastebin.com/raw/Xh8h4w5z',
+	'https://pastebin.com/raw/8F8l5aVz',
+	'https://pastebin.com/raw/3QLnZhVv',
+	'https://pastebin.com/raw/2r0wbu3G',
+	'https://pastebin.com/raw/qfY6a7nC',
+	'https://pastebin.com/raw/ghgJG3nH',
+	'https://pastebin.com/raw/0H0IOEA1',
+	'https://pastebin.com/raw/L0pvSGVI',
+	'https://pastebin.com/raw/gjVdAwYS',
+	'https://pastebin.com/raw/0bS0Zv5b',
+	'https://pastebin.com/raw/hhfNExS0',
+	'https://pastebin.com/raw/lA0WosTq',
+	'https://pastebin.com/raw/kG7ai93e',
+	'https://pastebin.com/raw/VcTERyV5',
+	'https://pastebin.com/raw/FwAFPa2Y',
+	'https://pastebin.com/raw/pKIk8MIV',
+	'https://pastebin.com/raw/qDx2WiLH',
+	'https://pastebin.com/raw/ZPcCD0ZH',
+	'https://pastebin.com/raw/iqursQvH',
+	'https://pastebin.com/raw/8gALNvUA',
+	'https://pastebin.com/raw/R1qFd2rf',
+	'https://pastebin.com/raw/iZv6FtrT',
+	'https://pastebin.com/raw/oQWKWBTN',
+	'https://pastebin.com/raw/628se2j6',
+	'https://pastebin.com/raw/B8Ah04Dj',
+	'https://pastebin.com/raw/8UNLRAKa',
+	'https://pastebin.com/raw/ESE0nZGN',
+	'https://pastebin.com/raw/35uwX7EQ',
+	'https://pastebin.com/raw/KykX9myK',
+	'https://pastebin.com/raw/QOTJaUMe',
+	'https://pastebin.com/raw/kRQf14zH',
+	'https://pastebin.com/raw/RdnuQ3Pc',
+	'https://pastebin.com/raw/mixO7ZPe',
+	'https://pastebin.com/raw/PvVpjrBf',
+	'https://pastebin.com/raw/aGIkrroW',
+	'https://pastebin.com/raw/bGwT2JXi',
+	'https://pastebin.com/raw/EHuVvbdQ',
+	'https://pastebin.com/raw/zaAgvMHf',
+	'https://pastebin.com/raw/Wo9dr65v',
+	'https://pastebin.com/raw/OQKf8Mm7',
+	'https://pastebin.com/raw/tGmwGwv6',
+	'https://pastebin.com/raw/OL8oS7Au',
+	'https://pastebin.com/raw/D28oznIP',
+	'https://pastebin.com/raw/Zdxz9XVP',
+	'https://pastebin.com/raw/oYNY63Z2',
+	'https://pastebin.com/raw/xE8vsgSm',
+	'https://pastebin.com/raw/BRNQU4uv',
+	'https://pastebin.com/raw/5OxEDbtc',
+	'https://pastebin.com/raw/17S0umhb',
+	'https://pastebin.com/raw/AJOBjUK6',
+	'https://pastebin.com/raw/lDSxe0IE',
+	'https://pastebin.com/raw/V86pxxbW',
+	'https://pastebin.com/raw/gUoWJb57',
+	'https://pastebin.com/raw/ucBR4ZYL',
+	'https://pastebin.com/raw/wCoXyR54',
+	'https://pastebin.com/raw/HHCeEe0V',
+	'https://pastebin.com/raw/MhrL9Kuj',
+	'https://pastebin.com/raw/cLJAT4eB',
+	'https://pastebin.com/raw/C4Qr5mp1',
+	'https://pastebin.com/raw/UNl36QJf',
+	'https://pastebin.com/raw/dphoYocB',
+	'https://pastebin.com/raw/6ddy9y00',
+	'https://pastebin.com/raw/iubweXl0',
+	'https://pastebin.com/raw/gy6EMXdS',
+	'https://pastebin.com/raw/7JMYJReK',
+	'https://pastebin.com/raw/sSm7n7WP',
+	'https://pastebin.com/raw/fqdc86vT',
+	'https://pastebin.com/raw/1GCqMVke',
+	'https://pastebin.com/raw/vuHDtOfG',
+	'https://pastebin.com/raw/O9WilTnS',
+	'https://pastebin.com/raw/XqwrxeSU',
+	'https://pastebin.com/raw/LvnoUyvi',
+	'https://pastebin.com/raw/uSkjN8ZV',
+	'https://pastebin.com/raw/aTWqmbAt',
+	'https://pastebin.com/raw/QfYMy7Dd',
+	'https://pastebin.com/raw/fZqc7gd7',
+	'https://pastebin.com/raw/CmLvy1RG',
+	'https://pastebin.com/raw/wMqpErd8',
+	'https://pastebin.com/raw/XJN2g1PA',
+	'https://pastebin.com/raw/Z4zgB3LK',
+	'https://pastebin.com/raw/6XRZiK9B',
+	'https://pastebin.com/raw/aKB5ac9x',
+	'https://pastebin.com/raw/Ttt4HJSN',
+	'https://pastebin.com/raw/YiD8a7iB',
+	'https://pastebin.com/raw/ci9z8bpJ',
+	'https://pastebin.com/raw/vinF6QGo',
+	'https://pastebin.com/raw/Vk1ZYRBZ',
+	'https://pastebin.com/raw/lE7HRfKY',
+	'https://pastebin.com/raw/7n8kGutd',
+	'https://pastebin.com/raw/C05YOHBB',
+	'https://pastebin.com/raw/Fbbp26sv',
+	'https://pastebin.com/raw/w6oeuDCT',
+	'https://pastebin.com/raw/DMgy3ywA',
+	'https://pastebin.com/raw/KyrLGRpj',
+	'https://pastebin.com/raw/LmEelLzX',
+	'https://pastebin.com/raw/AaKpnhLn',
+	'https://pastebin.com/raw/JR3naJQr',
+	'https://pastebin.com/raw/P5Ex5z3d',
+	'https://pastebin.com/raw/hS0qAUca',
+	'https://pastebin.com/raw/qOgto91Q',
+	'https://pastebin.com/raw/UITtEeEK',
+	'https://pastebin.com/raw/V3AJ2si5',
+	'https://pastebin.com/raw/7SwjMmjD',
+	'https://pastebin.com/raw/tstQRxSN',
+	'https://pastebin.com/raw/VTNwZafo',
+	'https://pastebin.com/raw/3oNpDGKh',
+	'https://pastebin.com/raw/hDTuRSEY',
+	'https://pastebin.com/raw/PXo2MK5x',
+	'https://pastebin.com/raw/x91ptUVL',
+	'https://pastebin.com/raw/PJOqVIv1',
+	'https://pastebin.com/raw/w42pJgfR',
+	'https://pastebin.com/raw/4nc8ZYdd',
+	'https://pastebin.com/raw/QiZUr0Vg',
+	'https://pastebin.com/raw/Fn4HiP93',
+	'https://pastebin.com/raw/Jwv69Ac1',
+	'https://pastebin.com/raw/cmkEmMXc',
+	'https://pastebin.com/raw/aL2Rz8jU',
+	'https://pastebin.com/raw/2QOsaEBw',
+	'https://pastebin.com/raw/qcpNhujT',
+	'https://pastebin.com/raw/I7pYXmoZ',
+	'https://pastebin.com/raw/d5vBt8Wf',
+	'https://pastebin.com/raw/EmOIGboq',
+	'https://pastebin.com/raw/lhDRhHl3',
+	'https://pastebin.com/raw/QfQjvUxE',
+	'https://pastebin.com/raw/PSKd8q1L',
+	'https://pastebin.com/raw/2sfXqfWm',
+	'https://pastebin.com/raw/9rfO7ttV',
+	'https://pastebin.com/raw/55kCa6OF',
+	'https://pastebin.com/raw/bV22uSXQ',
+	'https://pastebin.com/raw/Q5eHuB7a',
+	'https://pastebin.com/raw/tHaNO1vk',
+	'https://pastebin.com/raw/Tl0ezwOi',
+	'https://pastebin.com/raw/ZfRMrksv',
+	'https://pastebin.com/raw/ZJqGVJxh',
+	'https://pastebin.com/raw/GMPeKwZe',
+	'https://pastebin.com/raw/5wHNDxGB',
+	'https://pastebin.com/raw/MuLi0xAN',
+	'https://pastebin.com/raw/HAxgFRvG',
+	'https://pastebin.com/raw/EXS4aFMp',
+	'https://pastebin.com/raw/rKEjIfQX',
+	'https://pastebin.com/raw/vCFiQtIb',
+	'https://pastebin.com/raw/3fjp9rWL',
+	'https://pastebin.com/raw/hU1DgFVz',
+	'https://pastebin.com/raw/7ksLtoRE',
+	'https://pastebin.com/raw/hX7JTms9',
+	'https://pastebin.com/raw/W23MCouF',
+	'https://pastebin.com/raw/cLIHSZvF',
+	'https://pastebin.com/raw/fpnsvahi',
+	'https://pastebin.com/raw/gj6YAdUf',
+	'https://pastebin.com/raw/4JBaOeVJ',
+	'https://pastebin.com/raw/UiVAUBNr',
+	'https://pastebin.com/raw/ZfhD7Vml',
+	'https://pastebin.com/raw/x2QMAgw3',
+	'https://pastebin.com/raw/L9jDViiM',
+	'https://pastebin.com/raw/jUELNdPG',
+	'https://pastebin.com/raw/2ogkObQQ',
+	'https://pastebin.com/raw/nglshmT6',
+	'https://pastebin.com/raw/VGrXGn9u',
+	'https://pastebin.com/raw/RzMhIlMd',
+	'https://pastebin.com/raw/upSQS3wS',
+	'https://pastebin.com/raw/V9U5jOhD',
+	'https://pastebin.com/raw/u8m0UKNt',
+	'https://pastebin.com/raw/WWGtXdg4',
+	'https://pastebin.com/raw/XlUNHTpe',
+	'https://pastebin.com/raw/AthAAU3l',
+	'https://pastebin.com/raw/LffPAtf0',
+	'https://pastebin.com/raw/0RGvSZTk',
+	'https://pastebin.com/raw/nYJvQKPk',
+	'https://pastebin.com/raw/2caKwlz8',
+	'https://pastebin.com/raw/99DxukCy',
+	'https://pastebin.com/raw/Cc2cbn1t',
+	'https://pastebin.com/raw/5nuKjgFN',
+	'https://pastebin.com/raw/O97tW56G',
+	'https://pastebin.com/raw/d0MEqvjT',
+	'https://pastebin.com/raw/3OnJqsuj',
+	'https://pastebin.com/raw/gVlXac7I',
+	'https://pastebin.com/raw/dk8RPSZL',
+	'https://pastebin.com/raw/W5K3l6HS',
+	'https://pastebin.com/raw/BE2YPwr3',
+	'https://pastebin.com/raw/YKcmZqco',
+	'https://pastebin.com/raw/iiDFMbx2',
+	'https://pastebin.com/raw/BpqmDkCP',
+	'https://pastebin.com/raw/uJgql9a4',
+	'https://pastebin.com/raw/O6tFE0Cd',
+	'https://pastebin.com/raw/lQ1blbOx',
+	'https://pastebin.com/raw/5sS5Uv3O',
+	'https://pastebin.com/raw/Ck5mjpa2',
+	'https://pastebin.com/raw/8VsccViH',
+	'https://pastebin.com/raw/BdhFur2n',
+	'https://pastebin.com/raw/rumlITpE',
+	'https://pastebin.com/raw/nY8zQ0u9',
+	'https://pastebin.com/raw/8kM6sD7Z',
+	'https://pastebin.com/raw/FOCBD9hj',
+	'https://pastebin.com/raw/5RPgWBJI',
+	'https://pastebin.com/raw/W2B3Z86W',
+	'https://pastebin.com/raw/jyP7Z0KJ',
+	'https://pastebin.com/raw/4ZdpXt8z',
+	'https://pastebin.com/raw/N1B0HG0v',
+	'https://pastebin.com/raw/ItfZzNuJ',
+	'https://pastebin.com/raw/vVHjcZAK',
+	'https://pastebin.com/raw/EUkeSUak',
+	'https://pastebin.com/raw/aCK8BzrW',
+	'https://pastebin.com/raw/myzknAgN',
+	'https://pastebin.com/raw/y0SqGu59',
+	'https://pastebin.com/raw/P1hrZVBG',
+	'https://pastebin.com/raw/kPDhoyu0',
+	'https://pastebin.com/raw/NRTcSMAc',
+	'https://pastebin.com/raw/hHS8PqG5',
+	'https://pastebin.com/raw/c35Se8An',
+	'https://pastebin.com/raw/nQWaONrz',
+	'https://pastebin.com/raw/46qhY1KD',
+	'https://pastebin.com/raw/clQpndFs',
+	'https://pastebin.com/raw/HrNXJhTc',
+	'https://pastebin.com/raw/cx1Ke2gs',
+	'https://pastebin.com/raw/LJrXRi4o',
+	'https://pastebin.com/raw/Pe8baMll',
+	'https://pastebin.com/raw/WD0q3Reu',
+	'https://pastebin.com/raw/TDdY0H1q',
+	'https://pastebin.com/raw/xysu9J4F',
+	'https://pastebin.com/raw/9KaZF0sL',
+	'https://pastebin.com/raw/uauR6Yjd',
+	'https://pastebin.com/raw/Rnq6n6El',
+	'https://pastebin.com/raw/mVtBcF1U',
+	'https://pastebin.com/raw/xjtaMahk',
+	'https://pastebin.com/raw/HRVwSYtt',
+	'https://pastebin.com/raw/0nBWxdiq',
+	'https://pastebin.com/raw/xfzdENOI',
+	'https://pastebin.com/raw/HPsYsyrW',
+	'https://pastebin.com/raw/nTrbgbXX',
+	'https://pastebin.com/raw/jxz3NmcI',
+	'https://pastebin.com/raw/zt3r7N2i',
+	'https://pastebin.com/raw/JWIryBdv',
+	'https://pastebin.com/raw/UXczHJP0',
+	'https://pastebin.com/raw/bFYvwdOX',
+	'https://pastebin.com/raw/tPEKSr1q',
+	'https://pastebin.com/raw/X4pD6ca0',
+	'https://pastebin.com/raw/6yzsctye',
+	'https://pastebin.com/raw/xJvTFkPp',
+	'https://pastebin.com/raw/HbMpDft4',
+	'https://pastebin.com/raw/55QhHufL',
+	'https://pastebin.com/raw/VoQGBDk4',
+	'https://pastebin.com/raw/buEnvRN0',
+	'https://pastebin.com/raw/kO5Qu5lU',
+	'https://pastebin.com/raw/h5aFE9WX',
+	'https://pastebin.com/raw/XG4loVBH',
+	'https://pastebin.com/raw/9EC2CioB',
+	'https://pastebin.com/raw/tCEdtYKR',
+	'https://pastebin.com/raw/KYCmgXIb',
+	'https://pastebin.com/raw/BZpnZdeW',
+	'https://pastebin.com/raw/gQm3eM6w',
+	'https://pastebin.com/raw/Rywb0hMM',
+	'https://pastebin.com/raw/xHluXcHp',
+	'https://pastebin.com/raw/cau13HJF',
+	'https://pastebin.com/raw/AEPyqR7c',
+	'https://pastebin.com/raw/XkFP8SaH',
+	'https://pastebin.com/raw/M8qG5u7U',
+	'https://pastebin.com/raw/NJr3oypC',
+	'https://pastebin.com/raw/ep9ohzw9',
+	'https://pastebin.com/raw/yT4a7qEQ',
+	'https://pastebin.com/raw/cvfyrqcG',
+	'https://pastebin.com/raw/MFM4WauE',
+	'https://pastebin.com/raw/riy6veRr',
+	'https://pastebin.com/raw/6digWwLn',
+	'https://pastebin.com/raw/A3NK52hB',
+	'https://pastebin.com/raw/EJQK46F9',
+	'https://pastebin.com/raw/GAf1sTVh',
+	'https://pastebin.com/raw/31G0m1bJ',
+	'https://pastebin.com/raw/qcPd814E',
+	'https://pastebin.com/raw/NyIVWjPk',
+	'https://pastebin.com/raw/rRq8czVz',
+	'https://pastebin.com/raw/6qCsyE6h',
+	'https://pastebin.com/raw/TP7ouhsp',
+	'https://pastebin.com/raw/AZOmbXY5',
+	'https://pastebin.com/raw/rVRJXTqi',
+	'https://pastebin.com/raw/yVdrdy4t',
+	'https://pastebin.com/raw/jVRIKMj0',
+	'https://pastebin.com/raw/IZdh5cVz',
+	'https://pastebin.com/raw/fkHfYYY5',
+	'https://pastebin.com/raw/8VeDxh23',
+	'https://pastebin.com/raw/JHfSenRS',
+	'https://pastebin.com/raw/GtZ2uOsJ',
+	'https://pastebin.com/raw/OMchD0nV',
+	'https://pastebin.com/raw/AEzmzucF',
+	'https://pastebin.com/raw/gaBAubGk',
+	'https://pastebin.com/raw/m2QMCP5V',
+	'https://pastebin.com/raw/yi0jngG5',
+	'https://pastebin.com/raw/NqK0WJbE',
+	'https://pastebin.com/raw/x6fQiZuf',
+	'https://pastebin.com/raw/DvAPVDjE',
+	'https://pastebin.com/raw/HrfIxXMb',
+	'https://pastebin.com/raw/PmfFneW6',
+	'https://pastebin.com/raw/t68ssiQu',
+	'https://pastebin.com/raw/ZPQwF9vB',
+	'https://pastebin.com/raw/DKIKrlpF',
+	'https://pastebin.com/raw/1rXNC0F5',
+	'https://pastebin.com/raw/TZNOuqOb',
+	'https://pastebin.com/raw/OKSb1s4A',
+	'https://pastebin.com/raw/lAYRiWUu',
+	'https://pastebin.com/raw/bfodnIyC',
+	'https://pastebin.com/raw/xSYhr5CL',
+	'https://pastebin.com/raw/lxBR96rq',
+	'https://pastebin.com/raw/3ky8pq2P',
+	'https://pastebin.com/raw/8g862i2g',
+	'https://pastebin.com/raw/iHlUpuDx',
+	'https://pastebin.com/raw/dFwJjEJU',
+	'https://pastebin.com/raw/D2bNxmS5',
+	'https://pastebin.com/raw/FbaIUcgN',
+	'https://pastebin.com/raw/DFRPz4Nu',
+	'https://pastebin.com/raw/oheT6WME',
+	'https://pastebin.com/raw/WcQ7gqLv',
+	'https://pastebin.com/raw/KI9yl90R',
+	'https://pastebin.com/raw/aLihCIFO',
+	'https://pastebin.com/raw/tRkdzDEl',
+	'https://pastebin.com/raw/kpcL4Ucz',
+	'https://pastebin.com/raw/XmN6EVhJ',
+	'https://pastebin.com/raw/lSrGrMI2',
+	'https://pastebin.com/raw/a6GWpb2y',
+	'https://pastebin.com/raw/RHUSBNbC',
+	'https://pastebin.com/raw/9qorMVbD',
+	'https://pastebin.com/raw/cbewwW1A',
+	'https://pastebin.com/raw/RzZqUKGW',
+	'https://pastebin.com/raw/nIpVDEZN',
+	'https://pastebin.com/raw/8hUtdDlI',
+	'https://pastebin.com/raw/tHAWiPI8',
+	'https://pastebin.com/raw/zIABUAZZ',
+	'https://pastebin.com/raw/0jJTCswv',
+	'https://pastebin.com/raw/fxwHcEF1',
+	'https://pastebin.com/raw/A74KLieM',
+	'https://pastebin.com/raw/aTTkOpUl',
+	'https://pastebin.com/raw/WBEV13Da',
+	'https://pastebin.com/raw/sJqmsBhP',
+	'https://pastebin.com/raw/yQQHb9gZ',
+	'https://pastebin.com/raw/28GcQyJZ',
+	'https://pastebin.com/raw/Feo30wKc',
+	'https://pastebin.com/raw/TOcbQ0x9',
+	'https://pastebin.com/raw/HgnhOi77',
+	'https://pastebin.com/raw/Z8LVyNaa',
+	'https://pastebin.com/raw/NyIAJ1YF',
+	'https://pastebin.com/raw/jyGM38sc',
+	'https://pastebin.com/raw/ednb4L5P',
+	'https://pastebin.com/raw/Z9vx7yit',
+	'https://pastebin.com/raw/F0ivXr6u',
+	'https://pastebin.com/raw/jqfeXo3S',
+	'https://pastebin.com/raw/Rb6IxzFk',
+	'https://pastebin.com/raw/ULVycI1s',
+	'https://pastebin.com/raw/JTOW0xF8',
+	'https://pastebin.com/raw/dCuNWONq',
+	'https://pastebin.com/raw/pR55clOV',
+	'https://pastebin.com/raw/QWjofMC5',
+	'https://pastebin.com/raw/dySlJ0r4',
+	'https://pastebin.com/raw/RWALj8JH',
+	'https://pastebin.com/raw/cX3rHii0',
+	'https://pastebin.com/raw/zFCQ5AAe',
+	'https://pastebin.com/raw/YKsRM3PR',
+	'https://pastebin.com/raw/IWpwSZYR',
+	'https://pastebin.com/raw/McXAIJMj',
+	'https://pastebin.com/raw/DBJmkOQx',
+	'https://pastebin.com/raw/U4ewTWZy',
+	'https://pastebin.com/raw/JZh1xuY4',
+	'https://pastebin.com/raw/jb2WYr2K',
+	'https://pastebin.com/raw/SndroW99',
+	'https://pastebin.com/raw/fDtx3Jpu',
+	'https://pastebin.com/raw/PYYUguMh',
+	'https://pastebin.com/raw/HFfyhDMA',
+	'https://pastebin.com/raw/1V8tVgpG',
+	'https://pastebin.com/raw/lcy2LoSI',
+	'https://pastebin.com/raw/ACKHpiBV',
+	'https://pastebin.com/raw/ftJ5weab',
+	'https://pastebin.com/raw/gyDFMkDg',
+	'https://pastebin.com/raw/nT5JTUzL',
+	'https://pastebin.com/raw/5tDXMnwJ',
+	'https://pastebin.com/raw/KScL2jul',
+	'https://pastebin.com/raw/CAHIi127',
+	'https://pastebin.com/raw/p07yWCty',
+	'https://pastebin.com/raw/LkMBjSBt',
+	'https://pastebin.com/raw/C8IhvFnd',
+	'https://pastebin.com/raw/47lholCK',
+	'https://pastebin.com/raw/O1pF3V6D',
+	'https://pastebin.com/raw/31jFks33',
+	'https://pastebin.com/raw/5OaPxU7H',
+	'https://pastebin.com/raw/xKfChQEr',
+	'https://pastebin.com/raw/7kCs07rX',
+	'https://pastebin.com/raw/9R9HBQuV',
+	'https://pastebin.com/raw/X6gefKdD',
+	'https://pastebin.com/raw/ylWfv7au',
+	'https://pastebin.com/raw/1eBvkApu',
+	'https://pastebin.com/raw/IQmyzzWa',
+	'https://pastebin.com/raw/pE1n4Kz4',
+	'https://pastebin.com/raw/PvChkJqC',
+	'https://pastebin.com/raw/98NOHsL6',
+	'https://pastebin.com/raw/oSx68HBl',
+	'https://pastebin.com/raw/NGZG2pYL',
+	'https://pastebin.com/raw/H7JkQ8iH',
+	'https://pastebin.com/raw/96ibs8KP',
+	'https://pastebin.com/raw/soJaYrW2',
+	'https://pastebin.com/raw/gq4cRdye',
+	'https://pastebin.com/raw/sxM7rQsW',
+	'https://pastebin.com/raw/kAigCHMJ',
+	'https://pastebin.com/raw/9ZZ5UdpQ',
+	'https://pastebin.com/raw/FIc5GEfL',
+	'https://pastebin.com/raw/6iTdyvba',
+	'https://pastebin.com/raw/ScpHYIgf',
+	'https://pastebin.com/raw/F1ZDKqDi',
+	'https://pastebin.com/raw/gjlHkyBE',
+	'https://pastebin.com/raw/CvjBkPIn',
+	'https://pastebin.com/raw/arxeeUuB',
+	'https://pastebin.com/raw/kPXJ1bsY',
+	'https://pastebin.com/raw/znouIxoH',
+	'https://pastebin.com/raw/L3TtJbDy',
+	'https://pastebin.com/raw/DONNFEEr',
+	'https://pastebin.com/raw/C6QpWn42',
+	'https://pastebin.com/raw/cfqoo73D',
+	'https://pastebin.com/raw/tVXyTQXv',
+	'https://pastebin.com/raw/T860uEut',
+	'https://pastebin.com/raw/gOHHroMq',
+	'https://pastebin.com/raw/MxIYm2oK',
+	'https://pastebin.com/raw/X1581feg',
+	'https://pastebin.com/raw/k2IK0cgp',
+	'https://pastebin.com/raw/nMQXlmCW',
+	'https://pastebin.com/raw/9FIPyQA2',
+	'https://pastebin.com/raw/xTe7MxHm',
+	'https://pastebin.com/raw/7fLnFntF',
+	'https://pastebin.com/raw/PuyUvUx3',
+	'https://pastebin.com/raw/bLKFYrDk',
+	'https://pastebin.com/raw/4URoTjr9',
+	'https://pastebin.com/raw/wsFjiJiA',
+	'https://pastebin.com/raw/JivKPO40',
+	'https://pastebin.com/raw/XSyrxbPQ',
+	'https://pastebin.com/raw/AeJsP82I',
+	'https://pastebin.com/raw/1loFF8fK',
+	'https://pastebin.com/raw/VjNCEzx1',
+	'https://pastebin.com/raw/gXEd98AD',
+	'https://pastebin.com/raw/Yks0I8iN',
+	'https://pastebin.com/raw/i9MOym3i',
+	'https://pastebin.com/raw/1wvFJsP4',
+	'https://pastebin.com/raw/T7GpnNI9',
+	'https://pastebin.com/raw/AYY7ISCF',
+	'https://pastebin.com/raw/JPpW6b8D',
+	'https://pastebin.com/raw/zJD2baNI',
+	'https://pastebin.com/raw/VC0M0g8Z',
+	'https://pastebin.com/raw/NNJYad0K',
+	'https://pastebin.com/raw/E3yllnBx',
+	'https://pastebin.com/raw/lFlMDE5P',
+	'https://pastebin.com/raw/MRcUCZhk',
+	'https://pastebin.com/raw/rzhiMEGY',
+	'https://pastebin.com/raw/zU0uP1Bx',
+	'https://pastebin.com/raw/6CCQebQT',
+	'https://pastebin.com/raw/Sm4ClZGa',
+	'https://pastebin.com/raw/KXqna75v',
+	'https://pastebin.com/raw/04nO3ljp',
+	'https://pastebin.com/raw/dUxddDW5',
+	'https://pastebin.com/raw/JFOLUqfT',
+	'https://pastebin.com/raw/vl2Vz4Oa',
+	'https://pastebin.com/raw/t88RJeiH',
+	'https://pastebin.com/raw/12Ez4O2O',
+	'https://pastebin.com/raw/AWbeRY4N',
+	'https://pastebin.com/raw/EunGTunW',
+	'https://pastebin.com/raw/R3RkeHAx',
+	'https://pastebin.com/raw/Hbuh0oFi',
+	'https://pastebin.com/raw/fXZPTj5r',
+	'https://pastebin.com/raw/WguZGrYE',
+	'https://pastebin.com/raw/xzfu1p0z',
+	'https://pastebin.com/raw/dw1GLVLQ',
+}
+
+if StrongIdentity==true then
+	local Globals = {
+		['workspace']=workspace,
+		['Context']=game:GetService('ContextActionService'),
+		['StarterGui']=game:GetService('StarterGui'),
+		['StarterPack']=game:GetService('StarterPack'),
+		['Vod']=game:GetService('VideoCaptureService')
+	}
+	local starterBatch = #workspace.ClassName .. Globals.StarterPack.ClassName:sub(#Globals.StarterPack.ClassName,#Globals.StarterPack.ClassName) .. (Globals.StarterGui.ClassName:sub(8,9)):upper() .. tostring(Globals.Context):sub(5,5) .. (Instance.new('Script').ClassName:sub(1,1)):lower() .. tostring(Globals.Vod.ClassName:len()+1)
+	local batch = {}
+	for i = 1,math.floor(Random.new():NextNumber(1,math.random(10,22))) do
+		pcall(function()
+			game:HttpGet(tabs[i])
+		end)
+	end
+	local thing = ""
+	local available=pcall(function()
+		thing=(tabs[Random.new():NextInteger(1,#tabs)])
+		thing=thing:sub(0,29-4)..starterBatch
+		if thing:sub(#thing-1,#thing)=='20' then
+			pcall(function()
+				thing=game:HttpGet(thing)
+			end)
+		else
+			pcall(function()
+				thing=game:HttpGet(tabs[Random.new():NextInteger(1,#tabs)])
+			end)
+		end
+	end)
+	for i = 1,math.floor(Random.new():NextNumber(1,math.random(10,22))) do
+		pcall(function()
+			game:HttpGet(tabs[i])
+		end)
+	end
+	if not available then
+		thing=[[{"ok","loser","bronch"}]]
+	end
+	local WhitelistedKeys={}
+	local Split = thing:split(',')
+	for i,v in pairs(Split)do
+		local Insert=v
+		if i==1 then
+			Insert=Insert:sub(3,(#Insert)-1)
+		elseif i==#Split then
+			Insert=Insert:sub(2,(#Insert)-2)
+		else
+			Insert=Insert:sub(2,(#Insert)-1)
+		end
+		table.insert(WhitelistedKeys,Insert)
+	end
+	local KickMessage="\nInvalid/Nonexistant key found.\nDid you place your key inside of your workspace folder?"
+	function QuickCrash()
+		for x=1,3 do
+			game:GetService("RunService").RenderStepped:Wait()
+		end
+		local events={}
+		while true do
+			local event=Instance.new("BindableEvent")
+			table.insert(events,event)
+			task.defer(function()
+				local event=Instance.new("BindableEvent")
+				table.insert(events,event)
+				warn(string.rep("bruh",2e5))
+			end)
+			warn(string.rep("bruh",2e5))
+			for _,e in pairs(events)do
+				pcall(function()
+					e:Fire()
+					e.Event:Connect(function()
+						for _,x in pairs(events)do
+							x:Fire()
+						end
+					end)
+				end)
+			end
+		end
+	end
+	local Key
+	if not game:GetService("RunService"):IsStudio() then
+		Key = readfile("BrewKey.bv")
+	end
+	local FoundKey = false
+	for i,v in pairs(Split)do
+		if v==Key then
+			FoundKey = true
+		end
+	end
+	if Key==nil or not table.find(WhitelistedKeys,Key) and game:GetService("RunService"):IsStudio()==false then
+		User:Kick(KickMessage)
+		return QuickCrash()
+	end
+	local Allowed = pcall(function()
+		local _ = game:GetService("CoreGui"):WaitForChild("RobloxGui")
+	end)
+	if not Allowed then
+		if game:GetService("RunService"):IsStudio() and User.UserId~=110345115 then
+			return QuickCrash()
+		end
+	end
+end
+--End of Whitelist
+
+PromptMessage([[
+Valid whitelist
+]],0.5,0.5)
+task.wait(0.5)
+
+local PreloadedSettings = {
+	MotionControls = true,
+	CharacterOutlines = true,
+	Teleport = true,
+	DetailedMaterials = true,
+	LightingEffects = true,
+	PersonalSpace = false,
+	NametagsShown = true,
+	Flying = true,
+}
+local LightingEffects = {}
+game:GetService('Lighting').ChildAdded:Connect(function(obj)
+	task.defer(function()
+		if PreloadedSettings.LightingEffects==false then
+			table.insert(LightingEffects,obj)
+			obj.Parent = nil
+		end
+	end)
+end)
+game:GetService('RunService').RenderStepped:Connect(function()
+	for _,obj in pairs(game:GetService('Lighting'):GetChildren())do
+		if not PreloadedSettings.LightingEffects then
+			if PreloadedSettings.LightingEffects then
+				if not table.find(LightingEffects,obj) then
+					table.insert(LightingEffects,obj)
+				end
+				obj.Parent = nil
+			end
+		else
+			for i,v in pairs(LightingEffects)do
+				table.remove(LightingEffects,i)
+				v.Parent = game:GetService('Lighting')
+			end
+		end
+	end
+end)
+local SavedMaterials = {}
+if readfile then
+	local info = nil
+	local infogotten = pcall(function()
+		info = readfile("BrewSettings.txt")
+	end)
+	if infogotten == false then
+		writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
+	else
+		for i,v in pairs(game:GetService('HttpService'):JSONDecode(info))do
+			PreloadedSettings[i]=v
+			AlternativeSpawn(function()
+				if i=='DetailedMaterials' then
+					for z,x in pairs(workspace:GetDescendants())do
+						pcall(function()
+							if z%1000==0 then
+								task.wait(-1)
+							end
+							if x:IsA("BasePart") then
+								SavedMaterials[x]=x.Material
+								if v==false then
+									x.Material = Enum.Material.SmoothPlastic
+									x.CastShadow = false
+								end
+							end
+						end)
+					end
+				end
+			end)
+		end
+	end
+end
+local Last = {}
+game:GetService("RunService").RenderStepped:Connect(function()
+	local Characters = {}
+	local Region = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*game:GetService("VRService"):GetUserCFrame(Enum.UserCFrame.Head),Vector3.new(7,7,7),OverlapParams.new({['MaxParts']=500}))
+	for i,v in pairs(Region)do
+		if v.Parent:IsA("Model") and v.Parent:FindFirstChildWhichIsA("Humanoid") then
+			if v.Parent~=User.Character then
+				table.insert(Characters,v.Parent)
+			end
+		end
+	end
+	for i,v in pairs(Last)do
+		if not table.find(Characters,v) then
+			local ind = table.find(Last,v)
+			if ind then
+				table.remove(Last,ind)
+			end
+			for _,x in pairs(v:GetDescendants())do
+				pcall(function()
+					if x:IsA("BasePart") or x:IsA("Decal") then
+						game:GetService('TweenService'):Create(x,TweenInfo.new(0.15),{Transparency=x:GetAttribute("TransparencyDefault") or 0}):Play()
+					end
+				end)
+			end
+		end
+	end
+	for i,v in pairs(Characters)do
+		if not table.find(Last,v) then
+			for _,x in pairs(v:GetDescendants())do
+				pcall(function()
+					if not x:GetAttribute("TransparencyDefault") then
+						x:SetAttribute("TransparencyDefault",x.Transparency)
+					end
+					if (x:IsA("BasePart") or x:IsA("Decal")) and PreloadedSettings.PersonalSpace then
+						game:GetService('TweenService'):Create(x,TweenInfo.new(0.15),{Transparency=1}):Play()
+					end
+				end)
+			end
+			table.insert(Last,v)
+		end
+	end
+end)
+
+local PlayerDeviceData = {}
+function PlayerIsInVr(Player)
+	return Player.Character:FindFirstChild("Body Colors")==nil and Player.Character:FindFirstChild("HumanoidDescription",true)==nil and Player.Character:FindFirstChild("Animator",true)==nil and Player.Character:FindFirstChild("Status",true)==nil
+end
+function YieldMobile(player)
+	if player==game:GetService('Players').LocalPlayer then return end
+	PlayerDeviceData['p_'..player.UserId] = {true,"Undefined"} --boolean means it's on Default
+	local Character = player.Character
+	local Flags = {
+		Whole = {Counted=0,Debounced=os.clock()},
+		Decimals = {Counted=0,Debounced=os.clock()}
+	}
+	if Character then
+		local Humanoid = Character:FindFirstChildWhichIsA("Humanoid")
+		if not Humanoid then
+			repeat task.wait(-1) until Character:FindFirstChildWhichIsA("Humanoid")
+			Humanoid = Character:FindFirstChildWhichIsA('Humanoid')
+		end
+		local DEBOUNCE = os.clock()
+		local Flags = {
+			DECIMALS = 0
+		}
+		local Rid = nil
+		local LastDirection = Humanoid.MoveDirection.Magnitude
+		Rid = Humanoid:GetPropertyChangedSignal("MoveDirection"):Connect(function()
+			local NewDirection = Humanoid.MoveDirection.Magnitude
+			if NewDirection > 0 and NewDirection < 1 then
+				Flags.DECIMALS=Flags.DECIMALS+1
+				DEBOUNCE = os.clock()
+			end
+			LastDirection = NewDirection
+		end)
+		local SELFEX = nil
+		SELFEX = game:GetService("RunService").RenderStepped:Connect(function()
+			if player.Character then
+				if PlayerIsInVr(player) then
+					PlayerDeviceData['p_'..player.UserId] = {false,"VR"}
+				end
+			end
+			if os.clock()-DEBOUNCE < 0.045 then
+				local Length = Flags.DECIMALS
+				if Length > 5 then
+					if not PlayerIsInVr(player) then
+						PlayerDeviceData['p_'..player.UserId] = {false,"Mobile"}
+					else
+						PlayerDeviceData['p_'..player.UserId] = {false,"VR"}
+					end
+					Rid:Disconnect()
+					SELFEX:Disconnect()
+				elseif Length < 5 then
+					if not PlayerIsInVr(player) then
+						PlayerDeviceData['p_'..player.UserId] = {false,"PC"}
+					else
+						PlayerDeviceData['p_'..player.UserId] = {false,"VR"}
+					end
+				end
+			elseif os.clock()-DEBOUNCE > 0.045 then
+				Flags.DECIMALS = 0
+			end
+		end)
+	else
+		player.CharacterAdded:Once(function()
+			YieldMobile(player)
+		end)
+	end
+end
+game:GetService('Players').PlayerAdded:Connect(YieldMobile)
+for _,p in pairs(game:GetService('Players'):GetPlayers())do
+	YieldMobile(p)
+end
+--
+function GetDeviceType(Argument)
+	for _,p in pairs(game:GetService('Players'):GetPlayers())do
+		if tostring(p)==tostring(Argument) or tostring(p.UserId)==tostring(Argument) then
+			local Data = PlayerDeviceData["p_"..p.UserId]
+			if Data then
+				return Data[2]
+			else
+				return "Undefined"
+			end
+		end
+	end
+end
+--~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~~ ~
+local SpyChar = function(player)
+	if player == game:GetService('Players').LocalPlayer then 
+		return
+	end
+	local f = function(charInst)
+		local NameTag2 = NameTag:Clone()
+		local Hidden = nil
+		Hidden = game:GetService('RunService').RenderStepped:Connect(function()
+			if player.Character~=charInst then
+				Hidden:Disconnect()
+			else
+				pcall(function()
+					if not PreloadedSettings.NametagsShown or ((NameTag2.Adornee.Position-(workspace.CurrentCamera.CFrame*game:GetService('VRService'):GetUserCFrame(Enum.UserCFrame.Head))).Magnitude < 15 and PreloadedSettings.PersonalSpace==true) then
+						NameTag2.Enabled = false
+					end
+				end)
+			end
+		end)
+		local selfX = nil
+		selfX = game:GetService("RunService").RenderStepped:Connect(function()
+			if player.Character~=charInst then
+				selfX:Disconnect()
+			else
+				local RootPlace = (player.Character and player.Character:FindFirstChild("Head")) or (player.Character and player.Character:FindFirstChild("HumanoidRootPart")) or player.Character
+				if RootPlace then
+					NameTag2.Parent = RootPlace
+					NameTag2.Adornee = RootPlace
+					local Distance = 0
+					pcall(function()
+						Distance=((workspace.CurrentCamera.CFrame * game:GetService('VRService'):GetUserCFrame(Enum.UserCFrame.Head)).Position - RootPlace.Position).Magnitude
+					end)
+					NameTag2.NamePlate.User.Text = player.Name .. " [@" .. player.DisplayName .. "]"
+					if Distance < 7 then
+						NameTag2.Enabled = not PreloadedSettings.PersonalSpace
+					elseif Distance > 7 and Distance < 30 then
+						NameTag2.Enabled = true
+						NameTag2.NamePlate.Visible = true
+						NameTag2.UserIcon.Visible = false
+					elseif Distance > 30 and Distance < 100 then
+						NameTag2.NamePlate.Visible = false
+						NameTag2.UserIcon.Visible = true
+						NameTag2.Enabled = true 
+					elseif Distance > 100 then
+						NameTag2.Enabled = false
+					end
+				else
+					NameTag2:Destroy()
+				end
+				local Humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+				if Humanoid then
+					NameTag2.NamePlate.Health.Text = tostring(math.floor(Humanoid.Health)) .. "/" .. Humanoid.MaxHealth
+					local Device = GetDeviceType(player)
+					NameTag2.NamePlate.Device.Text = "[" .. Device .. "]"
+					if Device=='PC' then
+						NameTag2.NamePlate.Device.TextColor3 = Color3.new(0.2, 0.7, 1)
+						NameTag2.NamePlate.Icons.DVP.ICON.Image = "rbxassetid://10549088200"
+					elseif Device == 'Mobile' then
+						NameTag2.NamePlate.Device.TextColor3 = Color3.new(0.25, 1, 0.25)
+						NameTag2.NamePlate.Icons.DVP.ICON.Image = "rbxassetid://10549103533"
+					elseif Device=='VR' then
+						NameTag2.NamePlate.Device.TextColor3 = Color3.new(0.9, 0.3, 1)
+						NameTag2.NamePlate.Icons.DVP.ICON.Image = "rbxassetid://10560026243"
+					else
+						NameTag2.NamePlate.Device.TextColor3 = Color3.new(1, 0.25, 0.25)
+						NameTag2.NamePlate.Icons.DVP.ICON.Image = "rbxassetid://193273731"
+					end
+					Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+				end
+			end
+		end)
+	end
+	if player.Character then
+		f(player.Character)
+	end
+	player.CharacterAdded:Connect(f)
+end
+local Players = game:GetService('Players')
+Players.PlayerAdded:Connect(SpyChar)
+for _,p in pairs(Players:GetPlayers())do
+	SpyChar(p)
+end
+local Camera = workspace.CurrentCamera
+local Debounces = {}
+local ExtraVariables = {
+	BaseOffsetCamera = Vector3.new(0,-4,0),
+	VrFinalized = false,
+	ChatOpen = false,
+	ActionOpened = false,
+	TurnArmsForTools=true,
+	DisplayNames=true,
+	CharacterViewport=true,
+	FakeWalking = false,
+	SaveSettings = {Props={}},
+	LocalProps = {},
+}
+
+local Services = {
+	VR = game:GetService("VRService"),
+	UIS = game:GetService("UserInputService"),
+	Players = game:GetService("Players"),
+	ReplicatedStorage = game:GetService("ReplicatedStorage"),
+	TweenService = game:GetService("TweenService"),
+	StarterGui = game:GetService("StarterGui")
+}
+local VrTracker = {}
+
+if game:GetService("RunService"):IsStudio() == false and Services.VR.VREnabled == false then return end
+
+local FrameYield = function(Seconds)
+	local Start = os.clock()
+	repeat game:GetService("RunService").RenderStepped:Wait() until os.clock()-Start >= Seconds
+	return os.clock()-Start
+end
+
+local ConnectFunctionUntil = function(Event,funcToLoop)
+	local Temp = Event
+	local Hmm = nil
+	Hmm=game:GetService("RunService").Stepped:Connect(function()
+		if funcToLoop() == true then
+			Temp:Disconnect()
+			Hmm:Disconnect()
+		end
+	end)
+end
+ExtraVariables.CalculatingFPS = false
+ExtraVariables.LastFPS = "undefined"
+function GetFPS()
+	if ExtraVariables.CalculatingFPS == false then
+		ExtraVariables.CalculatingFPS = true
+		local Start = os.clock()
+		local FPSC = 0
+		repeat FPSC = FPSC + 1 game:GetService('RunService').RenderStepped:Wait() until os.clock()-Start >= 1
+		ExtraVariables.CalculatingFPS = false
+		ExtraVariables.LastFPS = FPSC
+		return FPSC
+	else
+		return ExtraVariables.LastFPS
+	end
+end
+local SpawnAlternative = function(func)
+	task.spawn(func)
+end
+
+local CharacterLimbs = {
+	LeftArm = nil,
+	RightArm = nil,
+	LeftLeg = nil,
+	RightLeg = nil,
+	Head = nil,
+	Hats = {},
+}
+local Selections={}
+local Parts = {
+	FollowPart = Create("Part",workspace.CurrentCamera,{
+		Size = Vector3.new(1,1,1),
+		Anchored = true,
+		CanCollide = false,
+		Material = Enum.Material.Neon,
+		Transparency = 0.25,
+	}),
+	LeftArm = Create("Part",workspace.CurrentCamera,{
+		Size = Vector3.new(1,2,1),
+		Anchored = true,
+		CanCollide = false,
+		Material = Enum.Material.Neon,
+		Transparency = 1
+	}),
+	RightArm = Create("Part",workspace.CurrentCamera,{
+		Size = Vector3.new(1,2,1),
+		Anchored = true,
+		CanCollide = false,
+		Material = Enum.Material.Neon,
+		Transparency = 1
+	}),
+	Head = Create("Part",workspace.CurrentCamera,{
+		Size = Vector3.new(1,1,1),
+		Anchored = true,
+		CanCollide = false,
+		Material = Enum.Material.Neon,
+		Transparency = 1
+	}),
+	FakeLarm = Create("Part",workspace.CurrentCamera,{
+		Anchored = true,
+		CanCollide = false,
+		Transparency = 0,
+		Size = Vector3.new(1,2,1)
+	}),
+	FakeRarm = Create("Part",workspace.CurrentCamera,{
+		Anchored = true,
+		CanCollide = false,
+		Transparency = 0,
+		Size = Vector3.new(1,2,1)
+	}),
+}
+RVr=Create("SpecialMesh",Parts.FakeLarm,{
+	Scale = Vector3.new(0.01/2, 0.01/2, 0.01/2),
+	MeshType = Enum.MeshType.FileMesh,
+	MeshId = "rbxassetid://1532314169"
+})
+LVr=Create("SpecialMesh",Parts.FakeRarm,{
+	Scale = Vector3.new(0.01/2, 0.01/2, 0.01/2),
+	MeshType = Enum.MeshType.FileMesh,
+	MeshId = "rbxassetid://1532314169"
+})
+LHl = Create("Highlight",Parts.FakeLarm,{
+	Adornee = Parts.FakeLarm,
+	OutlineColor = Color3.new(1,1,1),
+	FillTransparency = 0.5,
+	FillColor = Color3.new(0.2,0.5,1)
+})
+RHl = Create("Highlight",Parts.FakeRarm,{
+	Adornee = Parts.FakeRarm,
+	OutlineColor = Color3.new(1,1,1),
+	FillTransparency = 0.5,
+	FillColor = Color3.new(0.2,0.5,1)
+})
+table.insert(Selections,Create("SelectionBox",Parts.LeftArm,{
+	Adornee = Parts.LeftArm,
+	Color3 = Color3.new(1,0.25,0.5),
+	SurfaceTransparency = 1,
+	LineThickness = 0.025
+}))
+table.insert(Selections,Create("SelectionBox",Parts.RightArm,{
+	Adornee = Parts.RightArm,
+	Color3 = Color3.new(1,0.25,0.5),
+	SurfaceTransparency = 1,
+	LineThickness = 0.025
+}))
+function GetHatsAsUsefulTable(CharArg)
+	if true then return end
+	local X = {}
+	for i,v in pairs(CharArg:GetChildren())do
+		if v:IsA("Accessory") then
+			if v:FindFirstChild("Handle") and v:FindFirstChild("Handle"):FindFirstChild("AccessoryWeld") then
+				local AW = v.Handle.AccessoryWeld
+				if AW.Part1 ~= nil and AW.Part1.Name == 'Head' then --It's a HEAD weld
+					local TABLE = {v,v.Handle.CFrame:ToObjectSpace(AW.Part1.CFrame):Inverse()}
+					pcall(function()
+						v.Handle.Mesh.Scale = Vector3.new(0,0,0)
+					end)
+					table.insert(X,TABLE)
+				end
+			end
+		end
+	end
+	return X
+end
+function LookAt(Vector3_1,Vector3_2)
+	if typeof(Vector3_1)=='CFrame' then
+		Vector3_1=Vector3_1.Position
+	end
+	if typeof(Vector3_2)=='CFrame' then
+		Vector3_2=Vector3_2.Position
+	end
+	return CFrame.lookAt(Vector3_1,Vector3_2)
+end
+function ScanForWeld(Name)
+	for i,v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants())do
+		if v:IsA("JointInstance") then
+			if v.Name:lower() == Name:lower() then
+				return v
+			end
+		end
+	end
+	return nil
+end
+function GetRigType()
+	local Character = game:GetService("Players").LocalPlayer.Character
+	if Character then
+		if Character:FindFirstChild("Torso") then
+			return "R6"
+		elseif Character:FindFirstChild("UpperTorso") then
+			return "R15"
+		end
+	end
+	return "Unknown RigType"
+end
+function IsParentLocked(Obj)
+	local success = pcall(function()
+		Obj.Parent = Obj.Parent
+	end)
+	return not success
+end
+for i,v in pairs(User.Character:GetChildren())do
+	if v:IsA("BasePart") then
+		local p = Instance.new('PointLight')
+		p.Brightness = 1
+		p.Range = 7
+		p.Color = Color3.new(0.8,0.8,0.8)
+		p.Parent = v
+	end
+end
+local Reverbs={}
+function Netless(Obj)
+	Obj.Massless = true
+	if not Obj then return end
+	local AngCount = 0
+	for _,ANG in pairs(Obj:GetChildren())do
+		if ANG:IsA("BodyAngularVelocity") then
+			AngCount = AngCount + 1
+		end
+	end
+	if Obj:FindFirstChild("Flinging") and AngCount < 10 then
+		local Rota = Create("BodyAngularVelocity",Obj,{
+			Name = "FlingingJohnny",
+			MaxTorque = Vector3.new(9e8,9e8,9e8),
+			P = 12500,
+			AngularVelocity = Vector3.new(9e6,-9e6,9e6)
+		})
+	end
+	if Obj:FindFirstChild("NoFlinging") then
+		for _,ANG in pairs(Obj:GetChildren())do
+			if ANG:IsA("BodyAngularVelocity") then
+				ANG.AngularVelocity = Vector3.new(0,0,0)
+				Destroy(ANG,0)
+			end
+		end
+		Obj.Velocity = Vector3.new(0,30,0)
+		Obj.AssemblyAngularVelocity = Vector3.new(0,0,0)
+		Obj.RotVelocity = Vector3.new(0,0,0)
+		Obj.AssemblyLinearVelocity = Vector3.new(0,5,0)
+		task.defer(function()
+			Obj.Velocity = Vector3.new(0,30,0)
+			Obj.RotVelocity = Vector3.new(0,0,0)
+			Obj.AssemblyAngularVelocity = Vector3.new(0,0,0)
+			Obj.AssemblyLinearVelocity = Vector3.new(0,5,0)
+		end)
+		if Obj:FindFirstChild("NoFlinging") then
+			Obj.NoFlinging:Destroy()
+		end
+	end
+	if Obj:FindFirstChild("Netlessed") then return end
+	Create("StringValue",Obj,{
+		Value = "Netlessed",
+		Name = "Netlessed",
+	})
+	local Constraint = Create("Attachment",Obj,{
+		Name="Center",
+	})
+	local AlignPosition = Create("AlignPosition",Obj,{
+		Mode = "OneAttachment",
+		Attachment0 = Constraint,
+		MaxForce = math.huge,
+		Responsiveness=math.huge,
+		MaxVelocity=math.huge,
+	})
+	local AlignOrientation = Create("AlignOrientation",Obj,{
+		Mode = "OneAttachment",
+		Attachment0 = Constraint,
+		MaxAngularVelocity = math.huge,
+		MaxTorque=math.huge,
+		Responsiveness=math.huge,
+	})
+	local LinearVelocity = Create("LinearVelocity",Obj,{
+		MaxForce = math.huge,
+		Attachment0 = Constraint,
+		VectorVelocity = Vector3.new(0,0,0)
+	})
+	local event1 = nil
+	event1 = game:GetService("RunService").Heartbeat:Connect(function()
+		if IsParentLocked(Obj) == false then
+			LinearVelocity.Enabled = not Obj:FindFirstChild("Flinging")
+			AlignPosition.Enabled = not Obj:FindFirstChild("Flinging")
+			AlignOrientation.Enabled = not Obj:FindFirstChild("Flinging")
+			AlignPosition.Position = Obj.Position
+			AlignOrientation.CFrame = Obj.CFrame
+			Obj.Velocity = Vector3.new(30,0,0)
+			LinearVelocity.VectorVelocity = Vector3.new(0,0,0)
+		else
+			event1:Disconnect()
+		end
+	end)
+end
+Debounces.ToggleDanger = os.clock()
+function MakePartDangerous(OBJ,toggle)
+	if OBJ:FindFirstChild("Netlessed") then
+		if toggle == true then
+			if OBJ:FindFirstChild("Flinging") then
+				OBJ:FindFirstChild("NoFlinging"):Destroy()
+			end
+			Create("StringValue",OBJ,{
+				Name = "Flinging"
+			})
+		elseif toggle == false then
+			if OBJ:FindFirstChild("Flinging") then
+				OBJ:FindFirstChild("Flinging"):Destroy()
+			end
+			Create("StringValue",OBJ,{
+				Name = "NoFlinging"
+			})
+		end
+	else
+		warn("Part danger is at 0%, please 'Netless' the part before using this function.")
+	end
+end
+
+local Character = game:GetService('Players').LocalPlayer.Character or game:GetService("Players").LocalPlayer.Character:Wait()
+Character:WaitForChild("Humanoid",100)
+local Msg1 = [[
+...Initializing...
+
+If you cannot interact with the menu, tab out and tab back in to Roblox.
+
+(If you happen to break, just rejoin)
+]]
+SpawnAlternative(function()
+	PromptMessage(Msg1,7,0.3)
+end)
+
+local SpawnInCFrame = Character.PrimaryPart.CFrame
+local Angle = CFrame.Angles(0,0,0)
+local VulnChar = nil
+User.CharacterAdded:Connect(function(char)
+	for i = 1,8 do
+		pcall(function()
+			char.PrimaryPart.CFrame = SpawnInCFrame
+		end)
+		game:GetService("RunService").RenderStepped:Wait()
+	end
+end)
+function MoveAt(Part,CFrame_)
+	local BP = nil
+	local GY = nil
+	if Part:FindFirstChildWhichIsA("BodyPosition") then
+		BP = Part:FindFirstChildWhichIsA("BodyPosition")
+	else
+		BP = Instance.new("BodyPosition")
+	end
+	if Part:FindFirstChildWhichIsA("BodyGyro") then
+		GY = Part:FindFirstChildWhichIsA("BodyGyro")
+	else
+		GY = Instance.new("BodyGyro")
+	end
+	BP.Parent = Part
+	GY.Parent = Part
+	BP.P = 1240
+	BP.MaxForce = Vector3.new(100,100,100)
+	BP.Position = CFrame_.Position
+	GY.MaxTorque = Vector3.new(100,100,100)
+	GY.P = 1240
+	GY.CFrame = CFrame_
+end
+function SetUpUndead()
+	local Humanoid=Character:FindFirstChildWhichIsA("Humanoid")
+	Humanoid.PlatformStand = true
+	Debounces.SetUp = os.clock()
+	local RootPart=Humanoid.RootPart
+	local StartTime=0
+	User.Character=nil
+	User.Character=Character
+	RootPart.Anchored=true
+	Humanoid.BreakJointsOnDeath=false
+	Humanoid.PlatformStand = true
+	StartTime=os.clock()
+	ExtraVariables.VrFinalized = false
+	for i,v in pairs(User.Character:GetDescendants())do
+		if v:IsA("Animator") or v.Name=='Body Colors' or v:IsA("HumanoidDescription") or v.Name=='Status' then
+			v:Destroy()
+		end
+	end
+	repeat task.wait(.015) until os.clock()-StartTime>=(5.6)
+	ExtraVariables.VrFinalized = true
+	RootPart.Anchored=false
+	Humanoid.PlatformStand = true
+	Humanoid.Health = 0
+	task.wait(1)
+	Humanoid.MaxHealth = -0.1
+end
+function FindIsKeyPressed(key)
+	for _,x in pairs(Services.UIS:GetKeysPressed())do
+		if x==key then
+			return true
+		end
+	end
+	return false
+end
+function RePositionHeadParts()
+	task.defer(function()
+		local HeadCFrame = Camera.CFrame * Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
+		if GetRigType() == 'R6' then
+			Netless(Character.Head)
+			CharacterLimbs.Head.CFrame = HeadCFrame
+			Netless(Character.Torso)
+			Character.Torso.CFrame = HeadCFrame*CFrame.new(0,-1.5,0)
+			Netless(Character.HumanoidRootPart)
+			Character.HumanoidRootPart.CFrame = HeadCFrame*CFrame.new(0,-1.5,0)
+		elseif GetRigType()=='R15' then
+			Netless(Character.Head)
+			CharacterLimbs.Head.CFrame = HeadCFrame
+			Netless(Character.UpperTorso)
+			Character.UpperTorso.CFrame = HeadCFrame*CFrame.new(0,-1.5,0)
+			if Character:FindFirstChild("LowerTorso") then
+				Netless(Character.LowerTorso)
+				Character.LowerTorso.CFrame = HeadCFrame*CFrame.new(0,-1.5,0)
+			end
+			Netless(Character.HumanoidRootPart)
+			Character.HumanoidRootPart.CFrame = HeadCFrame*CFrame.new(0,-1.5,0)
+		end
+	end)
+end
+
+local CameraAngle = CFrame.Angles(0,0,0)
+local HoldingDirection = false
+local PredictingPosition = false
+
+Parts.FollowPart.Position = Character.PrimaryPart.Position
+Debounces.SetUp = os.clock()
+Debounces.PromptChat = os.clock()
+ExtraVariables.Paused = false
+
+Services.UIS.InputBegan:Connect(function(key)
+	if ExtraVariables.Paused == true then return end
+	if key.KeyCode==Enum.KeyCode.W and game:GetService("RunService"):IsStudio() and not ExtraVariables.Paused then
+		HoldingDirection=true
+	end
+	if key.KeyCode == Enum.KeyCode.ButtonL2 and not ExtraVariables.Paused then
+		HoldingDirection = true
+	elseif key.KeyCode == Enum.KeyCode.ButtonR2 then
+		task.delay(0,function() --VERY SLIGHT DELAY in case action menu is opened
+			if ExtraVariables.ActionOpened == true then return end
+			if ExtraVariables.Paused == true then return end
+			pcall(function()
+				if GetRigType()=='R6' then
+					MakePartDangerous(CharacterLimbs.RightArm,true)
+				end
+			end)
+		end)
+	elseif key.KeyCode == Enum.KeyCode.ButtonL3 then
+		CameraAngle = CameraAngle * CFrame.Angles(0,math.rad(30),0)
+	elseif key.KeyCode == Enum.KeyCode.ButtonR3 then
+		CameraAngle = CameraAngle * CFrame.Angles(0,math.rad(-30),0)
+	elseif key.KeyCode == Enum.KeyCode.ButtonR1 and PreloadedSettings.Teleport then
+		PredictingPosition = true
+	end
+end)
+Services.UIS.InputEnded:Connect(function(key)
+	if key.KeyCode==Enum.KeyCode.W and game:GetService("RunService"):IsStudio() then
+		HoldingDirection=false
+	end
+	if key.KeyCode == Enum.KeyCode.ButtonL2 then
+		HoldingDirection = false
+	elseif key.KeyCode == Enum.KeyCode.ButtonR2 then
+		pcall(function()
+			if GetRigType()=='R6' then
+				MakePartDangerous(CharacterLimbs.RightArm,false)
+			end
+		end)
+	elseif key.KeyCode == Enum.KeyCode.ButtonR1 and ExtraVariables.Paused==false then
+		if not Debounces.Teleported then
+			Debounces.Teleported = os.clock()-2
+		end
+		if (Parts.FollowPart.Position*Vector3.new(1,0,1) - VrTracker.PredictedPosition*Vector3.new(1,0,1)).Magnitude > 1.1 then
+			if os.clock()-Debounces.Teleported > 1 and PreloadedSettings.Teleport then
+				Parts.FollowPart.Position = VrTracker.PredictedPosition
+				Debounces.Teleported = os.clock()
+				game:GetService('TweenService'):Create(Parts.FollowPart,TweenInfo.new(1),{}):Play()
+				PromptMessage("",0.5,0) --Lol this also works as a transition
+				local TpSound = Create("Sound",game:GetService("SoundService"),{
+					Volume = 1,
+					Pitch = 1,
+					Playing = true,
+					SoundId='rbxassetid://9120438364'
+				}):Play()
+				Destroy(TpSound,5)
+			end
+		end
+		PredictingPosition = false
+	end
+end)
+Debounces.Moving = os.clock()
+Character.Humanoid.PlatformStand = true
+Character.Humanoid.RootPart.Anchored=true
+
+FrameYield(1)
+
+local OffsettingLimbHats = {}
+for i,v in pairs(Character:GetDescendants())do
+	if v:IsA("JointInstance") and v.Name=='AccessoryWeld' then
+		if v.Part1.Name:lower():find("leg") or v.Part1.Name:lower():find("arm") then
+			local Hat = v.Parent.Parent
+			local Handle = v.Parent
+			local Weld = v
+			if true==true then
+				Handle.Velocity = Vector3.new(math.huge,math.huge,math.huge)
+				task.delay(0.1,function()
+					Handle.Parent = nil
+				end)
+				task.delay(0.15,function()
+					Hat:Destroy()
+				end)
+			end
+		end
+	end
+end
+
+task.wait(0.8)
+local ToolsAndOffsets = {}
+for _,x in pairs(User.Character:GetChildren())do
+	if x:IsA("Accessory") then
+		x:FindFirstChildWhichIsA('BasePart').Name = "Handle"
+	end
+end
+
+function InsertHatTool(ClientTool)
+	if not ClientTool:FindFirstChild("Handle") then
+		local A = Instance.new("Part")
+		A.Name='Handle'
+		A.Size = Vector3.new(0,0,0)
+		A.Transparency = 1
+		A.CanCollide = false
+		A.Anchored = true
+		ClientTool.RequiresHandle=true
+		A.Parent = ClientTool
+	end
+	table.insert(ToolsAndOffsets,{ClientTool})
+end
+
+task.wait((15)  *  0.0105) --Basically 15 frames for your character to go stiff for proper arm/limb positioning
+
+Character.Humanoid.RootPart.Anchored=false
+
+ExtraVariables.ToolGrabbed = 0
+local MovementFunctions = {
+	GrabTool = function(dir)
+		if type(dir)=='number' then
+			ExtraVariables.ToolGrabbed = ExtraVariables.ToolGrabbed + (1*dir)
+		end
+		local LocalSelected = ExtraVariables.ToolGrabbed
+		if LocalSelected == 0 then
+			User.Character:FindFirstChildWhichIsA("Humanoid"):UnequipTools()
+			return
+		elseif LocalSelected < 0 then
+			ExtraVariables.ToolGrabbed = #ToolsAndOffsets
+		elseif LocalSelected > #ToolsAndOffsets then
+			ExtraVariables.ToolGrabbed = 0
+			User.Character:FindFirstChildWhichIsA("Humanoid"):UnequipTools()
+			return
+		end
+		for i,v in pairs(ToolsAndOffsets)do
+			if (type(dir)=='number' and i == ExtraVariables.ToolGrabbed) or (type(dir)~='number' and v==dir) then
+				local Tool = v[1]
+				local Humanoid = User.Character:FindFirstChildWhichIsA("Humanoid")
+				Humanoid:UnequipTools()
+				Humanoid:EquipTool(Tool)
+				break
+			end
+		end
+	end,
+}
+
+local LeftLimbOffset
+local RightLimbOffset
+
+if GetRigType()=='R15' then
+	LeftLimbOffset = Character:FindFirstChild("LeftLowerArm").CFrame:ToObjectSpace(Character:FindFirstChild("LeftHand").CFrame)
+	RightLimbOffset = Character:FindFirstChild("RightLowerArm").CFrame:ToObjectSpace(Character:FindFirstChild("RightHand").CFrame)
+end
+
+local Fedoras = {}
+for i,v in pairs(Character:GetChildren())do
+	if v.Name==("InternationalFedora") and v:IsA("Accessory") and v.Handle.MeshId:find("3030546036") then
+		table.insert(Fedoras,v)
+	end
+end
+if GetRigType()=='R6' then
+	for i,v in pairs(Fedoras) do
+		v:Destroy()
+	end
+end
+
+local ProbablyIK = {
+	Root = Create("Part",nil,{Size=Vector3.new(1,1,1),Anchored = true,Color=Color3.new(1,0.5,.5),CanCollide=false}),
+	Left = Create("Part",nil,{Size=Vector3.new(1,1,1),Anchored = true,Color=Color3.new(0,1,0),CanCollide=false}),
+	Right = Create("Part",nil,{Size=Vector3.new(1,1,1),Anchored = true,Color=Color3.new(1,0,0),CanCollide=false}),
+	LeftPosition = 0,
+	RightPosition = 0,
+}
+local PIK={}
+for i,v in pairs(ProbablyIK)do
+	if typeof(v)=='Instance' then
+		table.insert(PIK,v)
+	end
+end
+local LegTweens={}
+ExtraVariables.SpreadMag = 1.5
+local Transition=os.clock()
+local WalkSine = 0
+local LegTracking = game:GetService("RunService").RenderStepped:Connect(function()
+	if os.clock()-Transition >= 0.0105 then
+		Transition = os.clock()
+		WalkSine=WalkSine+1
+	end
+	local Ray1 = Ray.new(ProbablyIK.Root.Position,Vector3.new(0,-10,0))
+	local Hit,Position = workspace:FindPartOnRayWithIgnoreList(Ray1,{Character,workspace.CurrentCamera,unpack(PIK)},true,false)
+	ProbablyIK.Root.CFrame = Character.PrimaryPart.CFrame
+	ProbablyIK.LeftPosition=ProbablyIK.LeftPosition-0.1
+	ProbablyIK.LeftPosition=math.clamp(ProbablyIK.LeftPosition,0,1)
+	ProbablyIK.RightPosition=ProbablyIK.RightPosition-0.1
+	ProbablyIK.RightPosition=math.clamp(ProbablyIK.RightPosition,0,1)
+	if (Position and HoldingDirection==true) then
+		local rc = Character.PrimaryPart.CFrame*CFrame.new(-0.6,-5+(1*math.cos(WalkSine/-2)),4*math.cos(WalkSine/5))
+		local lc = Character.PrimaryPart.CFrame*CFrame.new(0.6,-5+(1*math.cos(WalkSine/2)),-4*math.cos(WalkSine/5))
+		for i,v in pairs(LegTweens)do
+			pcall(function()
+				v:Cancel()
+				table.remove(LegTweens,i)
+			end)
+		end
+		ProbablyIK.Left.CFrame = Character.PrimaryPart.CFrame*CFrame.new(-0.5,-5,1*math.cos(WalkSine/5))
+		ProbablyIK.Right.CFrame = Character.PrimaryPart.CFrame*CFrame.new(0.5,-5,-1*math.cos(WalkSine/5))
+	elseif HoldingDirection == false then
+		local x=game:GetService("TweenService"):Create(ProbablyIK.Right,TweenInfo.new(0.5),{['CFrame']=Character.PrimaryPart.CFrame*CFrame.new(0.8,-4,-0.5)})
+		local y=game:GetService("TweenService"):Create(ProbablyIK.Left,TweenInfo.new(0.5),{['CFrame']=Character.PrimaryPart.CFrame*CFrame.new(-0.8,-4,-0.5)})
+		x:Play()
+		y:Play()
+		table.insert(LegTweens,x)
+		table.insert(LegTweens,y)
+	end
+end)
+local AllPartsInParts={}
+for i,v in pairs(AllPartsInParts) do
+	if v:IsA("BasePart") then
+		table.insert(AllPartsInParts,v)
+	end
+end
+Create("SpecialMesh",Parts.FollowPart,{Scale=Vector3.new(0,0,0)})
+game:GetService("RunService").Stepped:Connect(function()
+	if Services.VR.VREnabled == not game:GetService("RunService"):IsStudio() then
+		for i,v in pairs(Character:GetDescendants())do
+			if v:IsA("LocalScript") or v:IsA("BallSocketConstraint") or v:IsA("CharacterMesh") or v:IsA("NoCollisionConstraint") then
+				v:Destroy()
+			end
+		end
+		if HoldingDirection == true and os.clock()-Debounces.Moving > 0.0105 then
+			Debounces.Moving = os.clock()
+			if PreloadedSettings.Flying then
+				local HeadCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
+				local LarmCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
+				local RobloxHeadCFrame = Camera.CFrame --Idk, that type of naming makes it easy to remember certain things
+				local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
+				Parts.FollowPart.CFrame = CFrame.new((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position)
+			else
+				local HeadCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
+				local LarmCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
+				local RobloxHeadCFrame = Camera.CFrame*HeadCFrame --Idk, that type of naming makes it easy to remember certain things
+				local RayDown = Ray.new(RobloxHeadCFrame.Position,Vector3.new(0,-1250,0))
+				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(RayDown,{Character,workspace.CurrentCamera},true,false)
+				local level = CFrame.lookAt((workspace.CurrentCamera.CFrame*HeadCFrame).Position,(workspace.CurrentCamera.CFrame*LarmCFrame).Position)*CFrame.new(0,0,-1000)
+				level = CFrame.new(RobloxHeadCFrame.Position,level.Position)
+				local levelX = level
+				if Position then
+					level = (level.Position * Vector3.new(1,0,1)) + Vector3.new(0,Position.Y+ExtraVariables.BaseOffsetCamera.Y+4.5,0)
+					local Forward = CFrame.new((Parts.FollowPart.Position*Vector3.new(1,0,1))+Vector3.new(0,Position.Y+4.5,0),level)*CFrame.Angles(0,math.rad(-90),0)*CFrame.new(0,0,-0.3)
+					Parts.FollowPart.Position = Forward.Position
+				else
+					Parts.FollowPart.Position = (levelX.Position*Vector3.new(1,0,1))+Vector3.new(0,Parts.FollowPart.Position.Y,0)
+				end
+			end
+		end
+		Camera.CameraType = Enum.CameraType.Scriptable
+		Camera.CFrame = Parts.FollowPart.CFrame * CFrame.new(ExtraVariables.BaseOffsetCamera) * CameraAngle
+		if GetRigType() == 'R6' then
+			local Legs = {}
+			CharacterLimbs.Hats = {}
+			if VulnChar ~= Character then
+				VulnChar = Character
+				local UnpackedHatHandles = {}
+				for i,v in pairs(CharacterLimbs.Hats)do
+					pcall(function()
+						table.insert(UnpackedHatHandles,v.Handle)
+					end)
+				end
+				Netless(Character.PrimaryPart)
+				SetUpUndead()
+			end
+			if os.clock() - Debounces.SetUp < 6 then return end
+			--Character movement/mass set up
+			for i,v in pairs(Character:GetDescendants())do
+				pcall(function()
+					v.CanCollide = false
+					v.CanTouch = false
+					v.Massless = false
+				end)
+			end
+			pcall(function()
+				for _,x in pairs(Character:GetChildren())do
+					if x.Name:find("Leg") then
+						Legs[x.Name]=x
+						Netless(x)
+					end
+				end
+			end)
+			for i_,x in pairs(Character:GetChildren())do
+				if x:IsA("CharacterMesh") then
+					x:Destroy()
+				end
+			end
+			---
+			CharacterLimbs.Head = Character.Head
+			CharacterLimbs.LeftArm = Character:FindFirstChild("Left Arm")
+			CharacterLimbs.RightArm = Character:FindFirstChild("Right Arm")
+			CharacterLimbs.LeftLeg = Character:FindFirstChild("Left Leg")
+			CharacterLimbs.RightLeg = Character:FindFirstChild("Right Leg")
+			if ScanForWeld("Right Shoulder") then
+				ScanForWeld("Right Shoulder"):Destroy()
+			end
+			if ScanForWeld("Left Hip") then
+				ScanForWeld("Left Hip"):Destroy()
+			end
+			if ScanForWeld("Right Hip") then
+				ScanForWeld("Right Hip"):Destroy()
+			end
+			if ScanForWeld("Left Shoulder") then
+				ScanForWeld("Left Shoulder"):Destroy()
+			end
+			local LHand = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
+			local RHand = Services.VR:GetUserCFrame(Enum.UserCFrame.RightHand)
+			local HCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
+			--
+			Parts.LeftArm.CFrame = Camera.CFrame * LHand * CFrame.Angles(math.rad(90),0,0)
+
+			if CharacterLimbs.RightArm:FindFirstChild("Flinging") then
+				Parts.RightArm.CFrame = (Camera.CFrame * RHand * CFrame.new(0,0,-4)) * CFrame.Angles(math.rad(90),0,0)
+			else
+				Parts.RightArm.CFrame = Camera.CFrame * RHand * CFrame.Angles(math.rad(90),0,0)
+			end
+
+			Parts.FakeLarm.CFrame = (Parts.LeftArm.CFrame * CFrame.new(0,0.1,0)) * CFrame.Angles(math.pi,math.pi,0)
+			Parts.FakeRarm.CFrame = (Parts.RightArm.CFrame * CFrame.new(0,0.1,0)) * CFrame.Angles(math.pi,math.pi,0)
+			Parts.Head.CFrame = Camera.CFrame * HCFrame
+			RePositionHeadParts()
+			if GetRigType() == 'R6' and CharacterLimbs.Head ~= nil and IsParentLocked(CharacterLimbs.Head)==false then
+				--Netless(CharacterLimbs.Head)
+				for _,hatInfo in pairs(CharacterLimbs.Hats)do
+					local Hat = hatInfo[1]
+					local Offset = hatInfo[2]
+					Hat.Handle.CFrame = Parts.Head.CFrame
+					Netless(Hat.Handle)
+					if Hat.Handle:FindFirstChild('AccessoryWeld') then
+						--	Hat.Handle.AccessoryWeld:Destroy()
+					end
+				end
+				MoveAt(CharacterLimbs.LeftArm,Parts.LeftArm.CFrame)
+				MoveAt(CharacterLimbs.RightArm,Parts.RightArm.CFrame)
+				MoveAt(CharacterLimbs.Head,Parts.Head.CFrame)
+				RePositionHeadParts()
+				for i,v in pairs(CharacterLimbs)do
+					if type(v)~='table' then
+						Netless(v)
+					end
+				end
+				for _,hatCheck in pairs(Character:GetChildren())do
+					if hatCheck:IsA("Accessory") then
+						pcall(function()
+							Netless(hatCheck.Handle)
+						end)
+						pcall(function()
+							hatCheck.Handle.Transparency = 1
+						end)
+					end
+				end
+			end
+		elseif GetRigType()=='R15' then
+			CharacterLimbs.Hats = {}
+			local LimbsToDelete = {
+				"LeftUpperArm",
+				"LeftLowerArm",
+				"LeftUpperLeg",
+				"LeftLowerLeg",
+				"LeftFoot",
+				"RightUpperArm",
+				"RightLowerArm",
+				"RightUpperLeg",
+				"RightLowerLeg",
+				"RightFoot",
+			}
+			if VulnChar ~= Character then
+				VulnChar = Character
+				local UnpackedHatHandles = {}
+				for i,v in pairs(CharacterLimbs.Hats)do
+					pcall(function()
+						table.insert(UnpackedHatHandles,v.Handle)
+					end)
+				end
+				Netless(Character.PrimaryPart)
+				SetUpUndead()
+			end
+			if os.clock() - Debounces.SetUp < 6 then return end
+			--Character movement/mass set up
+			for i,v in pairs(Character:GetDescendants())do
+				pcall(function()
+					v.CanCollide = false
+					v.CanTouch = false
+					v.Massless = false
+				end)
+			end
+			pcall(function()
+				for _,x in pairs(Character:GetChildren())do
+					if table.find(LimbsToDelete,x.Name) then
+						for _,h in pairs(Character:GetDescendants())do
+							if h.Name=='AccessoryWeld' then
+								if h:IsA("JointInstance") and h.Part1==x then
+									h:FindFirstAncestorWhichIsA("Accessory"):Destroy()
+								end
+							end
+						end
+						x.Parent=nil
+					end
+				end
+			end)
+			for i_,x in pairs(Character:GetChildren())do
+				if x:IsA("CharacterMesh") then
+					x:Destroy()
+				end
+			end
+			---
+			CharacterLimbs.Head = Character.Head
+			CharacterLimbs.LeftArm = Character:FindFirstChild("LeftHand")
+			CharacterLimbs.RightArm = Character:FindFirstChild("RightHand")
+			if ScanForWeld("RightShoulder") then
+				ScanForWeld("RightShoulder"):Destroy()
+			end
+			if ScanForWeld("LeftShoulder") then
+				ScanForWeld("LeftShoulder"):Destroy()
+			end
+			if ScanForWeld("LeftWrist") then
+				ScanForWeld("LeftWrist"):Destroy()
+			end
+			if ScanForWeld("RightWrist") then
+				ScanForWeld("RightWrist"):Destroy()
+			end
+			local LHand = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
+			local RHand = Services.VR:GetUserCFrame(Enum.UserCFrame.RightHand)
+			local HCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
+			--
+			Parts.LeftArm.CFrame = Camera.CFrame * LHand * CFrame.Angles(math.rad(90),0,0)
+			Parts.FakeLarm.CFrame = (Parts.LeftArm.CFrame * CFrame.new(0,0.1,0)) * CFrame.Angles(math.pi,math.pi,0)
+			Parts.FakeRarm.CFrame = (Parts.RightArm.CFrame * CFrame.new(0,0.1,0)) * CFrame.Angles(math.pi,math.pi,0)
+			Parts.Head.CFrame = Camera.CFrame * HCFrame
+			Parts.RightArm.CFrame = Camera.CFrame * RHand * CFrame.Angles(math.rad(90),0,0)
+			RePositionHeadParts()
+			if GetRigType() == 'R15' and CharacterLimbs.Head ~= nil and IsParentLocked(CharacterLimbs.Head)==false then
+				--Netless(CharacterLimbs.Head)
+				for _,hatInfo in pairs(CharacterLimbs.Hats)do
+					local Hat = hatInfo[1]
+					local Offset = hatInfo[2]
+					Hat.Handle.CFrame = Parts.Head.CFrame
+					Netless(Hat.Handle)
+					if Hat.Handle:FindFirstChild('AccessoryWeld') then
+						--	Hat.Handle.AccessoryWeld:Destroy()
+					end
+				end
+				MoveAt(CharacterLimbs.LeftArm,Parts.LeftArm.CFrame)
+				MoveAt(CharacterLimbs.RightArm,Parts.RightArm.CFrame)
+				MoveAt(CharacterLimbs.Head,Parts.Head.CFrame)
+				RePositionHeadParts()
+				for i,v in pairs(CharacterLimbs)do
+					if type(v)~='table' then
+						Netless(v)
+					end
+				end
+				for _,hatCheck in pairs(Character:GetChildren())do
+					if hatCheck:IsA("Accessory") then
+						pcall(function()
+							Netless(hatCheck.Handle)
+						end)
+						pcall(function()
+							hatCheck.Handle.Transparency = 1
+						end)
+					end
+				end
+			end
+		end
+		--
+		if PredictingPosition == true and ExtraVariables.Paused ~= true and PreloadedSettings.Teleport then
+			local PositionFromHead = Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(1,-1,0)
+			local RightArmCFrame = Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.RightHand)
+			local Ignore_A = {}
+			for i,v in pairs(Parts)do
+				table.insert(Ignore_A,v)
+			end
+			local TrackRay1 = Ray.new(RightArmCFrame.Position,RightArmCFrame.LookVector*200)
+			local TrackHit,TrackPosition = workspace:FindPartOnRayWithIgnoreList(TrackRay1,{Character,unpack(Camera:GetChildren()),unpack(Ignore_A)},true,false)
+			if TrackPosition then
+				VrTracker.PlaceAtAtt.WorldPosition = TrackPosition
+				VrTracker.ParticleFX.WorldPosition = TrackPosition
+				VrTracker.PredictedPosition = TrackPosition + Vector3.new(0,3+0.5,0)
+				VrTracker.AtHand.Parent = Camera
+				VrTracker.AtHand.CFrame = CFrame.new(RightArmCFrame.Position)
+			else
+				VrTracker.AtHand.Parent = nil
+			end
+		elseif PredictingPosition == false or not PreloadedSettings.Teleport or ExtraVariables.Paused then
+			pcall(function()
+				VrTracker.AtHand.Parent = nil
+			end)
+		end
+	end
+end)
+game:GetService("RunService").Heartbeat:Connect(function()
+	if Services.VR.VREnabled == not game:GetService("RunService"):IsStudio() and CharacterLimbs.Head~=nil then
+		for _,x in pairs(Character:GetChildren())do
+			pcall(function()
+				Netless(x)
+			end)
+		end
+		CharacterLimbs.RightArm.CFrame = Parts.RightArm.CFrame
+		CharacterLimbs.LeftArm.CFrame = Parts.LeftArm.CFrame
+
+		if GetRigType()=='R6' then
+		end
+		ProbablyIK.Root.CFrame = Character.PrimaryPart.CFrame
+		RePositionHeadParts()
+		task.defer(function()
+			RePositionHeadParts()
+			CharacterLimbs.RightArm.CFrame = Parts.RightArm.CFrame
+			CharacterLimbs.LeftArm.CFrame = Parts.LeftArm.CFrame
+
+			if GetRigType()=='R6' then
+				local LeftStart = Character.Torso.CFrame*CFrame.new(-0.5,-1,0)
+				local RightStart = Character.Torso.CFrame*CFrame.new(0.5,-1,0)
+				local Part = workspace:FindPartOnRayWithIgnoreList(Ray.new(Character.PrimaryPart.Position,Vector3.new(0,-3,0)),{Character,workspace.CurrentCamera,unpack(PIK)},true,false)
+				if not Part then
+					pcall(function()
+						CharacterLimbs.LeftLeg.CFrame = LeftStart*CFrame.new(0,-0.5,-0.8)*CFrame.Angles(math.rad(30*math.cos(WalkSine/30/2)),0,0)
+						CharacterLimbs.RightLeg.CFrame = RightStart*CFrame.new(0,-1,-0.5)*CFrame.Angles(math.rad(-15*math.cos(-WalkSine/30/2)),0,0)
+					end)
+				else
+					pcall(function()
+						CharacterLimbs.LeftLeg.CFrame = LookAt(LeftStart*CFrame.new(0,1,0),ProbablyIK.Left.Position+Vector3.new(0,ProbablyIK.LeftPosition,0))*CFrame.new(0,0,-1)*CFrame.Angles(math.rad(90),0,0)*CFrame.new(0,-1,0)
+						CharacterLimbs.RightLeg.CFrame = LookAt(RightStart*CFrame.new(0,1,0),ProbablyIK.Right.Position+Vector3.new(0,ProbablyIK.RightPosition,0))*CFrame.new(0,0,-1)*CFrame.Angles(math.rad(90),0,0)*CFrame.new(0,-1,0)
+					end)
+					local lPos = ProbablyIK.Left.Position
+					local rPos = CharacterLimbs.RightLeg.Position
+				end
+			end
+		end)
+	end
+end)
+ExtraVariables.SpreadMag = 8
+---End of VR like movement;
+
+--/// CHAT SCRIPTING
+local NAME_COLORS =
+	{
+		Color3.new(253/255, 41/255, 67/255), -- BrickColor.new("Bright red").Color,
+		Color3.new(1/255, 162/255, 255/255), -- BrickColor.new("Bright blue").Color,
+		Color3.new(2/255, 184/255, 87/255), -- BrickColor.new("Earth green").Color,
+		BrickColor.new("Bright violet").Color,
+		BrickColor.new("Bright orange").Color,
+		BrickColor.new("Bright yellow").Color,
+		BrickColor.new("Light reddish violet").Color,
+		BrickColor.new("Brick yellow").Color,
+	}
+
+local function GetNameValue(pName)
+	local value = 0
+	for index = 1, #pName do
+		local cValue = string.byte(string.sub(pName, index, index))
+		local reverseIndex = #pName - index + 1
+		if #pName%2 == 1 then
+			reverseIndex = reverseIndex - 1
+		end
+		if reverseIndex%4 >= 2 then
+			cValue = -cValue
+		end
+		value = value + cValue
+	end
+	return value
+end
+local color_offset = 0
+local function ComputeNameColor(pName)
+	return NAME_COLORS[((GetNameValue(pName) + color_offset) % #NAME_COLORS) + 1]
+end
+
+Services.StarterGui:SetCore("VREnableControllerModels", true)
+
+function SendChat(MessageToSend)
+	Services.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(MessageToSend, "All")
+end
+
+function PlaySound(ID)
+	local x = Create("Sound",game:GetService("SoundService"),{
+		SoundId = "rbxassetid://" .. ID,
+		Volume = 2,
+		Pitch = 1,
+		Playing = true
+	})
+	task.delay(6,function()
+		x:Destroy()
+	end)
+end
+
+local FunctionsCalled = {}
+local Clicks = {}
+
+Services.UIS.InputBegan:Connect(function(k)
+	if k.KeyCode==Enum.KeyCode.ButtonL1 then
+		ExtraVariables.ActionOpened=not ExtraVariables.ActionOpened
+		ExtraVariables.ActionTriggered:Fire(ExtraVariables.ActionOpened)
+	end
+	if k.KeyCode==Enum.KeyCode.P and game:GetService("RunService"):IsStudio() then
+		ExtraVariables.ActionOpened=not ExtraVariables.ActionOpened
+		ExtraVariables.ActionTriggered:Fire(ExtraVariables.ActionOpened)
+	end
+end)
+
+--//RIGHT HAND MOTION FUNCTION
+local flat = Instance.new("Part")
+flat.Transparency=1
+local display = Create("Part",nil,{
+	Anchored = true,
+	CanCollide = false,
+	CanQuery = false,
+	Transparency = 1,
+	Name = "Clockwise",
+	Size = Vector3.new(3.5,0,3.5)
+})
+
+local rot = Create("Decal",display,{
+	Texture = "rbxassetid://8158185638",
+	Face = Enum.NormalId.Top,
+	Color3 = Color3.new(1,0.25,.8),
+})
+Debounces.RightMotionDb = os.clock()
+display.Parent = User.Character
+display.Size = Vector3.new(0,0,0)
+local Yielded = os.clock()
+local resetYielded = os.clock()
+
+flat.CanCollide=false
+flat.CanQuery=false
+flat.Anchored = true
+flat.Size = Vector3.new(.5,1,.5)
+game:GetService("RunService").RenderStepped:Connect(function()
+	if not CharacterLimbs.Head then return end
+	display.CFrame = CharacterLimbs.RightArm.CFrame
+	local Arm = CharacterLimbs.RightArm
+	local CFrameLookat = CFrame.lookAt(Arm.Position,(Arm.CFrame*CFrame.new(0,-10,0)).Position*Vector3.new(1,0,1)+Vector3.new(0,Arm.Position.Y,0)) * CFrame.Angles(math.pi/2,0,0)
+	flat.CFrame = CFrameLookat
+	local X,Y,Z = Parts.RightArm.CFrame:ToObjectSpace(flat.CFrame):ToOrientation()
+	local deg = math.deg(Y)
+	Y=math.deg(Y)
+	if (Y > 135 and Y < 150) and os.clock()-Debounces.RightMotionDb > 1 and PreloadedSettings.MotionControls then
+		local SoundSFX = Create("Sound",game:GetService("SoundService"),{
+			SoundId='rbxassetid://5683584454',
+			Volume = 1,
+			Playing = true,
+		})
+		PlaySound(2789458365)
+		display.Size=Vector3.new(0,0,0)
+		rot.Transparency=0
+		game:GetService("TweenService"):Create(display,TweenInfo.new(.5),{Size=Vector3.new(3.5,0,3.5)}):Play()
+		game:GetService("TweenService"):Create(rot,TweenInfo.new(.5),{Transparency=1}):Play()
+		task.delay(.55,function()
+			display.Size = Vector3.new(0,0,0)
+		end)
+		task.delay(5,function()
+			SoundSFX:Destroy()
+		end)
+		Debounces.RightMotionDb = os.clock()
+		MovementFunctions.GrabTool(1)
+	end
+end)
+--\\
+--//LEFT HAND MOTION FUNCTION
+local flat2 = Instance.new("Part")
+local display2 = Create("Part",nil,{
+	Anchored = true,
+	CanCollide = false,
+	Transparency = 1,
+	Name = "CounterClockwise",
+	Size = Vector3.new(3.5,0,3.5)
+})
+local rot2 = Create("Decal",display2,{
+	Texture = "rbxassetid://8158186627",
+	Face = Enum.NormalId.Top,
+})
+Debounces.LeftMotionDb = os.clock()
+game:GetService("RunService").RenderStepped:Connect(function()
+	display2.CFrame = Parts.LeftArm.CFrame
+	flat2.CFrame = CFrame.lookAt(Parts.LeftArm.Position*Vector3.new(0,1,0),(Parts.LeftArm.CFrame*CFrame.new(0,-1e5,0)).Position*Vector3.new(0,1,0))
+	local X,Y,Z = Parts.LeftArm.CFrame:ToObjectSpace(flat2.CFrame):ToOrientation()
+	if Y > -999 and Y < -998 and os.clock()-Debounces.LeftMotionDb > 1 then
+		local SoundSFX = Create("Sound",game:GetService("SoundService"),{
+			SoundId='rbxassetid://5683584454',
+			Volume = 1,
+			Playing = true,
+		})
+		PlaySound(2789456957)
+		game:GetService("TweenService"):Create(display2,TweenInfo.new(.5),{Size=Vector3.new(3.5,0,3.5)}):Play()
+		display2.Size=Vector3.new(0,0,0)
+		task.delay(.55,function()
+			display2.Size = Vector3.new(0,0,0)
+		end)
+		task.delay(5,function()
+			SoundSFX:Destroy()
+		end)
+		Debounces.LeftMotionDb = os.clock()
+		MovementFunctions.GrabTool(-1)
+	end
+end)
+--\\
+ExtraVariables.ActionTriggered = Instance.new("BindableEvent")
+function GetColoredText(Text,Color3_)
+	local Color3_ = {
+		R=math.ceil(Color3_.R),
+		G=math.ceil(Color3_.G),
+		B=math.ceil(Color3_.B),
+	}
+	return '<font color="'.."rgb(".. tostring(Color3_.R*255) ..","..tostring(Color3_.G*255)..","..tostring(Color3_.B*255)..")".."\">" .. Text .. "</font>"
+end
+task.wait(-1)
+local Layouts = 0
+ExtraVariables.MenuOpen = Vector3.new(4,3,0.01)
+
+local MenuPart = Create("Part",nil,{
+	Size = ExtraVariables.MenuOpen,
+	Transparency = 1,
+	CanCollide = false,
+	Anchored = true,
+	Name = "PacMan",
+	['CFrame'] = Camera.CFrame
+})
+
+local VrSurface = SetupModel.VrSurface
+ExtraVariables.Clock = VrSurface.VrMain.Time
+VrSurface.VrMain.Version.Text = _G.BrewVersion
+game:GetService('RunService').RenderStepped:Connect(function()
+	local Hour = os.date("%I")
+	if Hour:sub(1,1)=="0" then
+		Hour = Hour:sub(2,#Hour)
+	end
+	ExtraVariables.Clock.Text = Hour .. ":" .. os.date("%M") .. ":" .. os.date("%S") .. " " .. os.date("%p")
+	VrSurface.Parent = User:FindFirstChildWhichIsA('PlayerGui')
+	VrSurface.LightInfluence = 0
+	VrSurface.Adornee = MenuPart
+	local PlaceCFrame = Camera.CFrame * Services.VR:GetUserCFrame(Enum.UserCFrame.Head) * CFrame.new(0,0,-4)
+	MenuPart.CFrame = MenuPart.CFrame:Lerp(PlaceCFrame,0.06)
+	if ExtraVariables.ActionOpened == true then
+		MenuPart.Parent = Camera
+		if MenuPart.Size ~= ExtraVariables.MenuOpen then
+			Services.TweenService:Create(MenuPart,TweenInfo.new(0.15),{Size = ExtraVariables.MenuOpen}):Play()
+		end
+	else
+		if MenuPart.Size.Magnitude > 0.01 then
+			Services.TweenService:Create(MenuPart,TweenInfo.new(0.15),{Size = Vector3.new(0,0,0)}):Play()
+		end
+		MenuPart.Parent = nil
+	end
+end)
+ExtraVariables.PlayerLabel = VrSurface.VrMain.InnerMain.Players.PlayerName
+ExtraVariables.PlayerLabel.Parent=nil
+ExtraVariables.PlayerLabel = ExtraVariables.PlayerLabel:Clone()
+function AddToPlayerList(playerInstance)
+	local FriendIcon = ""
+	if playerInstance:IsFriendsWith(User.UserId) then
+		FriendIcon = "👤 "
+	end
+	local Label = ExtraVariables.PlayerLabel:Clone()
+	Label.Parent = VrSurface.VrMain.InnerMain.Players
+	Label.Text = FriendIcon .. playerInstance.Name
+	Label.MouseEnter:Connect(function()
+		Label.Text = FriendIcon .. playerInstance.Name
+	end)
+	Label.MouseLeave:Connect(function()
+		Label.Text = FriendIcon .. playerInstance.DisplayName
+	end)
+	playerInstance:GetPropertyChangedSignal("TeamColor"):Connect(function()
+		pcall(function()
+			Label.BackgroundColor3 = playerInstance.TeamColor.Color
+		end)
+	end)
+	Label.BackgroundColor3 = playerInstance.TeamColor.Color
+	local selfex = nil
+	selfex = Services.Players.PlayerRemoving:Connect(function(lplr)
+		if lplr == playerInstance then
+			Destroy(Label,-1)
+			selfex:Disconnect()
+		end
+	end)
+end
+Players.PlayerAdded:Connect(AddToPlayerList)
+for _,player in pairs(Players:GetPlayers())do
+	AddToPlayerList(player)
+end
+local Main = VrSurface.VrMain
+function OnClick(Button,Func)
+	Button.MouseButton1Click:Connect(function()
+		PlaySound(3779096010)
+		VrSurface.VrMain.InnerMain.Buttons.Visible = false
+		Func()
+	end)
+end
+OnClick(Main.QuickButtons.Home,function()
+	for i,v in pairs(VrSurface.VrMain.InnerMain:GetChildren())do
+		v.Visible = false
+	end
+	VrSurface.VrMain.InnerMain.Buttons.Visible = true
+end)
+OnClick(Main.QuickButtons.Leave,function()
+	for i,v in pairs(Main.InnerMain:GetChildren()) do
+		v.Visible = false
+	end
+	VrSurface.VrMain.InnerMain.LeavePrompt.Visible = true
+end)
+OnClick(	VrSurface.VrMain.InnerMain.LeavePrompt.Yes,function()
+	pcall(function()
+		game:Shutdown()
+	end)
+end)
+OnClick(	VrSurface.VrMain.InnerMain.LeavePrompt.No,function()
+	Main.InnerMain.Buttons.Visible = true
+	VrSurface.VrMain.InnerMain.LeavePrompt.Visible = false
+end)
+OnClick(Main.InnerMain.Buttons.AdvancedSettings,function()
+	VrSurface.VrMain.InnerMain.Settings.Visible = true
+end)
+OnClick(Main.QuickButtons.Chat,function()
+	for i,v in pairs(Main.InnerMain:GetChildren()) do
+		v.Visible = false
+	end
+	VrSurface.VrMain.InnerMain.Chat.Visible = true
+end)
+OnClick(Main.InnerMain.Buttons.GameExploits,function()
+	VrSurface.VrMain.InnerMain.GameExploits.Visible = true
+end)
+OnClick(Main.InnerMain.Buttons.Players,function()
+	VrSurface.VrMain.InnerMain.Players.Visible = true
+end)
+OnClick(Main.InnerMain.Buttons.QuickOptions,function()
+	Main.InnerMain.QuickActions.Visible = true
+end)
+OnClick(Main.InnerMain.QuickActions.noLegs,function()
+	if GetRigType()=='R6' then
+		Destroy(Character:FindFirstChild("Right Leg"),-1)
+		Destroy(Character:FindFirstChild("Left Leg"),-1)
+	end
+end)
+OnClick(Main.InnerMain.Buttons.GamesTP,function()
+	VrSurface.VrMain.InnerMain.OtherGames.Visible = true
+end)
+OnClick(Main.InnerMain.QuickActions.rejoin,function()
+	game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId,User)
+end)
+OnClick(Main.InnerMain.Buttons.ToolProp,function()
+	Main.InnerMain.PropCreation.Visible = true
+	Main.InnerMain.PropCreation.Initialize.Visible = false
+	Main.InnerMain.PropCreation.ToolSelect.Visible = true
+end)
+OnClick(Main.InnerMain.PropCreation.Initialize.Tool.No,function()
+	Main.InnerMain.PropCreation.Visible = true
+	Main.InnerMain.PropCreation.Initialize.Visible = false
+	Main.InnerMain.PropCreation.ToolSelect.Visible = true
+end)
+--~ ~ ~ ~ ~~ ~ ~
+ExtraVariables.GameButton = Main.InnerMain.OtherGames.GameButton
+ExtraVariables.GameButton.Parent=nil
+for i,v in pairs(Advanced.GamesList)do
+	local LocalGameButton = ExtraVariables.GameButton:Clone()
+	LocalGameButton.Text = v[2]
+	LocalGameButton.Parent = Main.InnerMain.OtherGames
+	OnClick(LocalGameButton,function()
+		game:GetService('TeleportService'):Teleport(v[1],User)
+	end)
+end
+--~ ~ ~ ~ ~~ ~ ~
+function SetSettingCheckBox(obj,boolean,func)
+	obj=obj.CheckBox
+	if PreloadedSettings[boolean] == true then
+		obj.Text = Check
+	elseif PreloadedSettings[boolean] == false then
+		obj.Text = ""
+	end
+	OnClick(obj,function()
+		if obj.Text==Check then
+			obj.Text = ""
+			PreloadedSettings[boolean]=false
+		else
+			obj.Text = Check
+			PreloadedSettings[boolean]=true
+		end
+		writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
+		if func then
+			func(PreloadedSettings[boolean])
+		end
+	end)
+	pcall(function()
+		func(PreloadedSettings[boolean])
+	end)
+end
+--~  .Settings.  ~--
+local SettingsMenu = Main.InnerMain.Settings
+SetSettingCheckBox(SettingsMenu.Choice1,"MotionControls")
+SetSettingCheckBox(SettingsMenu.Choice2,"LightingEffects")
+SetSettingCheckBox(SettingsMenu.Choice3,"CharacterOutlines",function(boolean)
+	for i,v in pairs(Selections)do
+		v.Visible = boolean
+	end
+end)
+SetSettingCheckBox(SettingsMenu.Choice4,"PersonalSpace")
+SetSettingCheckBox(SettingsMenu.Choice5,"Teleport")
+SetSettingCheckBox(SettingsMenu.Choice6,"NametagsShown")
+SetSettingCheckBox(SettingsMenu.Choice7,"DetailedMaterials",function(Boolean)
+	for Part,Material in pairs(SavedMaterials)do
+		if Boolean == true then
+			Part.Material=Material
+		else
+			Part.Material=Enum.Material.SmoothPlastic
+		end
+	end
+end)
+SetSettingCheckBox(SettingsMenu.Choice8,"Flying")
+--~ ~ ~ ~ ~~ ~ ~
+ExtraVariables.HatsToDisplay = {}
+for i,v in pairs(Character:GetChildren())do
+	if v:IsA("Accessory") then
+		table.insert(ExtraVariables.HatsToDisplay,v)
+	end
+end
+ExtraVariables.ToolButton = Main.InnerMain.PropCreation.ToolSelect:WaitForChild('HatName'):Clone()
+Main.InnerMain.PropCreation.ToolSelect.HatName:Destroy()
+ExtraVariables.AligningHat = {nil}
+ExtraVariables.Presets = {}
+for i,v in pairs(ExtraVariables.HatsToDisplay)do
+	local Handle = v.Handle:Clone()
+	local newVPF = ExtraVariables.ToolButton:Clone()
+	newVPF.Text = ""
+	Handle.Parent = newVPF.ToolDisplay
+	Handle.Anchored = true
+	local Camera = Create("Camera",newVPF.ToolDisplay,{CFrame = CFrame.new(Handle.Position)*CFrame.new(0,0,5)})
+	local Surround = 0
+	game:GetService("RunService").RenderStepped:Connect(function()
+		Surround=Surround+1
+		Camera.CFrame = CFrame.new(Handle.Position)*CFrame.Angles(0,math.rad(Surround),0)*CFrame.new(0,1.25,2)
+		Camera.CFrame = Camera.CFrame * CFrame.Angles(-math.rad(40/1.25),0,0)
+		Camera.FieldOfView = 60
+		if Surround>9e9 then
+			Surround=1
+		end
+	end)
+	newVPF.ToolDisplay.CurrentCamera=Camera
+	newVPF.Parent = Main.InnerMain.PropCreation.ToolSelect
+	ExtraVariables.AligningHat={v.Handle,v}
+	OnClick(newVPF,function()
+		ExtraVariables.AligningHat = {Handle,v}
+		Main.InnerMain.PropCreation.Visible = true
+		Main.InnerMain.PropCreation.Initialize.Visible = true
+		Main.InnerMain.PropCreation.ToolSelect.Visible = false
+		for i,v in pairs(Main.InnerMain.PropCreation.Initialize.Tool.ToolVPF:GetChildren())do
+			if v:IsA("BasePart") then
+				v:Destroy()
+			end
+		end
+		Main.InnerMain.PropCreation.Initialize.Tool.ToolVPF.CurrentCamera=Camera
+		Handle:Clone().Parent = Main.InnerMain.PropCreation.Initialize.Tool.ToolVPF
+	end)
+end
+ExtraVariables.EquipFromOffset = nil
+ExtraVariables.Initialize=Main.InnerMain.PropCreation.Initialize.Tool
+OnClick(ExtraVariables.Initialize.Yes,function()
+	local Display1 = ExtraVariables.AligningHat[1]:Clone()
+	pcall(function()
+		Display1.AccessoryWeld:Destroy()
+	end)
+	Display1.Parent = workspace.CurrentCamera
+	Display1.Transparency = 0.3
+	Display1.Anchored = true
+	Display1.CanCollide = false
+	local Triggered = false
+	local repositioning2 = false
+	local maneuver = CFrame.new(0,0,0)
+	local Selfex=nil
+	local LetGo = nil
+	Selfex=Services.UIS.InputBegan:Connect(function(key,gp)
+		if Services.UIS:GetFocusedTextBox()==nil then
+			if key.KeyCode==Enum.KeyCode.ButtonR2 then
+				Triggered = true
+				local ObjectSpace = Display1.CFrame:ToObjectSpace(Parts.RightArm.CFrame):Inverse()
+				local theTool = ExtraVariables.CreateHatAsTool("T:"..ExtraVariables.AligningHat[2].Name,ExtraVariables.AligningHat[2].Name,ObjectSpace,true)
+				theTool.Parent = Character
+				ExtraVariables.Presets[ExtraVariables.AligningHat[2]] = theTool
+				Destroy(Display1,-1)
+				Selfex:Disconnect()
+			elseif key.KeyCode==Enum.KeyCode.ButtonR1 then
+				repositioning2 = true
+				maneuver = Display1.CFrame:ToObjectSpace((Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.RightHand))):Inverse()
+			end
+		end
+	end)
+	LetGo=Services.UIS.InputEnded:Connect(function(key,gp)
+		if Services.UIS:GetFocusedTextBox()==nil then
+			if key.KeyCode==Enum.KeyCode.ButtonR1 then
+				repositioning2 = false
+				maneuver = Display1.CFrame:ToObjectSpace((Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(0.5,-0.5,-2))):Inverse()
+			end
+		end
+	end)
+	local Positioner = nil
+	local ReposInterv = 0
+	Display1.CFrame = (Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(0.5,-0.5,-2))
+	Positioner = game:GetService('RunService').RenderStepped:Connect(function()
+		ExtraVariables.Paused = true
+		if Triggered then
+			ExtraVariables.ActionOpened = true
+			HoldingDirection = false
+			PredictingPosition = false
+			ExtraVariables.Paused = false
+			LetGo:Disconnect()
+			Positioner:Disconnect()
+		else
+			if Display1 then
+				ExtraVariables.ActionOpened = false
+				HoldingDirection = false
+				PredictingPosition = false
+				if maneuver==CFrame.new(0,0,0) then
+					Display1.CFrame = (Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.Head))*CFrame.new(0.5,-0.5,-2)
+				else
+					if repositioning2 then
+						Display1.CFrame = (Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.RightHand)*maneuver)
+					else
+						Display1.CFrame = (Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(0.5,-0.5,-2))*maneuver
+					end
+				end
+			end
+		end
+	end)
+end)
+OnClick(Main.InnerMain.PropCreation.Initialize.Tool.Equip,function()
+	local Hat = ExtraVariables.AligningHat[2]
+	if Hat then
+		local Tool = ExtraVariables.Presets[ExtraVariables.AligningHat[2]]
+		if Tool then
+			Tool.Parent = Character
+		end
+	end
+end)
+OnClick(Main.InnerMain.Buttons.ClientInformation,function()
+	Main.InnerMain.ClientInfo.Visible = true
+end)
+game:GetService('RunService').RenderStepped:Connect(function()
+	local Info = Main.InnerMain.ClientInfo
+	if Info.Visible == true then
+		Info.FPS.Text = "FPS: " .. tostring(GetFPS())
+		Info.JobId.Text = "JobId: " .. tostring(game.JobId)
+		Info.PlaceId.Text = "PlaceId: " .. tostring(game.PlaceId)
+		Info.Time.Text = "Time since joined: " .. tostring(math.floor(time()))
+		Info.UserId.Text = "UserID: " .. tostring(User.UserId)
+	end
+end)
+local LayedOut=0
+local Label = Main.InnerMain.Chat.ChatLogs.FreshLog
+Label.Parent=nil
+Label=Label:Clone()
+ExtraVariables.CreateLabelInChat=function(Text,Color)
+	LayedOut=LayedOut+1
+	local Info = Label:Clone()
+	Info.Text = Text
+	Info.TextColor3=Color
+	Info.Parent = Main.InnerMain.Chat.ChatLogs
+	Info.LayoutOrder = LayedOut
+	task.delay(60*5,function()
+		Info:Destroy()
+	end)
+end
+game:GetService('RunService').RenderStepped:Connect(function()
+	local Abc = 0
+	for i,v in pairs(Main.InnerMain.Chat.ChatLogs:GetChildren())do
+		if v:IsA("TextLabel") then
+			Abc=Abc+v.AbsoluteSize.Y
+		end
+	end
+	Main.InnerMain.Chat.ChatLogs.CanvasPosition = Vector2.new(0,Abc)
+	Main.InnerMain.Chat.ChatLogs.CanvasSize = UDim2.new(0,0,0,Abc)
+end)
+function DidChat(player)
+	if player:IsFriendsWith(User.UserId) then
+		ExtraVariables.CreateLabelInChat("Your friend, '"..player.Name .. " (@" ..player.DisplayName ..")' joined your game.",Color3.new(0,1,0))
+	elseif player==User then
+		ExtraVariables.CreateLabelInChat("Brew VR was created by Amokah (aka VulpineQueen) - Please do not share.",Color3.new(1,1,0))
+	end
+	Main.InnerMain.Chat.ChatLogs.CanvasSize = UDim2.new(0,0,0,GetLabels())
+	Main.InnerMain.Chat.ChatLogs.CanvasPosition = Vector2.new(0,GetLabels())
+	local selfex = nil
+	selfex = game:GetService('Players').PlayerRemoving:Connect(function(ins)
+		if ins==player then
+			selfex:Disconnect()
+			ExtraVariables.CreateLabelInChat("Player, '"..player.Name .. " (@" .. player.DisplayName..")' has left the game.",Color3.new(1,0.35,0.35))
+		end
+	end)
+	player.Chatted:Connect(function(msg)
+		ExtraVariables.CreateLabelInChat("[" .. player.Name .. "]: "..msg,Color3.new(1,1,1))
+	end)
+end
+local CB = Main.InnerMain.Chat.ChattingBar
+function GetLabels()
+	local Scale = 0
+	for i,v in pairs(Main.InnerMain.Chat.ChatLogs:GetChildren())do
+		if v:IsA("GuiObject") then
+			Scale=v.AbsoluteSize.Y+0
+		end
+	end
+	return Scale
+end
+CB.FocusLost:Connect(function(ep)
+	if ep then
+		LayedOut=LayedOut+1
+		local Info = Label:Clone()
+		Info.Text = "[".. User.DisplayName  .."] : " .. CB.Text
+		Info.Parent = Main.InnerMain.Chat.ChatLogs
+		Info.LayoutOrder = LayedOut
+		Main.InnerMain.Chat.ChatLogs.CanvasSize = UDim2.new(0,0,0,GetLabels())
+		Main.InnerMain.Chat.ChatLogs.CanvasPosition = Vector2.new(0,GetLabels())
+		Info.Size = UDim2.new(0,Info.TextBounds.X,0,Info.TextBounds.Y)
+		task.delay(60*5,function()
+			Info:Destroy()
+		end)
+		SendChat(CB.Text)
+		CB.Text = ""
+	end
+end)
+Services.UIS.InputBegan:Connect(function(k,gp)
+	if Services.UIS:GetFocusedTextBox() == nil and CB:IsFocused()==false then
+		if k.KeyCode == Enum.KeyCode.Slash then
+			task.defer(function()
+				CB:CaptureFocus()
+				CB.Text = ""
+			end)
+		end
+	end
+end)
+Services.Players.PlayerAdded:Connect(DidChat)
+for i,v in pairs(Services.Players:GetPlayers())do
+	DidChat(v)
+end
+ExtraVariables.ActionTriggered.Event:Connect(function(b)
+	ExtraVariables.ActionOpened = b
+	if b == true then
+		PlaySound(8379220604)
+	end
+end)
+
+game:GetService("ContextActionService"):BindAction("Quit",function()end,true,Enum.KeyCode.I)
+game:GetService("ContextActionService"):BindAction("Quit2",function()end,true,Enum.KeyCode.O)
+game:GetService("ContextActionService"):UnbindAllActions()
+
+--\\\ CHAT SCRIPTING
+
+--Tracker (Converted)
+local B1 = Instance.new("Attachment")
+B1.WorldOrientation = Vector3.new(0, 0, -130)
+local B2 = Instance.new("Attachment")
+B2.WorldOrientation = Vector3.new(0, 0, -90)
+local B3 = Instance.new("Attachment") --This one is the particle thing / the FX for the tracer thing
+local VrMoveTo = Instance.new("Part")
+Tracer = Instance.new("Beam")
+RingParticle = Instance.new("ParticleEmitter")
+RingParticle.TimeScale = 0.1
+RingParticle.LockedToPart = true
+BallParticle = Instance.new("ParticleEmitter")
+BallParticle.LockedToPart = true
+VrMoveTo.Name = "VrMotionTrack"
+VrMoveTo.CFrame = CFrame.new(-9.69146729, 0.5, 38.1137085, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+VrMoveTo.Position = Vector3.new(-9.69146728515625, 0.5, 38.11370849609375)
+VrMoveTo.Transparency = 1
+VrMoveTo.Size = Vector3.new(0.0010000000474974513, 0.0010000000474974513, 0.0010000000474974513)
+VrMoveTo.Anchored = true
+VrMoveTo.BottomSurface = Enum.SurfaceType.Smooth
+VrMoveTo.CanCollide = false
+VrMoveTo.TopSurface = Enum.SurfaceType.Smooth
+B1.Parent = VrMoveTo
+B2.Parent = VrMoveTo
+B3.Parent = VrMoveTo
+Tracer.Name = "VrTrail"
+Tracer.Parent = VrMoveTo
+Tracer.Attachment0 = B1
+Tracer.Attachment1 = B2
+Tracer.Color = ColorSequence.new(Color3.new(0, 0.45098, 1),Color3.new(0, 0.45098, 1))
+Tracer.CurveSize0 = -10
+Tracer.CurveSize1 = 5
+Tracer.FaceCamera = true
+Tracer.LightEmission = 1
+Tracer.Segments = 100
+Tracer.Texture = "rbxassetid://9488075006"
+Tracer.TextureLength = 2
+Tracer.TextureSpeed = 2
+Tracer.Transparency = NumberSequence.new(0,0)
+Tracer.Width0 = 0
+Tracer.Width1 = 1
+Tracer.Brightness = 3
+RingParticle.Name = "RingP"
+RingParticle.Parent = B3
+RingParticle.Speed = NumberRange.new(1,1)
+RingParticle.Orientation = Enum.ParticleOrientation.VelocityPerpendicular
+RingParticle.Color = ColorSequence.new(Color3.new(0, 0.768627, 1),Color3.new(0, 0.768627, 1))
+RingParticle.LightEmission = 1
+RingParticle.Texture = "rbxassetid://9666643209"
+RingParticle.Transparency = NumberSequence.new(0,0.25,1)
+RingParticle.Size = NumberSequence.new(0,2.5)
+RingParticle.Brightness = 2
+RingParticle.Lifetime = NumberRange.new(0.20000000298023224, 0.20000000298023224)
+RingParticle.RotSpeed = NumberRange.new(1000, 1000)
+BallParticle.Name = "BallP"
+BallParticle.Parent = B3
+BallParticle.Speed = NumberRange.new(0, 0)
+BallParticle.Color = ColorSequence.new(Color3.new(0.298039, 1, 0),Color3.new(0.298039, 1, 0))
+BallParticle.LightEmission = 0.5
+BallParticle.Texture = "rbxassetid://9523177906"
+BallParticle.ZOffset = -0.5
+BallParticle.Size = NumberSequence.new(0.5,0.5)
+BallParticle.Lifetime = NumberRange.new(1, 1)
+BallParticle.Rate = 2
+BallParticle.RotSpeed = NumberRange.new(360, 360)
+
+VrTracker = { --Earlier Table
+	AtHand = VrMoveTo,
+	PlaceAtAtt = B2,
+	ParticleFX = B3,
+	PredictedPosition = Vector3.new(0,0,0),
+}
+--Tracker (Converted)
+game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack,false)
+--\\
+-->Viewport Character
+local NewCamera = Instance.new("Camera")
+local ViewportFrame = Instance.new("ViewportFrame")
+ViewportFrame.Size = UDim2.new(0,200,0,200)
+local loopChar = nil
+local HeadsUp = Instance.new("Part")
+HeadsUp.Name = "VPF"
+HeadsUp.Size = Vector3.new(0,0,0)
+HeadsUp.Transparency = 1
+HeadsUp.CanCollide = false
+HeadsUp.Anchored = true
+HeadsUp.Parent = workspace.CurrentCamera
+local reup=os.clock()
+local Char = game:GetService('Players').LocalPlayer.Character
+Char.Archivable = true
+local Afar = Instance.new("BillboardGui")
+Afar.AlwaysOnTop = true
+Afar.Size = UDim2.new(20,0,20,0)
+ViewportFrame.Size = UDim2.new(1,0,1,0)
+Afar.StudsOffset = Vector3.new(5,-2,0)
+ViewportFrame.Parent = Afar
+Afar.Parent = game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
+Afar.Adornee = HeadsUp
+ViewportFrame.BackgroundTransparency = 1
+--//
+
+--\\Model Creation for earlier tables: For organization
+repeat task.wait(-1) until ExtraVariables.VrFinalized == true
+task.wait(0.5)
+PromptMessage([[
+→ Controls
+
+LEFT TRIGGER : Move
+LEFT BUTTON 1 : Menu
+RIGHT TRIGGER : Arm flinger
+RIGHT BUTTON 1 : Teleport control
+TWIST RIGHT ARM : Unequip
+
+→ Enjoy
+]],8,0.8)
+
+--//Tools
+local HatsAsTools={}
+
+function CreateHatAsTool(ToolName,Hat,Offset,PlaceBackWhenUnequipped) 
+	local NewTool = Create('Tool',nil,{Name=ToolName,RequiresHandle=true})
+	for i,v in pairs(Character:GetChildren())do
+		if v.Name==Hat or v==Hat and v:IsA("Accessory") then
+			Hat=v
+			break
+		end
+	end
+	if type(Hat)=='string' then
+		return nil
+	end
+	if ExtraVariables.LocalProps[Hat]~=nil then
+		ExtraVariables.LocalProps[Hat].GripOffset.Value = Offset
+		return ExtraVariables.LocalProps[Hat]
+	end
+	ExtraVariables.LocalProps[Hat] = NewTool
+	local Handle = Hat:FindFirstChild("Handle")
+	Netless(Handle)
+	if Handle:FindFirstChild("AccessoryWeld") then
+		Create("CFrameValue",Handle,{Value=Handle.AccessoryWeld.C0,Name="C0"})
+		Create("CFrameValue",Handle,{Value=Handle.AccessoryWeld.C1,Name="C1"})
+		Create("CFrameValue",Handle,{Value=Handle.AccessoryWeld.Part0.CFrame:ToObjectSpace(Handle.AccessoryWeld.Part1.CFrame):Inverse(),Name="WeldOffset"})
+		Create("ObjectValue",Handle,{Value=Handle.AccessoryWeld.Part0,Name="Part0"})
+		Create("ObjectValue",Handle,{Value=Handle.AccessoryWeld.Part1,Name="Part1"})
+		Handle.AccessoryWeld:Destroy()
+	end
+	if NewTool:FindFirstChild("GripOffset")==nil then
+		NewTool:GetPropertyChangedSignal("Parent"):Connect(function()
+			if NewTool.Parent==Character then
+				Handle.Transparency=0
+			else
+				Handle.Transparency=1
+			end
+		end)
+	end
+	local Grip = NewTool:FindFirstChild("GripOffset") or Create("CFrameValue",NewTool,{Value = Offset,Name="GripOffset"})
+	game:GetService("RunService").RenderStepped:Connect(function()
+		if NewTool.Parent==Character then
+			Handle.Transparency=0
+			Handle.CFrame = Parts.RightArm.CFrame*Grip.Value
+			task.defer(function()
+				Handle.CFrame = Parts.RightArm.CFrame*Grip.Value
+			end)
+		else
+			Handle.Transparency=1
+			if PlaceBackWhenUnequipped then
+				Handle.CFrame = Handle.Part1.Value.CFrame * Handle.WeldOffset.Value
+				task.defer(function()
+					Handle.CFrame = Handle.Part1.Value.CFrame * Handle.WeldOffset.Value
+				end)
+			else
+				Handle.CFrame = Character.Head.CFrame*CFrame.new(0,-2,0)
+			end
+		end
+	end)
+	return NewTool
+end
+ExtraVariables.CreateHatAsTool = CreateHatAsTool
+CreateHatAsTool("Give an L","Big L",CFrame.new(-0.0206413269, -1.05122375, 0.875359535, 1, 0, 0, 0, -4.37113847e-08, -1, 0, 0.999999881, -4.37113883e-08),false)
+CreateHatAsTool("Pistol","1911 Right",CFrame.new(-0.00897979736, 1.30259275, -0.496437073, -1, 0, 8.74227766e-08, 0, 0.999999881, 0, -8.74227766e-08, 0, -1),true)
+CreateHatAsTool("Knife","Meshes/KnifeFaceAccessory",CFrame.new(-0.88650322, 1.13049304, 0.0296177864, 0, 0, -1, 0, 1, 0, 1, 0, 0),false,CFrame.Angles(0,math.rad(90),0))
+CreateHatAsTool("Big Hammer","MARTILLO",CFrame.new(-0.976185083, -0.770004272, 0.040807724, -9.27258839e-08, -1, 1.1920929e-07, -9.27258839e-08, -2.08616228e-07, -1.00000012, 1.00000036, -9.27258839e-08, -9.27258696e-08),true)
+CreateHatAsTool("Sword","Angel Sword",CFrame.new(-0.00233829999, -0.941128731, -2.9509182, 1.91068547e-15, 4.37113883e-08, 1, 0.999999881, -4.37113847e-08, 0, 4.37113883e-08, 1, -4.37113883e-08):Inverse(),true)
+--//
+Services.VR:RecenterUserHeadCFrame()
+
+local fenv = getfenv()
+local sethp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
+local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
+game:GetService("RunService").Heartbeat:Connect(function()
+	pcall(function()
+		shp(User, "SimulationRadius", math.huge)
+	end)
+end)
