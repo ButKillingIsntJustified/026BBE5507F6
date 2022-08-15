@@ -14,7 +14,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.332"
+_G.BrewVersion = "v1.34"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -28,9 +28,38 @@ local Advanced = {
 		{189707,"Natural Disaster"},
 		{192800,"Work at a Pizza Place"},
 		{47324,"Sword Fights"},
-		{12109643,"Fencing"}
+		{12109643,"Fencing"},
+		{1662219031,"Life in paradise (old)"}
+	},
+	BlockedClasses = {
+		"Seat",
+		"VehicleSeat"
 	}
 }
+
+--~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~--
+for i,v in pairs(workspace:GetDescendants())do
+	for _,s in pairs(Advanced.BlockedClasses)do
+		if v.ClassName:find(s) then
+			pcall(function()
+				v:Destroy()
+			end)
+		end
+	end
+end
+workspace.DescendantAdded:Connect(function(obj)
+	for _,s in pairs(Advanced.BlockedClasses)do
+		if obj.ClassName:find(s) then
+			pcall(function()
+				task.defer(function()
+					obj:Destroy()
+				end)
+			end)
+		end
+	end
+end)
+--~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~--
+
 local User = game:GetService('Players').LocalPlayer
 local AlternativeSpawn = task.spawn
 
@@ -133,6 +162,7 @@ function Destroy(Obj,Delay_)
 		end)
 	end
 end
+
 local CreateTemporaryLoopWithRunServiceType = function(Type,Seconds,func)
 	local Type = game:GetService("RunService")[Type]
 	local Start = os.clock()
@@ -1363,6 +1393,7 @@ end
 PromptMessage([[
 Valid whitelist
 ]],0.5,0.5)
+
 task.wait(0.5)
 
 local PreloadedSettings = {
@@ -1544,7 +1575,11 @@ function YieldMobile(player)
 end
 game:GetService('Players').PlayerAdded:Connect(YieldMobile)
 for _,p in pairs(game:GetService('Players'):GetPlayers())do
-	YieldMobile(p)
+	task.spawn(function()
+		pcall(function()
+			YieldMobile(p)
+		end)
+	end)
 end
 --
 function GetDeviceType(Argument)
@@ -2984,24 +3019,25 @@ ExtraVariables.ToolButton = Main.InnerMain.PropCreation.ToolSelect:WaitForChild(
 Main.InnerMain.PropCreation.ToolSelect.HatName:Destroy()
 ExtraVariables.AligningHat = {nil}
 ExtraVariables.Presets = {}
+local VPFCamera = Create("Camera",nil,{})
+local Surround = 0
+game:GetService("RunService").RenderStepped:Connect(function()
+	VPFCamera.CFrame = CFrame.new(Vector3.new(0,0,0))*CFrame.Angles(0,math.rad(Surround),0)*CFrame.new(0,1.25,2)
+	VPFCamera.CFrame = VPFCamera.CFrame * CFrame.Angles(-math.rad(40/1.25),0,0)
+	VPFCamera.FieldOfView = 60
+	if Surround>9e9 then
+		Surround=1
+	end
+end)
+Surround=Surround+1
 for i,v in pairs(ExtraVariables.HatsToDisplay)do
 	local Handle = v.Handle:Clone()
 	local newVPF = ExtraVariables.ToolButton:Clone()
 	newVPF.Text = ""
 	Handle.Parent = newVPF.ToolDisplay
+	Handle.CFrame = CFrame.new(0,0,0)
 	Handle.Anchored = true
-	local Camera = Create("Camera",newVPF.ToolDisplay,{CFrame = CFrame.new(Handle.Position)*CFrame.new(0,0,5)})
-	local Surround = 0
-	game:GetService("RunService").RenderStepped:Connect(function()
-		Surround=Surround+1
-		Camera.CFrame = CFrame.new(Handle.Position)*CFrame.Angles(0,math.rad(Surround),0)*CFrame.new(0,1.25,2)
-		Camera.CFrame = Camera.CFrame * CFrame.Angles(-math.rad(40/1.25),0,0)
-		Camera.FieldOfView = 60
-		if Surround>9e9 then
-			Surround=1
-		end
-	end)
-	newVPF.ToolDisplay.CurrentCamera=Camera
+	newVPF.ToolDisplay.CurrentCamera=VPFCamera
 	newVPF.Parent = Main.InnerMain.PropCreation.ToolSelect
 	ExtraVariables.AligningHat={v.Handle,v}
 	OnClick(newVPF,function()
