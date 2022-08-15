@@ -7,6 +7,10 @@ _G.IsVr = true
 repeat _G.IsVr = true task.wait(-1) until game:GetService('Players').LocalPlayer and game:GetService('Players').LocalPlayer.Character and game:GetService('Players').LocalPlayer.Character:FindFirstChild('Head')
 
 if game:GetService('VRService').VREnabled == false then
+	game:GetService("StarterGui"):SetCore("SendNotification",{
+		Title = "Brew VR",
+		Text = "Vr is not enabled.",
+	})
 	return
 end
 
