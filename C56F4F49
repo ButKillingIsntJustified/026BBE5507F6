@@ -14,7 +14,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.34"
+_G.BrewVersion = "v1.343"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -2962,6 +2962,14 @@ for i,v in pairs(Advanced.GamesList)do
 	end)
 end
 --~ ~ ~ ~ ~~ ~ ~
+getUserTeamColor = function(user)
+	for i,v in pairs(game:GetService('Players'):GetPlayers())do
+		if v.Name==user or v.DisplayName==user then
+			return v.TeamColor.Color
+		end
+	end
+	return Color3.new(1,1,1)
+end
 function SetSettingCheckBox(obj,boolean,func)
 	obj=obj.CheckBox
 	if PreloadedSettings[boolean] == true then
@@ -3157,6 +3165,7 @@ ExtraVariables.CreateLabelInChat=function(Text,Color)
 	Info.TextColor3=Color
 	Info.Parent = Main.InnerMain.Chat.ChatLogs
 	Info.LayoutOrder = LayedOut
+	Info.RichText = true
 	task.delay(60*5,function()
 		Info:Destroy()
 	end)
@@ -3171,26 +3180,64 @@ game:GetService('RunService').RenderStepped:Connect(function()
 	Main.InnerMain.Chat.ChatLogs.CanvasPosition = Vector2.new(0,Abc)
 	Main.InnerMain.Chat.ChatLogs.CanvasSize = UDim2.new(0,0,0,Abc)
 end)
-function DidChat(player)
-	if player:IsFriendsWith(User.UserId) then
-		ExtraVariables.CreateLabelInChat("Your friend, '"..player.Name .. " (@" ..player.DisplayName ..")' joined your game.",Color3.new(0,1,0))
-	elseif player==User then
-		ExtraVariables.CreateLabelInChat("Brew VR was created by Amokah (aka VulpineQueen) - Please do not share.",Color3.new(1,1,0))
-	end
-	Main.InnerMain.Chat.ChatLogs.CanvasSize = UDim2.new(0,0,0,GetLabels())
-	Main.InnerMain.Chat.ChatLogs.CanvasPosition = Vector2.new(0,GetLabels())
+pcall(function()
+	game:GetService('Chat').LoadDefaultChat=true
+end)
+ExtraVariables.Started = os.clock()
+function LeaveLog(player)
+	pcall(function()
+		if player:IsFriendsWith(User.UserId) then
+			local pastTense = os.clock()-ExtraVariables.Started < 5
+			if pastTense then
+				ExtraVariables.CreateLabelInChat("Your friend, '"..player.Name .. " (@" ..player.DisplayName ..")' joined your game.",Color3.new(0,1,0))
+			else
+				ExtraVariables.CreateLabelInChat("Your friend, '"..player.Name .. " (@" ..player.DisplayName ..")' is currently in your game.",Color3.new(0,1,0))
+			end
+		elseif player==User then
+			ExtraVariables.CreateLabelInChat("Brew VR was created by Amokah (aka VulpineQueen) - Please do not share.",Color3.new(1,1,0))
+		end
+	end)
 	local selfex = nil
 	selfex = game:GetService('Players').PlayerRemoving:Connect(function(ins)
 		if ins==player then
+			ExtraVariables.CreateLabelInChat("Player, '"..ins.Name .. " (@" .. ins.DisplayName..")' has left the game.",Color3.new(1,0.35,0.35))
 			selfex:Disconnect()
-			ExtraVariables.CreateLabelInChat("Player, '"..player.Name .. " (@" .. player.DisplayName..")' has left the game.",Color3.new(1,0.35,0.35))
 		end
 	end)
-	player.Chatted:Connect(function(msg)
-		ExtraVariables.CreateLabelInChat("[" .. player.Name .. "]: "..msg,Color3.new(1,1,1))
+end
+AlternativeSpawn(function()
+	pcall(function()
+		local FilteredRemote = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents",math.huge):WaitForChild('OnMessageDoneFiltering',math.huge).OnClientEvent:Connect(function(info)
+			if info then
+				local FromPlayer = tostring(info['FromSpeaker'])
+				local Message = info['Message']
+				local Channel = info['OriginalChannel']
+				if Channel:find("To ") then
+					Message="/w " .. Channel:gsub("To ","") .. " " .. Message
+				elseif Channel:find("Team") then
+					Message="/team " .. Message
+				end
+				for i,v in pairs(Services.Players:GetPlayers())do
+					if v.Name==tostring(FromPlayer) then
+						FromPlayer = v.DisplayName
+					end
+				end
+				ExtraVariables.CreateLabelInChat("["..GetColoredText(FromPlayer,getUserTeamColor(tostring(FromPlayer))).."]: "..Message,Color3.new(1,1,1))
+			end
+		end)
+	end)
+end)
+Services.Players.PlayerAdded:Connect(function(newPlayer)
+	LeaveLog(newPlayer) --THIS WORKS
+end)
+for i,v in pairs(Services.Players:GetPlayers())do
+	AlternativeSpawn(function()
+		LeaveLog(v)
 	end)
 end
+
 local CB = Main.InnerMain.Chat.ChattingBar
+
 function GetLabels()
 	local Scale = 0
 	for i,v in pairs(Main.InnerMain.Chat.ChatLogs:GetChildren())do
@@ -3202,17 +3249,6 @@ function GetLabels()
 end
 CB.FocusLost:Connect(function(ep)
 	if ep then
-		LayedOut=LayedOut+1
-		local Info = Label:Clone()
-		Info.Text = "[".. User.DisplayName  .."] : " .. CB.Text
-		Info.Parent = Main.InnerMain.Chat.ChatLogs
-		Info.LayoutOrder = LayedOut
-		Main.InnerMain.Chat.ChatLogs.CanvasSize = UDim2.new(0,0,0,GetLabels())
-		Main.InnerMain.Chat.ChatLogs.CanvasPosition = Vector2.new(0,GetLabels())
-		Info.Size = UDim2.new(0,Info.TextBounds.X,0,Info.TextBounds.Y)
-		task.delay(60*5,function()
-			Info:Destroy()
-		end)
 		SendChat(CB.Text)
 		CB.Text = ""
 	end
@@ -3227,10 +3263,6 @@ Services.UIS.InputBegan:Connect(function(k,gp)
 		end
 	end
 end)
-Services.Players.PlayerAdded:Connect(DidChat)
-for i,v in pairs(Services.Players:GetPlayers())do
-	DidChat(v)
-end
 ExtraVariables.ActionTriggered.Event:Connect(function(b)
 	ExtraVariables.ActionOpened = b
 	if b == true then
