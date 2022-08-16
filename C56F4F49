@@ -114,8 +114,8 @@ SelfClick = game:GetService('RunService').RenderStepped:Connect(function()
 	Part0.Position = (workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(-0.5,-0.5,-2.5)).Position
 	Part0.Anchored = true
 	Part0.Velocity = Vector3.new(0,0,0)
-	local yeah = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.LeftHand),Vector3.new(1,1,1),OverlapParams.new({['MaxParts']=100}))
-	local yeah2 = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.RightHand),Vector3.new(1,1,1),OverlapParams.new({['MaxParts']=100}))
+	local yeah = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.LeftHand),Vector3.new(1,1,1)/2,OverlapParams.new({['MaxParts']=100}))
+	local yeah2 = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.RightHand),Vector3.new(1,1,1)/2,OverlapParams.new({['MaxParts']=100}))
 	if table.find(yeah,Part0) or table.find(yeah2,Part0) then
 		CanClick = true
 		BillboardGui1.Enabled = true
