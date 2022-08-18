@@ -2142,6 +2142,9 @@ Services.UIS.InputEnded:Connect(function(key)
 		if not Debounces.Teleported then
 			Debounces.Teleported = os.clock()-2
 		end
+		if not VrTracker.PredictedPosition then
+			VrTracker.PredictedPosition = Vector3.new(0,0,0)
+		end
 		if (Parts.FollowPart.Position*Vector3.new(1,0,1) - VrTracker.PredictedPosition*Vector3.new(1,0,1)).Magnitude > 1.1 then
 			if os.clock()-Debounces.Teleported > 1 and PreloadedSettings.Teleport then
 				Parts.FollowPart.Position = VrTracker.PredictedPosition
@@ -2845,6 +2848,9 @@ end)
 ExtraVariables.PlayerLabel = VrSurface.VrMain.InnerMain.Players.PlayerName
 ExtraVariables.PlayerLabel.Parent=nil
 ExtraVariables.PlayerLabel = ExtraVariables.PlayerLabel:Clone()
+pcall(function()
+	game:GetService('FriendService') --"No FriendService" error. This should fix it(?)
+end)
 function AddToPlayerList(playerInstance)
 	local FriendIcon = ""
 	if playerInstance:IsFriendsWith(User.UserId) then
