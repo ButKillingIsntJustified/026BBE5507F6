@@ -1,4 +1,3 @@
-script.Disabled = true
 local VR = game:GetService('VRService')
 
 if _G.IsVr == true then return end
@@ -32,29 +31,27 @@ local Advanced = {
 		{1662219031,"Life in paradise (old)"}
 	},
 	BlockedClasses = {
-		"Seat",
-		"VehicleSeat"
+		["Seat"]=function(obj)
+			obj.Disabled = true
+		end,
+		["VehicleSeat"]=function(obj)
+			obj.Disabled = true
+		end,
 	}
 }
 
 --~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~--
-for i,v in pairs(workspace:GetDescendants())do
-	for _,s in pairs(Advanced.BlockedClasses)do
-		if v.ClassName:find(s) then
-			pcall(function()
-				v:Destroy()
-			end)
+for _,inst in pairs(workspace:GetDescendants())do
+	for class,func in pairs(Advanced.BlockedClasses)do
+		if inst.ClassName==class then
+			pcall(func,inst)
 		end
 	end
 end
-workspace.DescendantAdded:Connect(function(obj)
-	for _,s in pairs(Advanced.BlockedClasses)do
-		if obj.ClassName:find(s) then
-			pcall(function()
-				task.defer(function()
-					obj:Destroy()
-				end)
-			end)
+workspace.DescendantAdded:Connect(function(inst)
+	for class,func in pairs(Advanced.BlockedClasses)do
+		if inst.ClassName==class then
+			pcall(func,inst)
 		end
 	end
 end)
@@ -68,7 +65,6 @@ local Highlight0 = Instance.new("Highlight",Part0)
 local BillboardGui1 = Instance.new("BillboardGui")
 local TextLabel2 = Instance.new("TextLabel")
 Part0.Name = "ClickToInitiate"
-Part0.CFrame = CFrame.new(7.5, 2, 24.125, 1, 0, 0, 0, 1, 0, 0, 0, 1)
 Part0.Position = Vector3.new(7.5, 2, 24.125)
 Part0.Color = Color3.new(0.972549, 0.972549, 0.972549)
 Part0.Size = Vector3.new(0.5,0.5,0.5)
@@ -119,10 +115,10 @@ SelfClick = game:GetService('RunService').RenderStepped:Connect(function()
 	if table.find(yeah,Part0) or table.find(yeah2,Part0) then
 		CanClick = true
 		BillboardGui1.Enabled = true
-		Highlight0.Enabled = false
+		Highlight0.Enabled = true
 	else
 		BillboardGui1.Enabled = false
-		Highlight0.Enabled = true
+		Highlight0.Enabled = false
 		CanClick = false
 	end
 end)
@@ -272,7 +268,7 @@ local fenv = getfenv()
 local shp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
 local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
 local StrongIdentity = pcall(function()
-	local _=game:GetService("CoreGui"):WaitForChild("RobloxGui")
+	local _ = game:GetService('CoreGui').FindFirstChild
 end)
 local Check = "✓"
 local SetupModel = nil
