@@ -221,7 +221,7 @@ function PromptMessage(Message,lasts,BackgroundTransparency)
 		Anchored = true,
 		CanCollide = false,
 	})
-	local BillboardGui = Create("BillboardGui",Splash,{
+	local BillboardGui = Create("BillboardGui",game:GetService('Players').LocalPlayer:FindFirstChildWhichIsA('PlayerGui'),{
 		Size = UDim2.new(20,0,20,0),
 		AlwaysOnTop = true
 	})
@@ -3379,7 +3379,7 @@ HeadsUp.Size = Vector3.new(0,0,0)
 HeadsUp.Transparency = 1
 HeadsUp.CanCollide = false
 HeadsUp.Anchored = true
-HeadsUp.Parent = workspace.CurrentCamera
+HeadsUp.Parent = nil
 local reup=os.clock()
 local Char = game:GetService('Players').LocalPlayer.Character
 Char.Archivable = true
