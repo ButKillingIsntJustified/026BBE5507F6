@@ -2341,15 +2341,10 @@ game:GetService("RunService").Stepped:Connect(function()
 				local RobloxHeadCFrame = Camera.CFrame*HeadCFrame --Idk, that type of naming makes it easy to remember certain things
 				local RayDown = Ray.new(RobloxHeadCFrame.Position,Vector3.new(0,-1250,0))
 				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(RayDown,{Character,workspace.CurrentCamera},true,false)
-				local level = CFrame.lookAt((workspace.CurrentCamera.CFrame*HeadCFrame).Position,(workspace.CurrentCamera.CFrame*(RobloxHeadCFrame*CFrame.new(0,0,-1))).Position)
-				level = CFrame.new(RobloxHeadCFrame.Position,level.Position)
-				local levelX = level
 				if Position then
 					local onLvl = Vector3.new(0,Position.Y+4.5,0)
 					local Lookat = RobloxHeadCFrame*CFrame.new(0,0,-0.3)
 					Parts.FollowPart.Position = (Lookat.Position * Vector3.new(1,0,1))+onLvl
-				else
-					Parts.FollowPart.Position = (levelX.Position*Vector3.new(1,0,1))+Vector3.new(0,Parts.FollowPart.Position.Y,0)
 				end
 			end
 		end
