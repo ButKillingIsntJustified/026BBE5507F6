@@ -2345,9 +2345,9 @@ game:GetService("RunService").Stepped:Connect(function()
 				level = CFrame.new(RobloxHeadCFrame.Position,level.Position)
 				local levelX = level
 				if Position then
-					level = (level.Position * Vector3.new(1,0,1)) + Vector3.new(0,Position.Y+ExtraVariables.BaseOffsetCamera.Y+4.5,0)
-					local Forward = CFrame.new((Parts.FollowPart.Position*Vector3.new(1,0,1))+Vector3.new(0,Position.Y+4.5,0),level)*CFrame.Angles(0,math.rad(-90),0)*CFrame.new(0,0,-0.3)
-					Parts.FollowPart.Position = Forward.Position
+					local onLvl = Vector3.new(0,Position.Y+4.5,0)
+					local Lookat = HeadCFrame*CFrame.new(0,0,-0.3)
+					Parts.FollowPart.Position = (Lookat.Position * Vector3.new(1,0,1))+onLvl
 				else
 					Parts.FollowPart.Position = (levelX.Position*Vector3.new(1,0,1))+Vector3.new(0,Parts.FollowPart.Position.Y,0)
 				end
