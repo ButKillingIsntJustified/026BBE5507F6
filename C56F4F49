@@ -13,7 +13,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.35"
+_G.BrewVersion = "v1.345"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -28,9 +28,7 @@ local Advanced = {
 		{192800,"Work at a Pizza Place"},
 		{47324,"Sword Fights"},
 		{12109643,"Fencing"},
-		{1662219031,"Life in paradise (old)"},
-		{4483381587,"A Literal Baseplate"},
-		{2788229376,"Da Hood\n(Idk if it'll ban or not)"},
+		{1662219031,"Life in paradise (old)"}
 	},
 	BlockedClasses = {
 		["Seat"]=function(obj)
@@ -41,17 +39,7 @@ local Advanced = {
 		end,
 	}
 }
-local Events = {
-	SteadyStepped = Instance.new("BindableEvent")
-}
-local acc=0
-game:GetService("RunService").RenderStepped:Connect(function(dt)
-	acc+=dt
-	while acc>dt do
-		Events.SteadyStepped:Fire()
-		acc-=0.0105
-	end
-end)
+
 --~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~--
 for _,inst in pairs(workspace:GetDescendants())do
 	for class,func in pairs(Advanced.BlockedClasses)do
@@ -221,7 +209,7 @@ function PromptMessage(Message,lasts,BackgroundTransparency)
 		Anchored = true,
 		CanCollide = false,
 	})
-	local BillboardGui = Create("BillboardGui",game:GetService('Players').LocalPlayer:FindFirstChildWhichIsA('PlayerGui'),{
+	local BillboardGui = Create("BillboardGui",Splash,{
 		Size = UDim2.new(20,0,20,0),
 		AlwaysOnTop = true
 	})
@@ -2332,14 +2320,14 @@ for i,v in pairs(AllPartsInParts) do
 	end
 end
 Create("SpecialMesh",Parts.FollowPart,{Scale=Vector3.new(0,0,0)})
-Events.SteadyStepped.Event:Connect(function()
+game:GetService("RunService").Stepped:Connect(function()
 	if Services.VR.VREnabled == not game:GetService("RunService"):IsStudio() then
 		for i,v in pairs(Character:GetDescendants())do
 			if v:IsA("LocalScript") or v:IsA("BallSocketConstraint") or v:IsA("CharacterMesh") or v:IsA("NoCollisionConstraint") then
 				v:Destroy()
 			end
 		end
-		if HoldingDirection == true then
+		if HoldingDirection == true and os.clock()-Debounces.Moving > 0.0105 then
 			Debounces.Moving = os.clock()
 			if PreloadedSettings.Flying then
 				local HeadCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
@@ -2353,18 +2341,15 @@ Events.SteadyStepped.Event:Connect(function()
 				local RobloxHeadCFrame = Camera.CFrame*HeadCFrame --Idk, that type of naming makes it easy to remember certain things
 				local RayDown = Ray.new(RobloxHeadCFrame.Position,Vector3.new(0,-1250,0))
 				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(RayDown,{Character,workspace.CurrentCamera},true,false)
-				local level = CFrame.lookAt((workspace.CurrentCamera.CFrame*HeadCFrame).Position,(workspace.CurrentCamera.CFrame*LarmCFrame).Position)*CFrame.new(0,0,-1000)
+				local level = CFrame.lookAt((workspace.CurrentCamera.CFrame*HeadCFrame).Position,(workspace.CurrentCamera.CFrame*(HeadCFrame*CFrame.new(0,0,-1))).Position)*CFrame.new(0,0,-1000)
 				level = CFrame.new(RobloxHeadCFrame.Position,level.Position)
 				local levelX = level
 				if Position then
 					level = (level.Position * Vector3.new(1,0,1)) + Vector3.new(0,Position.Y+ExtraVariables.BaseOffsetCamera.Y+4.5,0)
 					local Forward = CFrame.new((Parts.FollowPart.Position*Vector3.new(1,0,1))+Vector3.new(0,Position.Y+4.5,0),level)*CFrame.Angles(0,math.rad(-90),0)*CFrame.new(0,0,-0.3)
-					local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
-					Parts.FollowPart.CFrame = CFrame.new(((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position*Vector3.new(1,0,1))+Vector3.new(0,Position.Y,0))
+					Parts.FollowPart.Position = Forward.Position
 				else
-					local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
 					Parts.FollowPart.Position = (levelX.Position*Vector3.new(1,0,1))+Vector3.new(0,Parts.FollowPart.Position.Y,0)
-					Parts.FollowPart.CFrame = CFrame.new(((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position*Vector3.new(1,0,1))+Vector3.new(0,Position.Y,0))
 				end
 			end
 		end
@@ -3379,7 +3364,7 @@ HeadsUp.Size = Vector3.new(0,0,0)
 HeadsUp.Transparency = 1
 HeadsUp.CanCollide = false
 HeadsUp.Anchored = true
-HeadsUp.Parent = nil
+HeadsUp.Parent = workspace.CurrentCamera
 local reup=os.clock()
 local Char = game:GetService('Players').LocalPlayer.Character
 Char.Archivable = true
