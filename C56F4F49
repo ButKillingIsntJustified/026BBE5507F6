@@ -2339,12 +2339,12 @@ game:GetService("RunService").Stepped:Connect(function()
 				local HeadCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
 				local LarmCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
 				local RobloxHeadCFrame = Camera.CFrame*HeadCFrame --Idk, that type of naming makes it easy to remember certain things
-				local RayDown = Ray.new(RobloxHeadCFrame.Position,Vector3.new(0,-1250,0))
+				local RayDown = Ray.new((RobloxHeadCFrame*CFrame.new(0,0,-.3)).Position,Vector3.new(0,-1250,0))
 				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(RayDown,{Character,workspace.CurrentCamera},true,false)
 				if Position then
 					local onLvl = Vector3.new(0,Position.Y+4.5,0)
 					local Lookat = RobloxHeadCFrame*CFrame.new(0,0,-0.3)
-					Parts.FollowPart.Position = (Lookat.Position * Vector3.new(1,0,1))+onLvl
+					Parts.FollowPart.Position = (Position * Vector3.new(1,0,1))+onLvl
 				end
 			end
 		end
