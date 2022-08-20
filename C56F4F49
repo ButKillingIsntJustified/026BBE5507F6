@@ -2362,6 +2362,7 @@ Events.SteadyStepped.Event:Connect(function()
 					local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
 					Parts.FollowPart.CFrame = CFrame.new(((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position*Vector3.new(1,0,1))+Vector3.new(0,Position.Y,0))
 				else
+					local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
 					Parts.FollowPart.Position = (levelX.Position*Vector3.new(1,0,1))+Vector3.new(0,Parts.FollowPart.Position.Y,0)
 					Parts.FollowPart.CFrame = CFrame.new(((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position*Vector3.new(1,0,1))+Vector3.new(0,Position.Y,0))
 				end
