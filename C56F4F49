@@ -2346,7 +2346,7 @@ game:GetService("RunService").Stepped:Connect(function()
 				local levelX = level
 				if Position then
 					local onLvl = Vector3.new(0,Position.Y+4.5,0)
-					local Lookat = HeadCFrame*CFrame.new(0,0,-0.3)
+					local Lookat = RobloxHeadCFrame*CFrame.new(0,0,-0.3)
 					Parts.FollowPart.Position = (Lookat.Position * Vector3.new(1,0,1))+onLvl
 				else
 					Parts.FollowPart.Position = (levelX.Position*Vector3.new(1,0,1))+Vector3.new(0,Parts.FollowPart.Position.Y,0)
