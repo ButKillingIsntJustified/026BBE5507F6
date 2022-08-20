@@ -2343,7 +2343,7 @@ game:GetService("RunService").Stepped:Connect(function()
 				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(RayDown,{Character,workspace.CurrentCamera},true,false)
 				if Position then
 					local onLvl = Vector3.new(0,Position.Y+4.5,0)
-					local Lookat = RobloxHeadCFrame*CFrame.Angles(0,math.pi,0)*CFrame.new(0,0,0.15)
+					local Lookat = (RobloxHeadCFrame*CFrame.Angles(0,math.pi,0))*CFrame.new(0,0,-0.15)
 					Parts.FollowPart.Position = (Position * Vector3.new(1,0,1))+onLvl
 				end
 			end
