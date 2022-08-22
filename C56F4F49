@@ -13,7 +13,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.35"
+_G.BrewVersion = "v1.351"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -1619,6 +1619,15 @@ local SpyChar = function(player)
 						NameTag2.Enabled = false
 					end
 				end)
+				pcall(function()
+					local TeamLabel = NameTag2.NamePlate.Team
+					if player.Team~=nil then
+						TeamLabel.Text = "["..tostring(player.Team).."]"
+						TeamLabel.TextColor3 = player.TeamColor.Color
+					else
+						TeamLabel.Text = ""
+					end
+				end)
 			end
 		end)
 		local selfX = nil
@@ -2341,25 +2350,25 @@ Events.SteadyStepped.Event:Connect(function()
 		end
 		if HoldingDirection == true then
 			Debounces.Moving = os.clock()
-			if PreloadedSettings.Flying then
-				local HeadCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
-				local LarmCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
-				local RobloxHeadCFrame = Camera.CFrame --Idk, that type of naming makes it easy to remember certain things
-				local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
-				Parts.FollowPart.CFrame = CFrame.new((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position)
-			else
-				local HeadCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
-				local LarmCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
-				local RobloxHeadCFrame = Camera.CFrame*HeadCFrame --Idk, that type of naming makes it easy to remember certain things
-				local RayDown = Ray.new(((RobloxHeadCFrame*CFrame.Angles(0,math.pi,0))*CFrame.new(0,0,-0.15)).Position,Vector3.new(0,-1250,0))
-				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(RayDown,{Character,workspace.CurrentCamera},true,false)
-				if Position then
-					local onLvl = Vector3.new(0,Position.Y+4.5,0)
-					Parts.FollowPart.Position = (Position * Vector3.new(1,0,1))+onLvl
+			local HeadCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.Head)
+			local LarmCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
+			local RobloxHeadCFrame = Camera.CFrame --Idk, that type of naming makes it easy to remember certain things
+			local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
+			local CFrameVector3 = CFrame.new((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position)
+			if not PreloadedSettings.Flying then
+				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(Ray.new(Parts.FollowPart.Position,Vector3.new(0,-1250,0)))
+				local Mag = (Position-Parts.FollowPart.Position)
+				if Hit then
+					CFrameVector3 = CFrame.new((CFrameVector3 - Vector3.new(0,Mag.Magnitude,0)+Vector3.new(0,4.5,0)))
+				else
+					Parts.FollowPart.CFrame = CFrameVector3
 				end
+			else
+				Parts.FollowPart.CFrame = CFrameVector3
 			end
 		end
 		Camera.CameraType = Enum.CameraType.Scriptable
+		
 		Camera.CFrame = Parts.FollowPart.CFrame * CFrame.new(ExtraVariables.BaseOffsetCamera) * CameraAngle
 		if GetRigType() == 'R6' then
 			local Legs = {}
