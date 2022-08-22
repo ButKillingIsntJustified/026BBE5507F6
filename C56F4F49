@@ -13,7 +13,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.351"
+_G.BrewVersion = "v1.355"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -1413,6 +1413,9 @@ local PreloadedSettings = {
 	PersonalSpace = false,
 	NametagsShown = true,
 	Flying = true,
+	AlwaysOnTop = false,
+	TweenedMovement = true,
+	FollowCamera = true,
 }
 local LightingEffects = {}
 game:GetService('Lighting').ChildAdded:Connect(function(obj)
@@ -2847,7 +2850,13 @@ game:GetService('RunService').RenderStepped:Connect(function()
 	VrSurface.LightInfluence = 0
 	VrSurface.Adornee = MenuPart
 	local PlaceCFrame = Camera.CFrame * Services.VR:GetUserCFrame(Enum.UserCFrame.Head) * CFrame.new(0,0,-4)
-	MenuPart.CFrame = MenuPart.CFrame:Lerp(PlaceCFrame,0.06)
+	if PreloadedSettings.FollowCamera then
+		if PreloadedSettings.TweenedMovement then
+			MenuPart.CFrame = MenuPart.CFrame:Lerp(PlaceCFrame,0.06)
+		else
+			MenuPart.CFrame = MenuPart.CFrame:Lerp(PlaceCFrame,1)
+		end
+	end
 	if ExtraVariables.ActionOpened == true then
 		MenuPart.Parent = Camera
 		if MenuPart.Size ~= ExtraVariables.MenuOpen then
@@ -2935,6 +2944,9 @@ OnClick(Main.QuickButtons.Chat,function()
 		v.Visible = false
 	end
 	VrSurface.VrMain.InnerMain.Chat.Visible = true
+end)
+OnClick(Main.InnerMain.Buttons.MenuSettings,function()
+	VrSurface.VrMain.InnerMain.MenuSettings.Visible = true
 end)
 OnClick(Main.InnerMain.Buttons.GameExploits,function()
 	VrSurface.VrMain.InnerMain.GameExploits.Visible = true
@@ -3032,7 +3044,13 @@ SetSettingCheckBox(SettingsMenu.Choice7,"DetailedMaterials",function(Boolean)
 		end
 	end
 end)
+local MenuSettings = Main.InnerMain.MenuSettings
 SetSettingCheckBox(SettingsMenu.Choice8,"Flying")
+SetSettingCheckBox(MenuSettings.Choice1,"FollowCamera")
+SetSettingCheckBox(MenuSettings.Choice2,"AlwaysOnTop",function(boolean)
+	VrSurface.AlwaysOnTop = boolean
+end)
+SetSettingCheckBox(MenuSettings.Choice3,"TweenedMovement")
 --~ ~ ~ ~ ~~ ~ ~
 ExtraVariables.HatsToDisplay = {}
 for i,v in pairs(Character:GetChildren())do
