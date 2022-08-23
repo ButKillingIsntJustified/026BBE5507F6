@@ -2906,6 +2906,10 @@ function OnClick(Button,Func)
 		Func()
 	end)
 end
+for i,v in pairs(VrSurface.VrMain.InnerMain:GetChildren())do
+	v.Visible = false
+end
+VrSurface.VrMain.InnerMain.Buttons.Visible = true
 OnClick(Main.QuickButtons.Home,function()
 	for i,v in pairs(VrSurface.VrMain.InnerMain:GetChildren())do
 		v.Visible = false
