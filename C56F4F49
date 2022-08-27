@@ -13,7 +13,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.351"
+_G.BrewVersion = "v1.353"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -232,8 +232,11 @@ function PromptMessage(Message,lasts,BackgroundTransparency)
 		Init_Message,Splash,BillboardGui,Darken
 	}
 	Init_Message.Parent = BillboardGui
-	CreateTemporaryLoopWithRunServiceType("RenderStepped",lasts,function()
+	local Slas = game:GetService('RunService').RenderStepped:Connect(function()
 		Splash.CFrame = workspace.CurrentCamera.CFrame*game:GetService('VRService'):GetUserCFrame(Enum.UserCFrame.Head) * CFrame.new(0,0,-10)
+	end)
+	task.delay(lasts,function()
+		Slas:Disconnect()
 	end)
 	task.wait(lasts)
 	game:GetService('TweenService'):Create(Init_Message,TweenInfo.new(0.5),{
@@ -2343,7 +2346,7 @@ for i,v in pairs(AllPartsInParts) do
 	end
 end
 Create("SpecialMesh",Parts.FollowPart,{Scale=Vector3.new(0,0,0)})
-Events.SteadyStepped.Event:Connect(function()
+game:GetService('RunService').Stepped:Connect(function()
 	if Services.VR.VREnabled == not game:GetService("RunService"):IsStudio() then
 		for i,v in pairs(Character:GetDescendants())do
 			if v:IsA("LocalScript") or v:IsA("BallSocketConstraint") or v:IsA("CharacterMesh") or v:IsA("NoCollisionConstraint") then
