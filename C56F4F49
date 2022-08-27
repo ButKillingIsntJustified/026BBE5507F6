@@ -13,7 +13,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.352"
+_G.BrewVersion = "v1.351"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -2193,20 +2193,22 @@ FrameYield(1)
 local OffsettingLimbHats = {}
 for i,v in pairs(Character:GetDescendants())do
 	if v:IsA("JointInstance") and v.Name=='AccessoryWeld' then
-		if v.Part1.Name:lower():find("leg") or v.Part1.Name:lower():find("arm") then
-			local Hat = v.Parent.Parent
-			local Handle = v.Parent
-			local Weld = v
-			if true==true then
-				Handle.Velocity = Vector3.new(math.huge,math.huge,math.huge)
-				task.delay(0.1,function()
-					Handle.Parent = nil
-				end)
-				task.delay(0.15,function()
-					Hat:Destroy()
-				end)
+		pcall(function()
+			if v.Part1 and v.Part1.Name:lower():find("leg") or v.Part1.Name:lower():find("arm") then
+				local Hat = v.Parent.Parent
+				local Handle = v.Parent
+				local Weld = v
+				if true==true then
+					Handle.Velocity = Vector3.new(math.huge,math.huge,math.huge)
+					task.delay(0.1,function()
+						Handle.Parent = nil
+					end)
+					task.delay(0.15,function()
+						Hat:Destroy()
+					end)
+				end
 			end
-		end
+		end)
 	end
 end
 
