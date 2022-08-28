@@ -1981,6 +1981,12 @@ function Netless(Obj)
 			LinearVelocity.Enabled = not Obj:FindFirstChild("Flinging")
 			AlignPosition.Enabled = not Obj:FindFirstChild("Flinging")
 			AlignOrientation.Enabled = not Obj:FindFirstChild("Flinging")
+			pcall(function()
+				if Obj:FindFirstChild("AP") then
+					Obj:FindFirstChild("AP").Enabled = not Obj:FindFirstChild("Flinging")
+					Obj:FindFirstChild("AO").Enabled = not Obj:FindFirstChild("Flinging")
+				end
+			end)
 			AlignPosition.Position = Obj.Position
 			AlignOrientation.CFrame = Obj.CFrame
 			Obj.Velocity = Vector3.new(30,0,0)
@@ -2045,6 +2051,7 @@ function MoveAt(Part,CFrame_)
 	local GY = nil
 	if Part:FindFirstChild("AP") then
 		BP = Part:FindFirstChild("AP")
+		GY = Part:FindFirstChild("AO")
 	else
 		local Constraint = Create("Attachment",Part,{
 			Name="MoveAtCenter",
