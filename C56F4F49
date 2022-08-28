@@ -13,7 +13,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.353"
+_G.BrewVersion = "v1.354"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -40,6 +40,18 @@ local Advanced = {
 			obj.Disabled = true
 		end,
 	}
+}
+local ExtraVariables = {
+	BaseOffsetCamera = Vector3.new(0,-4,0),
+	VrFinalized = false,
+	ChatOpen = false,
+	ActionOpened = false,
+	TurnArmsForTools=true,
+	DisplayNames=true,
+	CharacterViewport=true,
+	FakeWalking = false,
+	SaveSettings = {Props={}},
+	LocalProps = {},
 }
 local Events = {
 	SteadyStepped = Instance.new("BindableEvent")
@@ -223,7 +235,8 @@ function PromptMessage(Message,lasts,BackgroundTransparency)
 	})
 	local BillboardGui = Create("BillboardGui",game:GetService('Players').LocalPlayer:FindFirstChildWhichIsA('PlayerGui'),{
 		Size = UDim2.new(20,0,20,0),
-		AlwaysOnTop = true
+		AlwaysOnTop = true,
+		Adornee = Splash
 	})
 	local Darken = Create("ColorCorrectionEffect",game:GetService("Lighting"),{
 		Brightness = -(1-BackgroundTransparency),
@@ -1416,6 +1429,7 @@ local PreloadedSettings = {
 	PersonalSpace = false,
 	NametagsShown = true,
 	Flying = true,
+	FlySpeed = ExtraVariables.FlySettings.Default.FlySpeed
 }
 local LightingEffects = {}
 game:GetService('Lighting').ChildAdded:Connect(function(obj)
@@ -1698,18 +1712,6 @@ for _,p in pairs(Players:GetPlayers())do
 end
 local Camera = workspace.CurrentCamera
 local Debounces = {}
-local ExtraVariables = {
-	BaseOffsetCamera = Vector3.new(0,-4,0),
-	VrFinalized = false,
-	ChatOpen = false,
-	ActionOpened = false,
-	TurnArmsForTools=true,
-	DisplayNames=true,
-	CharacterViewport=true,
-	FakeWalking = false,
-	SaveSettings = {Props={}},
-	LocalProps = {},
-}
 
 local Services = {
 	VR = game:GetService("VRService"),
@@ -2015,10 +2017,13 @@ local Character = game:GetService('Players').LocalPlayer.Character or game:GetSe
 Character:WaitForChild("Humanoid",100)
 local Msg1 = [[
 ...Initializing...
+⚠️
+If you cannot interact with the menu
+tab out and tab back in to Roblox.
+⚠️
 
-If you cannot interact with the menu, tab out and tab back in to Roblox.
-
-(If you happen to break, just rejoin)
+(If you happen to break, just rejoin, sometimes
+it's unavoidable)
 ]]
 SpawnAlternative(function()
 	PromptMessage(Msg1,7,0.3)
@@ -2038,23 +2043,40 @@ end)
 function MoveAt(Part,CFrame_)
 	local BP = nil
 	local GY = nil
-	if Part:FindFirstChildWhichIsA("BodyPosition") then
-		BP = Part:FindFirstChildWhichIsA("BodyPosition")
+	if Part:FindFirstChild("AP") then
+		BP = Part:FindFirstChild("AP")
 	else
-		BP = Instance.new("BodyPosition")
-	end
-	if Part:FindFirstChildWhichIsA("BodyGyro") then
-		GY = Part:FindFirstChildWhichIsA("BodyGyro")
-	else
-		GY = Instance.new("BodyGyro")
+		local Constraint = Create("Attachment",Part,{
+			Name="MoveAtCenter",
+		})
+		local AlignPosition = Create("AlignPosition",Part,{
+			Mode = "OneAttachment",
+			Attachment0 = Constraint,
+			MaxForce = math.huge,
+			Responsiveness=math.huge,
+			MaxVelocity=math.huge,
+			Name="AP"
+		})
+		local AlignOrientation = Create("AlignOrientation",Part,{
+			Mode = "OneAttachment",
+			Attachment0 = Constraint,
+			MaxAngularVelocity = math.huge,
+			MaxTorque=math.huge,
+			Responsiveness=math.huge,
+			Name="AO"
+		})
+		local LinearVelocity = Create("LinearVelocity",Part,{
+			MaxForce = math.huge,
+			Attachment0 = Constraint,
+			VectorVelocity = Vector3.new(0,0,0),
+			Name="LV"
+		})
+		BP = AlignPosition
+		GY = AlignOrientation
 	end
 	BP.Parent = Part
 	GY.Parent = Part
-	BP.P = 1240
-	BP.MaxForce = Vector3.new(100,100,100)
 	BP.Position = CFrame_.Position
-	GY.MaxTorque = Vector3.new(100,100,100)
-	GY.P = 1240
 	GY.CFrame = CFrame_
 end
 function SetUpUndead()
@@ -2083,6 +2105,11 @@ function SetUpUndead()
 	task.wait(1)
 	Humanoid.MaxHealth = -0.1
 end
+ExtraVariables.FlySettings={
+	Default = {
+		['FlySpeed'] = 0.3 --.3 = max
+	};
+}
 function FindIsKeyPressed(key)
 	for _,x in pairs(Services.UIS:GetKeysPressed())do
 		if x==key then
@@ -2359,7 +2386,7 @@ game:GetService('RunService').Stepped:Connect(function()
 			local LarmCFrame = Services.VR:GetUserCFrame(Enum.UserCFrame.LeftHand)
 			local RobloxHeadCFrame = Camera.CFrame --Idk, that type of naming makes it easy to remember certain things
 			local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
-			local CFrameVector3 = CFrame.new((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-0.1*3)*From).Position)
+			local CFrameVector3 = CFrame.new((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-PreloadedSettings.FlySpeed)*From).Position)
 			if not PreloadedSettings.Flying then
 				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(Ray.new(Parts.FollowPart.Position,Vector3.new(0,-1250,0)))
 				local Mag = (Position-Parts.FollowPart.Position)
@@ -2562,9 +2589,6 @@ game:GetService('RunService').Stepped:Connect(function()
 					local Offset = hatInfo[2]
 					Hat.Handle.CFrame = Parts.Head.CFrame
 					Netless(Hat.Handle)
-					if Hat.Handle:FindFirstChild('AccessoryWeld') then
-						--	Hat.Handle.AccessoryWeld:Destroy()
-					end
 				end
 				MoveAt(CharacterLimbs.LeftArm,Parts.LeftArm.CFrame)
 				MoveAt(CharacterLimbs.RightArm,Parts.RightArm.CFrame)
@@ -2616,15 +2640,10 @@ end)
 game:GetService("RunService").Heartbeat:Connect(function()
 	if Services.VR.VREnabled == not game:GetService("RunService"):IsStudio() and CharacterLimbs.Head~=nil then
 		for _,x in pairs(Character:GetChildren())do
-			pcall(function()
-				Netless(x)
-			end)
+			pcall(Netless,x)
 		end
 		CharacterLimbs.RightArm.CFrame = Parts.RightArm.CFrame
 		CharacterLimbs.LeftArm.CFrame = Parts.LeftArm.CFrame
-
-		if GetRigType()=='R6' then
-		end
 		ProbablyIK.Root.CFrame = Character.PrimaryPart.CFrame
 		RePositionHeadParts()
 		task.defer(function()
@@ -3169,6 +3188,24 @@ OnClick(Main.InnerMain.PropCreation.Initialize.Tool.Equip,function()
 end)
 OnClick(Main.InnerMain.Buttons.ClientInformation,function()
 	Main.InnerMain.ClientInfo.Visible = true
+end)
+OnClick(Main.InnerMain.Buttons.Movement,function()
+	Main.InnerMain.Movementt.Visible = true
+end)
+OnClick(Main.InnerMain.Movement.Choice1.CheckBox,function()
+	PreloadedSettings.FlySpeed=PreloadedSettings.FlySpeed+.05
+	Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
+	writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
+end)
+OnClick(Main.InnerMain.Movement.Choice2.CheckBox,function()
+	PreloadedSettings.FlySpeed=PreloadedSettings.FlySpeed-.05
+	Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
+	writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
+end)
+OnClick(Main.InnerMain.Movement.Choice3.CheckBox,function()
+	PreloadedSettings.FlySpeed=ExtraVariables.FlySettings.Default.FlySpeed
+	Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
+	writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
 end)
 game:GetService('RunService').RenderStepped:Connect(function()
 	local Info = Main.InnerMain.ClientInfo
