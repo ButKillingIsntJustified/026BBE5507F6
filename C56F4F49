@@ -13,7 +13,7 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.354"
+_G.BrewVersion = "v1.36"
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -3199,6 +3199,7 @@ end)
 OnClick(Main.InnerMain.Buttons.Movement,function()
 	Main.InnerMain.Movement.Visible = true
 end)
+Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
 OnClick(Main.InnerMain.Movement.Choice1.CheckBox,function()
 	PreloadedSettings.FlySpeed=PreloadedSettings.FlySpeed+.05
 	Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
