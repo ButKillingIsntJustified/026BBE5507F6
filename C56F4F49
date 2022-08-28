@@ -3202,7 +3202,7 @@ OnClick(Main.InnerMain.Movement.Choice2.CheckBox,function()
 	Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
 	writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
 end)
-OnClick(Main.InnerMain.Movement.Choice3.CheckBox,function()
+OnClick(Main.InnerMain.Movement:WaitForChild("Choice3").CheckBox,function()
 	PreloadedSettings.FlySpeed=ExtraVariables.FlySettings.Default.FlySpeed
 	Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
 	writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
