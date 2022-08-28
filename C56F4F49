@@ -1429,7 +1429,7 @@ local PreloadedSettings = {
 	PersonalSpace = false,
 	NametagsShown = true,
 	Flying = true,
-	FlySpeed = ExtraVariables.FlySettings.Default.FlySpeed
+	FlySpeed = 0.3
 }
 local LightingEffects = {}
 game:GetService('Lighting').ChildAdded:Connect(function(obj)
