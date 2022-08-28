@@ -3197,7 +3197,7 @@ OnClick(Main.InnerMain.Buttons.ClientInformation,function()
 	Main.InnerMain.ClientInfo.Visible = true
 end)
 OnClick(Main.InnerMain.Buttons.Movement,function()
-	Main.InnerMain.Movementt.Visible = true
+	Main.InnerMain.Movement.Visible = true
 end)
 OnClick(Main.InnerMain.Movement.Choice1.CheckBox,function()
 	PreloadedSettings.FlySpeed=PreloadedSettings.FlySpeed+.05
