@@ -13,7 +13,8 @@ if game:GetService('VRService').VREnabled == false then
 	return
 end
 
-_G.BrewVersion = "v1.37"
+_G.BrewVersion = "v1.4b"
+
 local Advanced = {
 	Scripts_To_Remove = {
 		"NexusVRCharacterModelClientLoader",
@@ -2459,7 +2460,7 @@ game:GetService('RunService').Stepped:Connect(function()
 			end
 		end
 		Camera.CameraType = Enum.CameraType.Scriptable
-		
+
 		Camera.CFrame = Parts.FollowPart.CFrame * CFrame.new(ExtraVariables.BaseOffsetCamera) * CameraAngle
 		if GetRigType() == 'R6' then
 			local Legs = {}
@@ -2918,6 +2919,30 @@ local MenuPart = Create("Part",nil,{
 })
 
 local VrSurface = SetupModel.VrSurface
+_G.BrewVrMenu = VrSurface --//Setting this up for the plugins.
+
+--//
+local pluginsFolder = "BrewVR_Plugins/"
+local BrewVrFolderExists = isfolder("BrewVR_Plugins")
+if not BrewVrFolderExists then
+	makefolder("BrewVR_Plugins")
+end
+local begin = os.clock()
+local folderDoesExist = false
+repeat task.wait(-1) folderDoesExist = isfolder("BrewVR_Plugins") until os.clock()-begin >= 2 or folderDoesExist == true
+if folderDoesExist then
+	local pluginFiles=listfiles(pluginsFolder)
+	for i,v in pairs(pluginFiles)do
+		if v.Name:sub((#v.Name)-3)==".bvp" then --// In case you need a .txt for explanation.
+			task.spawn(function()
+				loadstring(readfile(v.."\n"))() --// This should work
+			end)
+		end
+	end
+else
+	PromptMessage("You are unable to use plugins.",3,0)
+end
+--\\ End of plugin creation
 ExtraVariables.Clock = VrSurface.VrMain.Time
 VrSurface.VrMain.Version.Text = _G.BrewVersion
 game:GetService('RunService').RenderStepped:Connect(function()
