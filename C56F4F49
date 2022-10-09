@@ -3048,8 +3048,8 @@ OnClick(Main.QuickButtons.Chat,function()
 	end
 	VrSurface.VrMain.InnerMain.Chat.Visible = true
 end)
-OnClick(Main.InnerMain.Buttons.GameExploits,function()
-	VrSurface.VrMain.InnerMain.GameExploits.Visible = true
+OnClick(Main.InnerMain.Buttons.Plugins,function()
+	VrSurface.VrMain.InnerMain.Plugins.Visible = true
 end)
 OnClick(Main.InnerMain.Buttons.Players,function()
 	VrSurface.VrMain.InnerMain.Players.Visible = true
