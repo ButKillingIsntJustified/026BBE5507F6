@@ -12,7 +12,7 @@ if game:GetService('VRService').VREnabled == false then
 --	return
 end
 
-_G.BrewVersion = "v1.41b"
+_G.BrewVersion = "v1.402b"
 
 local Advanced = {
 	Scripts_To_Remove = {
