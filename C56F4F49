@@ -2995,6 +2995,7 @@ else
 end
 --\\ End of plugin creation
 ExtraVariables.Clock = VrSurface.VrMain.Time
+task.wait(0.5)
 VrSurface.VrMain.Version.Text = _G.BrewVersion
 game:GetService('RunService').RenderStepped:Connect(function()
 	local Hour = os.date("%I")
@@ -3057,7 +3058,7 @@ Players.PlayerAdded:Connect(AddToPlayerList)
 for _,player in pairs(Players:GetPlayers())do
 	AddToPlayerList(player)
 end
-local Main = VrSurface.VrMain
+local Main = VrSurface:WaitForChild('VrMain',5)
 function OnClick(Button,Func)
 	Button.MouseButton1Click:Connect(function()
 		PlaySound(3779096010)
