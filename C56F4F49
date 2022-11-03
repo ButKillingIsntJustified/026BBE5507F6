@@ -9,10 +9,96 @@ if game:GetService('VRService').VREnabled == false then
 		Title = "Brew VR",
 		Text = "Vr is not enabled.",
 	})
---	return
+	if not game:GetService('RunService'):IsStudio() then
+		return --// When it's not in testing
+	end
 end
 
-_G.BrewVersion = "v1.402b"
+_G.BrewVersion = "v1.41b" --// Latest?
+
+--// User friendly prompting of a message.
+
+function Destroy(Obj,Delay_)
+	if Delay_ then
+		task.delay(Delay_,function()
+			pcall(function()
+				Obj:Destroy()
+			end)
+		end)
+	else
+		pcall(function()
+			Obj:Destroy()
+		end)
+	end
+end
+local CreateTemporaryLoopWithRunServiceType = function(Type,Seconds,func)
+	local Type = game:GetService("RunService")[Type]
+	local Start = os.clock()
+	if not Seconds then return warn("Please put a length in argument 2.") end
+	local X = nil
+	X = Type:Connect(function()
+		if os.clock()-Start >= Seconds then
+			X:Disconnect()
+			return
+		else
+			func()
+		end
+	end)
+end
+local Create = function(Class,Parent,Properties)
+	local A = Instance.new(Class)
+	for i,v in pairs(Properties)do
+		A[i]=v
+	end
+	A.Parent = Parent
+	return A
+end
+local  PromptMessage = function(Message,lasts,BackgroundTransparency)
+	local lastInstance=getfenv(0).lastCustomMsgInstance or {}
+	for i,v in pairs(lastInstance)do
+		Destroy(v,-1)
+		if v:IsA("ColorCorrection") then
+			game:GetService('TweenService'):Create(v,TweenInfo.new(0.5),{Brightness = 0}):Play()
+		end
+	end
+	local Part = Create("Part",game:GetService('JointsService'),{
+		Size = Vector3.new(12,8,0),
+		Name = "LocalScreen",
+		Anchored = true,
+		CanCollide = false,
+		Transparency = 1
+	})
+	local ScreenUi = Create("SurfaceGui",Part,{
+		Adornee=Part,
+		Face = Enum.NormalId.Back,
+		AlwaysOnTop=true,
+	})
+	local TextLabel = Create("TextLabel",ScreenUi,{
+		Size = UDim2.new(2,0,2,0),
+		Position = UDim2.new(-0.5,0,-0.5,0),
+		BackgroundTransparency=1,
+		TextScaled = true,
+		Rotation = 0.0001,
+		Text = Message,
+		Font = Enum.Font.Code,
+		TextColor3 = Color3.new(1,1,1),
+	})
+	local brightness = Instance.new("ColorCorrectionEffect",game:GetService('Lighting'))
+	brightness.Brightness = -(1-(BackgroundTransparency or 0))
+	brightness.Contrast = -0.5
+	brightness.Saturation = 1
+	getfenv(0).lastCustomMsgInstance = {Part,brightness}
+	CreateTemporaryLoopWithRunServiceType("RenderStepped",lasts,function()
+		Part.CFrame = workspace.CurrentCamera.CFrame * CFrame.new(0,0,-20)
+	end)
+	task.delay(lasts,function()
+		Destroy(Part,0)
+		game:GetService('TweenService'):Create(brightness,TweenInfo.new(0.5),{Brightness = 0}):Play()
+		Destroy(brightness,0.5)
+	end)
+end
+
+--\\ User friendly prompting of a message.
 
 local Advanced = {
 	Scripts_To_Remove = {
@@ -167,104 +253,16 @@ if game:GetService("RunService"):IsStudio() then
 	SelfClick:Disconnect()
 end
 
+PromptMessage([[
+To initiate the script...
+
+Grab the white block in front of you and select it.
+
+It's not a GUI, you can't point a laser and select it... Lol
+]],3,0.5)
+
 repeat task.wait(-1) until ClickedInit==true
 
-function Destroy(Obj,Delay_)
-	if Delay_ then
-		task.delay(Delay_,function()
-			pcall(function()
-				Obj:Destroy()
-			end)
-		end)
-	else
-		pcall(function()
-			Obj:Destroy()
-		end)
-	end
-end
-
-local CreateTemporaryLoopWithRunServiceType = function(Type,Seconds,func)
-	local Type = game:GetService("RunService")[Type]
-	local Start = os.clock()
-	if not Seconds then return warn("Please put a length in argument 2.") end
-	local X = nil
-	X = Type:Connect(function()
-		if os.clock()-Start >= Seconds then
-			X:Disconnect()
-			return
-		else
-			func()
-		end
-	end)
-end
-local Create = function(Class,Parent,Properties)
-	local A = Instance.new(Class)
-	for i,v in pairs(Properties)do
-		A[i]=v
-	end
-	A.Parent = Parent
-	return A
-end
-local LastMessageInstances = {}
-function PromptMessage(Message,lasts,BackgroundTransparency)
-	for _,x in pairs(LastMessageInstances)do
-		Destroy(x,-1)
-	end
-	if game:GetService("RunService"):IsStudio() then
-		local H = Instance.new("Hint")
-		H.Text = Message
-		H.Parent = workspace
-		task.delay(lasts,function()
-			H.Parent=nil
-		end)
-		table.insert(LastMessageInstances,H)
-		return
-	end
-	local Init_Message = Create("TextLabel",nil,{
-		Text = Message,
-		TextSize = 30,
-		Font = Enum.Font.SourceSansBold,
-		TextColor3 = Color3.new(1,1,1),
-		BackgroundTransparency=1,
-		Size = UDim2.new(1,0,1,0),
-	})
-	local Splash = Create("Part",workspace.CurrentCamera,{
-		Size = Vector3.new(0,0,0),
-		Anchored = true,
-		CanCollide = false,
-	})
-	local BillboardGui = Create("BillboardGui",game:GetService('Players').LocalPlayer:FindFirstChildWhichIsA('PlayerGui'),{
-		Size = UDim2.new(20,0,20,0),
-		AlwaysOnTop = true,
-		Adornee = Splash
-	})
-	local Darken = Create("ColorCorrectionEffect",game:GetService("Lighting"),{
-		Brightness = -(1-BackgroundTransparency),
-	})
-	LastMessageInstances = {
-		Init_Message,Splash,BillboardGui,Darken
-	}
-	Init_Message.Parent = BillboardGui
-	local Slas = game:GetService('RunService').RenderStepped:Connect(function()
-		Splash.CFrame = workspace.CurrentCamera.CFrame*game:GetService('VRService'):GetUserCFrame(Enum.UserCFrame.Head) * CFrame.new(0,0,-10)
-	end)
-	task.delay(lasts,function()
-		Slas:Disconnect()
-	end)
-	task.wait(lasts)
-	game:GetService('TweenService'):Create(Init_Message,TweenInfo.new(0.5),{
-		Transparency=1,
-		TextTransparency=1,
-		TextStrokeTransparency=1,
-	}):Play()
-	game:GetService('TweenService'):Create(Darken,TweenInfo.new(0.5),{
-		Brightness = 0,
-	}):Play()
-	Destroy(Init_Message,0.5)
-	Destroy(BillboardGui,0.5)
-	Destroy(Splash,0.5)
-	Destroy(Darken,0.5)
-end
 for i,v in pairs(User:GetDescendants())do
 	if v:IsA("LocalScript") then
 		for _,n in pairs(Advanced.Scripts_To_Remove)do
@@ -340,14 +338,14 @@ end
 AlternativeSpawn(function()
 	PromptMessage([[
 ...Checking your whitelist...
-
-(Please do not spam execute)
 ]],30,0.5)
 end)
 
 local fenv = getfenv()
 local shp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
 local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
+
+--// Identity + GetObjects - UI
 local StrongIdentity = pcall(function()
 	local _ = game:GetService('CoreGui').FindFirstChild
 end)
@@ -361,6 +359,8 @@ else
 	SetupModel = game:GetService('ReplicatedStorage').VRMenu
 	NameTag = game:GetService('ReplicatedStorage').VRMenu.NameTag
 end
+--\\ GetObjects - UI
+
 --Start of Whitelist
 local tabs = {
 	'https://pastebin.com/raw/JqUON8GB',
@@ -1471,13 +1471,11 @@ PromptMessage([[
 Valid whitelist
 ]],0.5,0.5)
 
-task.wait(0.5)
-
 local PreloadedSettings = {
 	MotionControls = true,
 	CharacterOutlines = true,
 	Teleport = true,
-	DetailedMaterials = true,
+	DetailedMaterials = true, 
 	LightingEffects = true,
 	PersonalSpace = false,
 	NametagsShown = true,
@@ -1587,7 +1585,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 end)
 if not _G.keyrelease then
 	keyrelease = function()
-		
+
 	end
 end
 --// This should fix the problem with the menu not working, I think this might be a synapse exclusive bug probably.
@@ -2017,15 +2015,15 @@ function Netless(Obj)
 				Destroy(ANG,0)
 			end
 		end
-		Obj.Velocity = Vector3.new(0,30,0)
+		Obj.Velocity = Vector3.new(0,35,0)
 		Obj.AssemblyAngularVelocity = Vector3.new(0,0,0)
 		Obj.RotVelocity = Vector3.new(0,0,0)
-		Obj.AssemblyLinearVelocity = Vector3.new(0,5,0)
+		Obj.AssemblyLinearVelocity = Vector3.new(0,14,0)
 		task.defer(function()
-			Obj.Velocity = Vector3.new(0,30,0)
+			Obj.Velocity = Vector3.new(0,35,0)
 			Obj.RotVelocity = Vector3.new(0,0,0)
 			Obj.AssemblyAngularVelocity = Vector3.new(0,0,0)
-			Obj.AssemblyLinearVelocity = Vector3.new(0,5,0)
+			Obj.AssemblyLinearVelocity = Vector3.new(0,14,0)
 		end)
 		if Obj:FindFirstChild("NoFlinging") then
 			Obj.NoFlinging:Destroy()
@@ -2108,11 +2106,14 @@ local Msg1 = [[
 ...Initializing...
 ⚠️
 If you cannot interact with the menu
-tab out and tab back in to Roblox.
+→tab out and tab back← in to Roblox.
 ⚠️
 
 (If you happen to break, just rejoin, sometimes
 it's unavoidable)
+
+
+(if it's consistent, ask for a response in the server.)
 ]]
 SpawnAlternative(function()
 	PromptMessage(Msg1,7,0.3)
@@ -2332,7 +2333,6 @@ for i,v in pairs(Character:GetDescendants())do
 	end
 end
 
-task.wait(0.8)
 local ToolsAndOffsets = {}
 for _,x in pairs(User.Character:GetChildren())do
 	if x:IsA("Accessory") then
@@ -2463,6 +2463,8 @@ for i,v in pairs(AllPartsInParts) do
 	end
 end
 Create("SpecialMesh",Parts.FollowPart,{Scale=Vector3.new(0,0,0)})
+
+--// SPAGHETTI CODE I AM SO SORRY!!! -Amokah
 game:GetService('RunService').Stepped:Connect(function()
 	if Services.VR.VREnabled == not game:GetService("RunService"):IsStudio() then
 		for i,v in pairs(Character:GetDescendants())do
@@ -2964,7 +2966,7 @@ local fill_the_blanks = {
 
 	end,
 	['readfile']=function()
-		
+
 	end,
 }
 for i,v in pairs(fill_the_blanks)do
@@ -3132,7 +3134,7 @@ OnClick(Main.InnerMain.PropCreation.Initialize.Tool.No,function()
 end)
 --~ ~ ~ ~ ~~ ~ ~
 ExtraVariables.AnonymousHead = function()
-	
+
 end
 ExtraVariables.GameButton = Main.InnerMain.OtherGames.GameButton
 ExtraVariables.GameButton.Parent=nil
@@ -3583,16 +3585,16 @@ ViewportFrame.BackgroundTransparency = 1
 repeat task.wait(-1) until ExtraVariables.VrFinalized == true
 task.wait(0.5)
 PromptMessage([[
-→ Controls
+→ Controls ←
 
 LEFT TRIGGER : Move
-LEFT BUTTON 1 : Menu
+LEFT GRIP : Menu
 RIGHT TRIGGER : Arm flinger
-RIGHT BUTTON 1 : Teleport control
+RIGHT GRIP : Teleport control
 TWIST RIGHT ARM : Unequip
 
-→ Enjoy
-]],8,0.8)
+→ Enjoy ←
+]],8,0.5)
 
 --//Tools
 local HatsAsTools={}
@@ -3655,11 +3657,6 @@ function CreateHatAsTool(ToolName,Hat,Offset,PlaceBackWhenUnequipped)
 	return NewTool
 end
 ExtraVariables.CreateHatAsTool = CreateHatAsTool
-CreateHatAsTool("Give an L","Big L",CFrame.new(-0.0206413269, -1.05122375, 0.875359535, 1, 0, 0, 0, -4.37113847e-08, -1, 0, 0.999999881, -4.37113883e-08),false)
-CreateHatAsTool("Pistol","1911 Right",CFrame.new(-0.00897979736, 1.30259275, -0.496437073, -1, 0, 8.74227766e-08, 0, 0.999999881, 0, -8.74227766e-08, 0, -1),true)
-CreateHatAsTool("Knife","Meshes/KnifeFaceAccessory",CFrame.new(-0.88650322, 1.13049304, 0.0296177864, 0, 0, -1, 0, 1, 0, 1, 0, 0),false,CFrame.Angles(0,math.rad(90),0))
-CreateHatAsTool("Big Hammer","MARTILLO",CFrame.new(-0.976185083, -0.770004272, 0.040807724, -9.27258839e-08, -1, 1.1920929e-07, -9.27258839e-08, -2.08616228e-07, -1.00000012, 1.00000036, -9.27258839e-08, -9.27258696e-08),true)
-CreateHatAsTool("Sword","Angel Sword",CFrame.new(-0.00233829999, -0.941128731, -2.9509182, 1.91068547e-15, 4.37113883e-08, 1, 0.999999881, -4.37113847e-08, 0, 4.37113883e-08, 1, -4.37113883e-08):Inverse(),true)
 --//
 Services.VR:RecenterUserHeadCFrame()
 
