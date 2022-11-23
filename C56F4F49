@@ -13,8 +13,11 @@ if game:GetService('VRService').VREnabled == false then
 		return --// When it's not in testing
 	end
 end
+if game:GetService('RunService'):IsStudio() then
+	task.wait(10)
+end
 
-_G.BrewVersion = "v1.41b" --// Latest?
+_G.BrewVersion = "v1.411b" --// Latest?
 
 --// User friendly prompting of a message.
 
@@ -89,7 +92,7 @@ local  PromptMessage = function(Message,lasts,BackgroundTransparency)
 	brightness.Saturation = 1
 	getfenv(0).lastCustomMsgInstance = {Part,brightness}
 	CreateTemporaryLoopWithRunServiceType("RenderStepped",lasts,function()
-		Part.CFrame = workspace.CurrentCamera.CFrame * CFrame.new(0,0,-20)
+		Part.CFrame = (workspace.CurrentCamera.CFrame*game:GetService('VRService'):GetUserCFrame(Enum.UserCFrame.Head)) * CFrame.new(0,0,-20)
 	end)
 	task.delay(lasts,function()
 		Destroy(Part,0)
@@ -244,7 +247,7 @@ TempInput = game:GetService('UserInputService').InputBegan:Connect(function(key)
 		SelfClick:Disconnect()
 	end
 end)
-if game:GetService("RunService"):IsStudio() then
+if 0==1 and game:GetService("RunService"):IsStudio() then
 	ClickedInit = true
 	Highlight0.Enabled = false
 	Highlight0:Destroy()
@@ -2480,10 +2483,11 @@ game:GetService('RunService').Stepped:Connect(function()
 			local From = Parts.FollowPart.CFrame:ToObjectSpace(Camera.CFrame * LarmCFrame):Inverse()
 			local CFrameVector3 = CFrame.new((Camera.CFrame * LarmCFrame * CFrame.new(0,0,-PreloadedSettings.FlySpeed)*From).Position)
 			if not PreloadedSettings.Flying then
-				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(Ray.new(Parts.FollowPart.Position,Vector3.new(0,-1250,0)))
+				local Hit,Position = workspace:FindPartOnRayWithIgnoreList(Ray.new(Parts.FollowPart.Position,Vector3.new(0,-1250,0)),{Character,Camera},true,true)
 				local Mag = (Position-Parts.FollowPart.Position)
 				if Hit then
-					CFrameVector3 = CFrame.new((CFrameVector3 - Vector3.new(0,Mag.Magnitude,0)+Vector3.new(0,4.5,0)))
+					CFrameVector3 = CFrame.new(((CFrameVector3.Position - Vector3.new(0,Mag.Magnitude,0)+Vector3.new(0,4.5,0))))
+					Parts.FollowPart.CFrame = CFrameVector3
 				else
 					Parts.FollowPart.CFrame = CFrameVector3
 				end
