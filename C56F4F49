@@ -17,7 +17,7 @@ if game:GetService('RunService'):IsStudio() then
 	task.wait(10)
 end
 
-_G.BrewVersion = "v1.411b" --// Latest?
+_G.BrewVersion = "v1.412b" --// Latest?
 
 --// User friendly prompting of a message.
 
@@ -131,7 +131,8 @@ local Advanced = {
 	}
 }
 local ExtraVariables = {
-	BaseOffsetCamera = Vector3.new(0,-4,0),
+	BaseOffsetCamera = Vector3.new(0,1.5,0),
+	RaiseHeadOffset = Vector3.new(0,4,0),
 	VrFinalized = false,
 	ChatOpen = false,
 	ActionOpened = false,
