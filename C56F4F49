@@ -3077,7 +3077,8 @@ local begin = os.clock()
 local folderDoesExist = false
 repeat task.wait(-1) folderDoesExist = isfolder("BrewVR_Plugins") until os.clock()-begin >= 2 or folderDoesExist == true
 if folderDoesExist then
-	local pluginFiles=listfiles(pluginsFolder)
+	local subfolder = pluginsFolder:gsub("/","")
+	local pluginFiles=listfiles(subfolder)
 	for i,v in pairs(pluginFiles)do
 		if v.Name:sub((#v.Name)-3)==".bvp" then --// In case you need a .txt for explanation.
 			task.spawn(function()
