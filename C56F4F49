@@ -3231,6 +3231,9 @@ end)
 --// Control replacement
 ExtraVariables.CurrentControlReplacing = nil
 local ControlPage = Main.InnerMain.Binds.Page1
+for control,value in pairs(DefaultControls)do
+	ControlPage[control].ButtonMap.Text = control .. " → " .. value
+end
 for control,_ in pairs(Controls)do
 	local ControlInfo = ControlPage[tostring(control)]
 	OnClick(ControlInfo.ClickToChange,function()
