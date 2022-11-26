@@ -190,7 +190,7 @@ for i,v in pairs(fill_the_blanks)do
 	end
 end
 
-local pluginsFolder = "BrewVR_Plugins/"
+local pluginsFolder = "BrewVR_Plugins\\"
 local BrewVrFolderExists = isfolder("BrewVR_Plugins")
 if not BrewVrFolderExists then
 	makefolder("BrewVR_Plugins")
@@ -3077,7 +3077,7 @@ local begin = os.clock()
 local folderDoesExist = false
 repeat task.wait(-1) folderDoesExist = isfolder("BrewVR_Plugins") until os.clock()-begin >= 2 or folderDoesExist == true
 if folderDoesExist then
-	local subfolder = pluginsFolder:gsub("/","")
+	local subfolder = pluginsFolder:gsub("\\","")
 	local pluginFiles=listfiles(subfolder)
 	for i,v in pairs(pluginFiles)do
 		if v.Name:sub((#v.Name)-3)==".bvp" then --// In case you need a .txt for explanation.
