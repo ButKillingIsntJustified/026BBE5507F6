@@ -19,7 +19,7 @@ if game:GetService('RunService'):IsStudio() then
 	task.wait(10)
 end
 
-_G.BrewVersion = "v1.415b" --// Latest?
+_G.BrewVersion = "v1.42b" --// Latest?
 
 --// User friendly prompting of a message.
 
@@ -35,6 +35,15 @@ function Destroy(Obj,Delay_)
 			Obj:Destroy()
 		end)
 	end
+end
+local StrongIdentity = pcall(function()
+	local _ = game:GetService('CoreGui').FindFirstChild
+end)
+local isfile = function(name)
+	local found = pcall(function()
+		local _ = readfile(name)
+	end)
+	return found
 end
 local CreateTemporaryLoopWithRunServiceType = function(Type,Seconds,func)
 	local Type = game:GetService("RunService")[Type]
@@ -145,6 +154,58 @@ local ExtraVariables = {
 	SaveSettings = {Props={}},
 	LocalProps = {},
 }
+
+local DefaultControls = {
+	['Move'] = "ButtonL2",
+	['Fling'] = "ButtonR2",
+	['Menu'] = "ButtonL1",
+	['Teleport'] = "ButtonR1",
+	['TurnLeft'] = "ButtonL3",
+	['TurnRight'] = "ButtonR3",
+}
+local Controls = DefaultControls
+
+--//
+local fill_the_blanks = {
+	['isfolder']=function()
+		return false
+	end,
+	['makefolder']=function()
+		return nil
+	end,
+	['listfiles']=function()
+		return {}
+	end,
+	['readfile']=function()
+		return ""
+	end,
+	['writefile']=function()
+		return ""
+	end,
+}
+for i,v in pairs(fill_the_blanks)do
+	if not getfenv()[tostring(i)] then
+		getfenv()[tostring(i)]=v
+		warn(i)
+	end
+end
+
+local pluginsFolder = "BrewVR_Plugins/"
+local BrewVrFolderExists = isfolder("BrewVR_Plugins")
+if not BrewVrFolderExists then
+	makefolder("BrewVR_Plugins")
+end
+if not isfile(pluginsFolder .. "ControllerBindingsPlugin.bvcs") then
+	writefile(pluginsFolder .. "ControllerBindingsPlugin.bvcs",game:GetService("HttpService"):JSONEncode(DefaultControls))
+else
+	if StrongIdentity then
+		Controls = game:GetService("HttpService"):JSONDecode(readfile(pluginsFolder.."ControllerBindingsPlugin.bvcs"))
+	end
+end
+
+--\\
+
+
 local Events = {
 	SteadyStepped = Instance.new("BindableEvent")
 }
@@ -241,7 +302,7 @@ end)
 Part0.Parent = workspace.CurrentCamera
 local TempInput = nil
 TempInput = game:GetService('UserInputService').InputBegan:Connect(function(key)
-	if CanClick and (key.KeyCode == Enum.KeyCode.ButtonL2 or key.KeyCode == Enum.KeyCode.ButtonR2) then
+	if CanClick and (key.KeyCode == Enum.KeyCode[Controls.Move] or key.KeyCode == Enum.KeyCode[Controls.Fling]) then
 		ClickedInit = true
 		Highlight0.Enabled = false
 		Highlight0:Destroy()
@@ -352,9 +413,6 @@ local shp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidde
 local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
 
 --// Identity + GetObjects - UI
-local StrongIdentity = pcall(function()
-	local _ = game:GetService('CoreGui').FindFirstChild
-end)
 local Check = "✓"
 local SetupModel = nil
 local NameTag = nil
@@ -1517,7 +1575,7 @@ game:GetService('RunService').RenderStepped:Connect(function()
 	end
 end)
 local SavedMaterials = {}
-if readfile then
+if StrongIdentity then
 	local info = nil
 	local infogotten = pcall(function()
 		info = readfile("BrewSettings.txt")
@@ -2270,9 +2328,9 @@ Services.UIS.InputBegan:Connect(function(key)
 	if key.KeyCode==Enum.KeyCode.W and game:GetService("RunService"):IsStudio() and not ExtraVariables.Paused then
 		HoldingDirection=true
 	end
-	if key.KeyCode == Enum.KeyCode.ButtonL2 and not ExtraVariables.Paused then
+	if key.KeyCode == Enum.KeyCode[Controls.Move] and not ExtraVariables.Paused then
 		HoldingDirection = true
-	elseif key.KeyCode == Enum.KeyCode.ButtonR2 then
+	elseif key.KeyCode == Enum.KeyCode[Controls.Fling] then
 		task.delay(0,function() --VERY SLIGHT DELAY in case action menu is opened
 			if ExtraVariables.ActionOpened == true then return end
 			if ExtraVariables.Paused == true then return end
@@ -2282,19 +2340,19 @@ Services.UIS.InputBegan:Connect(function(key)
 				end
 			end)
 		end)
-	elseif key.KeyCode == Enum.KeyCode.ButtonL3 then
-		
+	elseif key.KeyCode == Enum.KeyCode[Controls.TurnLeft] then
+
 		CameraAngle = CameraAngle * CFrame.Angles(0,math.rad(30),0)
 		ExtraVariables.RotationY+=30
 		game:GetService('TweenService'):Create(ExtraVariables.SmoothTurnAngleValue,TweenInfo.new(0.3),{Value = ExtraVariables.RotationY}):Play()
-		
-	elseif key.KeyCode == Enum.KeyCode.ButtonR3 then
-		
+
+	elseif key.KeyCode == Enum.KeyCode[Controls.TurnRight] then
+
 		CameraAngle = CameraAngle * CFrame.Angles(0,math.rad(-30),0)
 		ExtraVariables.RotationY-=30
 		game:GetService('TweenService'):Create(ExtraVariables.SmoothTurnAngleValue,TweenInfo.new(0.3),{Value = ExtraVariables.RotationY}):Play()
-		
-	elseif key.KeyCode == Enum.KeyCode.ButtonR1 and PreloadedSettings.Teleport then
+
+	elseif key.KeyCode == Enum.KeyCode[Controls.Teleport] and PreloadedSettings.Teleport then
 		PredictingPosition = true
 	end
 end)
@@ -2302,15 +2360,15 @@ Services.UIS.InputEnded:Connect(function(key)
 	if key.KeyCode==Enum.KeyCode.W and game:GetService("RunService"):IsStudio() then
 		HoldingDirection=false
 	end
-	if key.KeyCode == Enum.KeyCode.ButtonL2 then
+	if key.KeyCode == Enum.KeyCode[Controls.Move] then
 		HoldingDirection = false
-	elseif key.KeyCode == Enum.KeyCode.ButtonR2 then
+	elseif key.KeyCode == Enum.KeyCode[Controls.Fling] then
 		pcall(function()
 			if GetRigType()=='R6' then
 				MakePartDangerous(CharacterLimbs.RightArm,false)
 			end
 		end)
-	elseif key.KeyCode == Enum.KeyCode.ButtonR1 and ExtraVariables.Paused==false then
+	elseif key.KeyCode == Enum.KeyCode[Controls.Teleport] and ExtraVariables.Paused==false then
 		if not Debounces.Teleported then
 			Debounces.Teleported = os.clock()-2
 		end
@@ -2523,7 +2581,7 @@ game:GetService('RunService').Stepped:Connect(function()
 			end
 		end
 		Camera.CameraType = Enum.CameraType.Scriptable
-		
+
 		if not PreloadedSettings.SmoothTurning then
 			Camera.CFrame = Parts.FollowPart.CFrame * CFrame.new(ExtraVariables.BaseOffsetCamera) * CameraAngle
 		else
@@ -2858,9 +2916,11 @@ local Clicks = {}
 local index = PreloadedSettings.index_controls and PreloadedSettings.index_controls==true --// false if you aren't an index user
 
 Services.UIS.InputBegan:Connect(function(k)
-	if (not index and k.KeyCode==Enum.KeyCode.ButtonL1) or (index and k.KeyCode==Enum.KeyCode.ButtonX) then
-		ExtraVariables.ActionOpened=not ExtraVariables.ActionOpened
-		ExtraVariables.ActionTriggered:Fire(ExtraVariables.ActionOpened)
+	if (not index and k.KeyCode==Enum.KeyCode[Controls.Menu]) or (index and k.KeyCode==Enum.KeyCode.ButtonX) then
+		if ExtraVariables.CurrentControlReplacing == nil then
+			ExtraVariables.ActionOpened=not ExtraVariables.ActionOpened
+			ExtraVariables.ActionTriggered:Fire(ExtraVariables.ActionOpened)
+		end
 	end
 	if k.KeyCode==Enum.KeyCode.P and game:GetService("RunService"):IsStudio() then
 		ExtraVariables.ActionOpened=not ExtraVariables.ActionOpened
@@ -3013,11 +3073,6 @@ for i,v in pairs(fill_the_blanks)do
 		warn(i)
 	end
 end
-local pluginsFolder = "BrewVR_Plugins/"
-local BrewVrFolderExists = isfolder("BrewVR_Plugins")
-if not BrewVrFolderExists then
-	makefolder("BrewVR_Plugins")
-end
 local begin = os.clock()
 local folderDoesExist = false
 repeat task.wait(-1) folderDoesExist = isfolder("BrewVR_Plugins") until os.clock()-begin >= 2 or folderDoesExist == true
@@ -3169,6 +3224,43 @@ OnClick(Main.InnerMain.PropCreation.Initialize.Tool.No,function()
 	Main.InnerMain.PropCreation.Visible = true
 	Main.InnerMain.PropCreation.Initialize.Visible = false
 	Main.InnerMain.PropCreation.ToolSelect.Visible = true
+end)
+OnClick(Main.InnerMain.Buttons.Binds,function()
+	Main.InnerMain.Binds.Visible = true
+end)
+--// Control replacement
+ExtraVariables.CurrentControlReplacing = nil
+local ControlPage = Main.InnerMain.Binds.Page1
+for control,_ in pairs(Controls)do
+	local ControlInfo = ControlPage[tostring(control)]
+	OnClick(ControlInfo.ClickToChange,function()
+		if ExtraVariables.CurrentControlReplacing == nil then
+			ExtraVariables.Paused = true
+			ExtraVariables.CurrentControlReplacing = control
+			ControlInfo.ClickToChange.Text = "{{{ Press a button... }}}"
+			local Event1 = game:GetService('UserInputService')
+			Event1=Event1.InputBegan:Connect(function(key)
+				task.delay(0.5,function()
+					ExtraVariables.CurrentControlReplacing = nil
+				end)
+				ControlPage[tostring(control)].ButtonMap.Text = control .. " → " ..  key.KeyCode.Name
+				Controls[tostring(control)] = key.KeyCode.Name
+				ExtraVariables.Paused = false
+				ControlInfo.ClickToChange.Text = "[Click to change]"
+				writefile(pluginsFolder .. "ControllerBindingsPlugin.bvcs",game:GetService("HttpService"):JSONEncode(Controls))
+				Event1:Disconnect()
+			end)
+		end
+	end)
+end
+OnClick(ControlPage.Parent.ResetBinds,function()
+	Controls = DefaultControls
+	for control,value in pairs(DefaultControls)do
+		ControlPage[control].ButtonMap.Text = control .. " → " .. value
+	end
+	pcall(function()
+		writefile(pluginsFolder .. "ControllerBindingsPlugin.bvcs",game:GetService("HttpService"):JSONEncode(DefaultControls))
+	end)
 end)
 --~ ~ ~ ~ ~~ ~ ~
 ExtraVariables.AnonymousHead = function()
@@ -3378,7 +3470,7 @@ OnClick(ExtraVariables.Initialize.Yes,function()
 	local LetGo = nil
 	Selfex=Services.UIS.InputBegan:Connect(function(key,gp)
 		if Services.UIS:GetFocusedTextBox()==nil then
-			if key.KeyCode==Enum.KeyCode.ButtonR2 then
+			if key.KeyCode==Enum.KeyCode[Controls.Fling] then
 				Triggered = true
 				local ObjectSpace = Display1.CFrame:ToObjectSpace(Parts.RightArm.CFrame):Inverse()
 				local theTool = ExtraVariables.CreateHatAsTool("T:"..ExtraVariables.AligningHat[2].Name,ExtraVariables.AligningHat[2].Name,ObjectSpace,true)
@@ -3386,7 +3478,7 @@ OnClick(ExtraVariables.Initialize.Yes,function()
 				ExtraVariables.Presets[ExtraVariables.AligningHat[2]] = theTool
 				Destroy(Display1,-1)
 				Selfex:Disconnect()
-			elseif key.KeyCode==Enum.KeyCode.ButtonR1 then
+			elseif key.KeyCode==Enum.KeyCode[Controls.Teleport] then
 				repositioning2 = true
 				maneuver = Display1.CFrame:ToObjectSpace((Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.RightHand))):Inverse()
 			end
@@ -3394,7 +3486,7 @@ OnClick(ExtraVariables.Initialize.Yes,function()
 	end)
 	LetGo=Services.UIS.InputEnded:Connect(function(key,gp)
 		if Services.UIS:GetFocusedTextBox()==nil then
-			if key.KeyCode==Enum.KeyCode.ButtonR1 then
+			if key.KeyCode==Enum.KeyCode[Controls.Teleport] then
 				repositioning2 = false
 				maneuver = Display1.CFrame:ToObjectSpace((Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(0.5,-0.5,-2))):Inverse()
 			end
