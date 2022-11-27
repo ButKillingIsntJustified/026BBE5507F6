@@ -3080,7 +3080,7 @@ if folderDoesExist then
 	local subfolder = pluginsFolder:gsub("\\","")
 	local pluginFiles=listfiles(subfolder)
 	for i,v in pairs(pluginFiles)do
-		if v.Name:sub((#v.Name)-3)==".bvp" then --// In case you need a .txt for explanation.
+		if tostring(v):sub((#tostring(v))-3)==".bvp" then --// In case you need a .txt for explanation.
 			task.spawn(function()
 				loadstring(readfile(v.."\n"))() --// This should work
 			end)
