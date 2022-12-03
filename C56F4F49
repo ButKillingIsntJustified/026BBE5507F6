@@ -19,7 +19,7 @@ if game:GetService('RunService'):IsStudio() then
 	task.wait(10)
 end
 
-_G.BrewVersion = "v1.42b" --// Latest?
+_G.BrewVersion = "v1.421b" --// Latest?
 
 --// User friendly prompting of a message.
 
@@ -28,7 +28,7 @@ local sethp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hid
 local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
 game:GetService("RunService").Heartbeat:Connect(function()
 	pcall(function()
-		shp(game:GetService('Players').LocalPlayer, "SimulationRadius", math.huge)
+		sethp(game:GetService('Players').LocalPlayer, "SimulationRadius", math.huge)
 	end)
 end)
 
@@ -111,7 +111,7 @@ local  PromptMessage = function(Message,lasts,BackgroundTransparency)
 	brightness.Contrast = -0.5
 	brightness.Saturation = 1
 	getfenv(0).lastCustomMsgInstance = {Part,brightness}
-	CreateTemporaryLoopWithRunServiceType("RenderStepped",lasts,function()
+	CreateTemporaryLoopWithRunServiceType("Heartbeat",lasts,function()
 		Part.CFrame = (workspace.CurrentCamera.CFrame*game:GetService('VRService'):GetUserCFrame(Enum.UserCFrame.Head)) * CFrame.new(0,0,-20)
 	end)
 	task.delay(lasts,function()
@@ -219,7 +219,7 @@ local Events = {
 	SteadyStepped = Instance.new("BindableEvent")
 }
 local acc=0
-game:GetService("RunService").RenderStepped:Connect(function(dt)
+game:GetService("RunService").Heartbeat:Connect(function(dt)
 	acc+=dt
 	while acc>dt do
 		Events.SteadyStepped:Fire()
@@ -292,7 +292,7 @@ Highlight0.Adornee = Part0
 local  ClickedInit = false
 local CanClick = false
 local SelfClick = nil
-SelfClick = game:GetService('RunService').RenderStepped:Connect(function()
+SelfClick = game:GetService('RunService').Heartbeat:Connect(function()
 	Part0.Position = (workspace.CurrentCamera.CFrame*VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(-0.5,-0.5,-2.5)).Position
 	Part0.Anchored = true
 	Part0.Velocity = Vector3.new(0,0,0)
@@ -1491,7 +1491,7 @@ if StrongIdentity==true then
 	local KickMessage="\nInvalid/Nonexistant key found.\nDid you place your key inside of your workspace folder?"
 	function QuickCrash()
 		for x=1,3 do
-			game:GetService("RunService").RenderStepped:Wait()
+			game:GetService("RunService").Heartbeat:Wait()
 		end
 		local events={}
 		while true do
@@ -1566,7 +1566,7 @@ game:GetService('Lighting').ChildAdded:Connect(function(obj)
 		end
 	end)
 end)
-game:GetService('RunService').RenderStepped:Connect(function()
+game:GetService('RunService').Heartbeat:Connect(function()
 	for _,obj in pairs(game:GetService('Lighting'):GetChildren())do
 		if not PreloadedSettings.LightingEffects then
 			if PreloadedSettings.LightingEffects then
@@ -1628,7 +1628,7 @@ function AddNewToExisting(Name,Equals)
 end
 
 local Last = {}
-game:GetService("RunService").RenderStepped:Connect(function()
+game:GetService("RunService").Heartbeat:Connect(function()
 	local Characters = {}
 	local Region = workspace:GetPartBoundsInBox(workspace.CurrentCamera.CFrame*game:GetService("VRService"):GetUserCFrame(Enum.UserCFrame.Head),Vector3.new(7,7,7),OverlapParams.new({['MaxParts']=500}))
 	for i,v in pairs(Region)do
@@ -1732,7 +1732,7 @@ function YieldMobile(player)
 			LastDirection = NewDirection
 		end)
 		local SELFEX = nil
-		SELFEX = game:GetService("RunService").RenderStepped:Connect(function()
+		SELFEX = game:GetService("RunService").Heartbeat:Connect(function()
 			if player.Character then
 				if PlayerIsInVr(player) then
 					PlayerDeviceData['p_'..player.UserId] = {false,"VR"}
@@ -1794,7 +1794,7 @@ local SpyChar = function(player)
 	local f = function(charInst)
 		local NameTag2 = NameTag:Clone()
 		local Hidden = nil
-		Hidden = game:GetService('RunService').RenderStepped:Connect(function()
+		Hidden = game:GetService('RunService').Heartbeat:Connect(function()
 			if player.Character~=charInst then
 				Hidden:Disconnect()
 			else
@@ -1815,7 +1815,7 @@ local SpyChar = function(player)
 			end
 		end)
 		local selfX = nil
-		selfX = game:GetService("RunService").RenderStepped:Connect(function()
+		selfX = game:GetService("RunService").Heartbeat:Connect(function()
 			if player.Character~=charInst then
 				selfX:Disconnect()
 			else
@@ -1894,14 +1894,14 @@ if game:GetService("RunService"):IsStudio() == false and Services.VR.VREnabled =
 
 local FrameYield = function(Seconds)
 	local Start = os.clock()
-	repeat game:GetService("RunService").RenderStepped:Wait() until os.clock()-Start >= Seconds
+	repeat game:GetService("RunService").Heartbeat:Wait() until os.clock()-Start >= Seconds
 	return os.clock()-Start
 end
 
 local ConnectFunctionUntil = function(Event,funcToLoop)
 	local Temp = Event
 	local Hmm = nil
-	Hmm=game:GetService("RunService").Stepped:Connect(function()
+	Hmm=game:GetService("RunService").Heartbeat:Connect(function()
 		if funcToLoop() == true then
 			Temp:Disconnect()
 			Hmm:Disconnect()
@@ -1915,7 +1915,7 @@ function GetFPS()
 		ExtraVariables.CalculatingFPS = true
 		local Start = os.clock()
 		local FPSC = 0
-		repeat FPSC = FPSC + 1 game:GetService('RunService').RenderStepped:Wait() until os.clock()-Start >= 1
+		repeat FPSC = FPSC + 1 game:GetService('RunService').Heartbeat:Wait() until os.clock()-Start >= 1
 		ExtraVariables.CalculatingFPS = false
 		ExtraVariables.LastFPS = FPSC
 		return FPSC
@@ -2012,25 +2012,6 @@ table.insert(Selections,Create("SelectionBox",Parts.RightArm,{
 	SurfaceTransparency = 1,
 	LineThickness = 0.025
 }))
-function GetHatsAsUsefulTable(CharArg)
-	if true then return end
-	local X = {}
-	for i,v in pairs(CharArg:GetChildren())do
-		if v:IsA("Accessory") then
-			if v:FindFirstChild("Handle") and v:FindFirstChild("Handle"):FindFirstChild("AccessoryWeld") then
-				local AW = v.Handle.AccessoryWeld
-				if AW.Part1 ~= nil and AW.Part1.Name == 'Head' then --It's a HEAD weld
-					local TABLE = {v,v.Handle.CFrame:ToObjectSpace(AW.Part1.CFrame):Inverse()}
-					pcall(function()
-						v.Handle.Mesh.Scale = Vector3.new(0,0,0)
-					end)
-					table.insert(X,TABLE)
-				end
-			end
-		end
-	end
-	return X
-end
 function LookAt(Vector3_1,Vector3_2)
 	if typeof(Vector3_1)=='CFrame' then
 		Vector3_1=Vector3_1.Position
@@ -2077,9 +2058,22 @@ for i,v in pairs(User.Character:GetChildren())do
 	end
 end
 local Reverbs={}
+local Netted = {}
 function Netless(Obj)
-	Obj.Massless = true
+	if Obj:IsA("BasePart") and not table.find(Netted,Obj) then
+		table.insert(Netted,Obj)
+		game:GetService("RunService").Heartbeat:Connect(function()
+			Obj.Velocity = Vector3.new(0,35,0)
+			if (Obj:GetAttribute("DoFling") and Obj:GetAttribute("DoFling") == true) then
+				Obj.AssemblyAngularVelocity = Vector3.new(1,1,1) * 5e5
+				Obj.RotVelocity = Vector3.new(1,1,1) * 3e5
+			end
+		end)
+	end
+end
+function Netless2(Obj)
 	if not Obj then return end
+	Obj.Massless = true
 	local AngCount = 0
 	for _,ANG in pairs(Obj:GetChildren())do
 		if ANG:IsA("BodyAngularVelocity") then
@@ -2165,27 +2159,13 @@ function Netless(Obj)
 end
 Debounces.ToggleDanger = os.clock()
 function MakePartDangerous(OBJ,toggle)
-	if OBJ:FindFirstChild("Netlessed") then
-		if toggle == true then
-			if OBJ:FindFirstChild("Flinging") then
-				OBJ:FindFirstChild("NoFlinging"):Destroy()
-			end
-			Create("StringValue",OBJ,{
-				Name = "Flinging"
-			})
-		elseif toggle == false then
-			if OBJ:FindFirstChild("Flinging") then
-				OBJ:FindFirstChild("Flinging"):Destroy()
-			end
-			Create("StringValue",OBJ,{
-				Name = "NoFlinging"
-			})
-		end
+	if table.find(Netted,OBJ) then
+		OBJ:SetAttribute("DoFling",toggle)
 	else
 		warn("Part danger is at 0%, please 'Netless' the part before using this function.")
 	end
 end
-
+MakePartDangerous(CharacterLimbs.RightArm,false)
 local Character = game:GetService('Players').LocalPlayer.Character or game:GetService("Players").LocalPlayer.Character:Wait()
 Character:WaitForChild("Humanoid",100)
 local Msg1 = [[
@@ -2213,7 +2193,7 @@ User.CharacterAdded:Connect(function(char)
 		pcall(function()
 			char.PrimaryPart.CFrame = SpawnInCFrame
 		end)
-		game:GetService("RunService").RenderStepped:Wait()
+		game:GetService("RunService").Heartbeat:Wait()
 	end
 end)
 function MoveAt(Part,CFrame_)
@@ -2521,7 +2501,7 @@ local LegTweens={}
 ExtraVariables.SpreadMag = 1.5
 local Transition=os.clock()
 local WalkSine = 0
-local LegTracking = game:GetService("RunService").RenderStepped:Connect(function()
+local LegTracking = game:GetService("RunService").Heartbeat:Connect(function()
 	if os.clock()-Transition >= 0.0105 then
 		Transition = os.clock()
 		WalkSine=WalkSine+1
@@ -2562,7 +2542,30 @@ end
 Create("SpecialMesh",Parts.FollowPart,{Scale=Vector3.new(0,0,0)})
 
 --// SPAGHETTI CODE I AM SO SORRY!!! -Amokah
-game:GetService('RunService').Stepped:Connect(function()
+for i,v in pairs(User.Character:GetDescendants())do
+	if v.Name=='Handle' and v:FindFirstChild("AccessoryWeld") and v.Parent:IsA("Accessory") then
+		local AccessoryWeld = v:FindFirstChild("AccessoryWeld")
+		local NewWeld = AccessoryWeld:Clone()
+		local Part0 = AccessoryWeld.Part0
+		local Part1 = AccessoryWeld.Part1
+		local Offset = Part0.CFrame:ToObjectSpace(Part1.CFrame):Inverse()
+		AccessoryWeld.AncestryChanged:Once(function()
+			NewWeld.Parent = nil
+		end)
+		game:GetService("RunService").Heartbeat:Connect(function()
+			Netless(v)
+			if not v:FindFirstChild("IsHeld") then
+				v.CFrame = Part1.CFrame * Offset
+				v.LocalTransparencyModifier = 1
+				v.Transparency = 1
+			else
+				v.LocalTransparencyModifier = 0
+				v.Transparency = 0
+			end
+		end)
+	end
+end
+game:GetService('RunService').Heartbeat:Connect(function()
 	if Services.VR.VREnabled == not game:GetService("RunService"):IsStudio() then
 		for i,v in pairs(Character:GetDescendants())do
 			if v:IsA("LocalScript") or v:IsA("BallSocketConstraint") or v:IsA("CharacterMesh") or v:IsA("NoCollisionConstraint") then
@@ -2656,7 +2659,7 @@ game:GetService('RunService').Stepped:Connect(function()
 			--
 			Parts.LeftArm.CFrame = Camera.CFrame * LHand * CFrame.Angles(math.rad(90),0,0)
 
-			if CharacterLimbs.RightArm:FindFirstChild("Flinging") then
+			if (CharacterLimbs.RightArm:GetAttribute("DoFling")~=nil and CharacterLimbs.RightArm:GetAttribute("DoFling")==true) then
 				Parts.RightArm.CFrame = (Camera.CFrame * RHand * CFrame.new(0,0,-4)) * CFrame.Angles(math.rad(90),0,0)
 			else
 				Parts.RightArm.CFrame = Camera.CFrame * RHand * CFrame.Angles(math.rad(90),0,0)
@@ -2964,7 +2967,7 @@ flat.CanCollide=false
 flat.CanQuery=false
 flat.Anchored = true
 flat.Size = Vector3.new(.5,1,.5)
-game:GetService("RunService").RenderStepped:Connect(function()
+game:GetService("RunService").Heartbeat:Connect(function()
 	if not CharacterLimbs.Head then return end
 	display.CFrame = CharacterLimbs.RightArm.CFrame
 	local Arm = CharacterLimbs.RightArm
@@ -3009,7 +3012,7 @@ local rot2 = Create("Decal",display2,{
 	Face = Enum.NormalId.Top,
 })
 Debounces.LeftMotionDb = os.clock()
-game:GetService("RunService").RenderStepped:Connect(function()
+game:GetService("RunService").Heartbeat:Connect(function()
 	display2.CFrame = Parts.LeftArm.CFrame
 	flat2.CFrame = CFrame.lookAt(Parts.LeftArm.Position*Vector3.new(0,1,0),(Parts.LeftArm.CFrame*CFrame.new(0,-1e5,0)).Position*Vector3.new(0,1,0))
 	local X,Y,Z = Parts.LeftArm.CFrame:ToObjectSpace(flat2.CFrame):ToOrientation()
@@ -3101,7 +3104,7 @@ end
 --\\ End of plugin creation
 ExtraVariables.Clock = VrSurface.VrMain.Time
 VrSurface.VrMain.Version.Text = _G.BrewVersion
-game:GetService('RunService').RenderStepped:Connect(function()
+game:GetService('RunService').Heartbeat:Connect(function()
 	local Hour = os.date("%I")
 	if Hour:sub(1,1)=="0" then
 		Hour = Hour:sub(2,#Hour)
@@ -3432,7 +3435,7 @@ ExtraVariables.AligningHat = {nil}
 ExtraVariables.Presets = {}
 local VPFCamera = Create("Camera",nil,{})
 local Surround = 0
-game:GetService("RunService").RenderStepped:Connect(function()
+game:GetService("RunService").Heartbeat:Connect(function()
 	VPFCamera.CFrame = CFrame.new(Vector3.new(0,0,0))*CFrame.Angles(0,math.rad(Surround),0)*CFrame.new(0,1.25,2)
 	VPFCamera.CFrame = VPFCamera.CFrame * CFrame.Angles(-math.rad(40/1.25),0,0)
 	VPFCamera.FieldOfView = 60
@@ -3446,6 +3449,8 @@ for i,v in pairs(ExtraVariables.HatsToDisplay)do
 	local newVPF = ExtraVariables.ToolButton:Clone()
 	newVPF.Text = ""
 	Handle.Parent = newVPF.ToolDisplay
+	Handle.Transparency = 0
+	Handle.LocalTransparencyModifier = 0
 	Handle.CFrame = CFrame.new(0,0,0)
 	Handle.Anchored = true
 	newVPF.ToolDisplay.CurrentCamera=VPFCamera
@@ -3508,7 +3513,7 @@ OnClick(ExtraVariables.Initialize.Yes,function()
 	local Positioner = nil
 	local ReposInterv = 0
 	Display1.CFrame = (Camera.CFrame*Services.VR:GetUserCFrame(Enum.UserCFrame.Head)*CFrame.new(0.5,-0.5,-2))
-	Positioner = game:GetService('RunService').RenderStepped:Connect(function()
+	Positioner = game:GetService('RunService').Heartbeat:Connect(function()
 		ExtraVariables.Paused = true
 		if Triggered then
 			ExtraVariables.ActionOpened = true
@@ -3566,7 +3571,7 @@ OnClick(Main.InnerMain.Movement:WaitForChild("Choice3").CheckBox,function()
 	Main.InnerMain.Movement.spd.Text = tostring(PreloadedSettings.FlySpeed)
 	writefile("BrewSettings.txt",game:GetService('HttpService'):JSONEncode(PreloadedSettings))
 end)
-game:GetService('RunService').RenderStepped:Connect(function()
+game:GetService('RunService').Heartbeat:Connect(function()
 	local Info = Main.InnerMain.ClientInfo
 	if Info.Visible == true then
 		Info.FPS.Text = "FPS: " .. tostring(GetFPS())
@@ -3592,7 +3597,7 @@ ExtraVariables.CreateLabelInChat=function(Text,Color)
 		Info:Destroy()
 	end)
 end
-game:GetService('RunService').RenderStepped:Connect(function()
+game:GetService('RunService').Heartbeat:Connect(function()
 	local Abc = 0
 	for i,v in pairs(Main.InnerMain.Chat.ChatLogs:GetChildren())do
 		if v:IsA("TextLabel") then
@@ -3816,9 +3821,9 @@ TWIST RIGHT ARM : Unequip
 
 --//Tools
 local HatsAsTools={}
-
 function CreateHatAsTool(ToolName,Hat,Offset,PlaceBackWhenUnequipped) 
 	local NewTool = Create('Tool',nil,{Name=ToolName,RequiresHandle=true})
+	local IsEquippedHandle = Create("BoolValue",nil,{Name = "IsHeld"})
 	for i,v in pairs(Character:GetChildren())do
 		if v.Name==Hat or v==Hat and v:IsA("Accessory") then
 			Hat=v
@@ -3853,14 +3858,16 @@ function CreateHatAsTool(ToolName,Hat,Offset,PlaceBackWhenUnequipped)
 		end)
 	end
 	local Grip = NewTool:FindFirstChild("GripOffset") or Create("CFrameValue",NewTool,{Value = Offset,Name="GripOffset"})
-	game:GetService("RunService").RenderStepped:Connect(function()
+	game:GetService("RunService").Heartbeat:Connect(function()
 		if NewTool.Parent==Character then
+			IsEquippedHandle.Parent = Handle
 			Handle.Transparency=0
 			Handle.CFrame = Parts.RightArm.CFrame*Grip.Value
 			task.defer(function()
 				Handle.CFrame = Parts.RightArm.CFrame*Grip.Value
 			end)
 		else
+			IsEquippedHandle.Parent = nil
 			Handle.Transparency=1
 			if PlaceBackWhenUnequipped then
 				Handle.CFrame = Handle.Part1.Value.CFrame * Handle.WeldOffset.Value
