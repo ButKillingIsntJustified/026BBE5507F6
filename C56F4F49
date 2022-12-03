@@ -23,13 +23,12 @@ _G.BrewVersion = "v1.42b" --// Latest?
 
 --// User friendly prompting of a message.
 
-
 local fenv = getfenv()
 local sethp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
 local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
 game:GetService("RunService").Heartbeat:Connect(function()
 	pcall(function()
-		shp(User, "SimulationRadius", math.huge)
+		shp(game:GetService('Players').LocalPlayer, "SimulationRadius", math.huge)
 	end)
 end)
 
