@@ -320,13 +320,14 @@ TempInput = game:GetService('UserInputService').InputBegan:Connect(function(key)
 		SelfClick:Disconnect()
 	end
 end)
-if 0==1 and game:GetService("RunService"):IsStudio() then
+if 1==1 and game:GetService("RunService"):IsStudio() then
 	ClickedInit = true
 	Highlight0.Enabled = false
 	Highlight0:Destroy()
 	Part0:Destroy()
 	TempInput:Disconnect()
 	SelfClick:Disconnect()
+	ClickedInit = true
 end
 
 PromptMessage([[
@@ -336,6 +337,7 @@ Grab the white block in front of you and select it.
 
 It's not a GUI, you can't point a laser and select it... Lol
 ]],3,0.5)
+ClickedInit = true
 
 repeat task.wait(-1) until ClickedInit==true
 
@@ -2277,6 +2279,11 @@ function SetUpUndead()
 	Humanoid.PlatformStand = true
 	Debounces.SetUp = os.clock()
 	local RootPart=Humanoid.RootPart
+	for i,v in pairs(RootPart.Parent:GetChildren()) do
+		if v:IsA("BasePart") then
+			Netless(v)
+		end
+	end
 	local StartTime=0
 	User.Character=nil
 	User.Character=Character
