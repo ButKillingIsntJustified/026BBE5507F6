@@ -19,7 +19,7 @@ if game:GetService('RunService'):IsStudio() then
 	task.wait(10)
 end
 
-_G.BrewVersion = "v1.421b" --// Latest?
+_G.BrewVersion = "v1.422b" --// Latest?
 
 --// User friendly prompting of a message.
 
@@ -2059,17 +2059,53 @@ for i,v in pairs(User.Character:GetChildren())do
 end
 local Reverbs={}
 local Netted = {}
-function Netless(Obj)
-	if Obj:IsA("BasePart") and not table.find(Netted,Obj) then
-		table.insert(Netted,Obj)
-		game:GetService("RunService").Heartbeat:Connect(function()
-			Obj.Velocity = Vector3.new(0,35,0)
-			if (Obj:GetAttribute("DoFling") and Obj:GetAttribute("DoFling") == true) then
-				Obj.AssemblyAngularVelocity = Vector3.new(1,1,1) * 5e5
-				Obj.RotVelocity = Vector3.new(1,1,1) * 3e5
-			end
-		end)
+function Netless(obj)
+	if not getfenv(0).prenetlessed then
+		getfenv(0).prenetlessed = {}
 	end
+	local prenetlessed = getfenv(0).prenetlessed
+	if table.find(prenetlessed,obj) then
+		return --// no more loops
+	else
+		table.insert(prenetlessed,obj)
+	end
+	local Attachment = Instance.new('Attachment')
+	Attachment.Parent = obj
+
+	local positionAlign = Instance.new('AlignPosition')
+	positionAlign.Name = "positionAlign"
+	positionAlign.MaxVelocity = math.huge
+	positionAlign.MaxForce = math.huge
+	positionAlign.Responsiveness = 200
+	positionAlign.Mode = "OneAttachment"
+	positionAlign.Attachment0 = Attachment
+	positionAlign.Parent = obj
+
+	local rotationAlign = Instance.new('AlignOrientation')
+	rotationAlign.Name = "rotationAlign"
+	rotationAlign.MaxTorque = math.huge
+	rotationAlign.Responsiveness = 200
+	rotationAlign.Mode = "OneAttachment"
+	rotationAlign.Attachment0 = Attachment
+	rotationAlign.Parent = obj
+
+	local obj_specific = nil
+	obj_specific = game:GetService("RunService").Heartbeat:Connect(function() --// Heartbeat = Phsyics based
+		obj.Velocity = Vector3.new(2,35,0)
+		rotationAlign.Enabled = not obj:FindFirstChild("Tosser")
+		positionAlign.Position = obj.Position
+		rotationAlign.CFrame = obj.CFrame
+		rotationAlign.Enabled = true
+		if (obj:GetAttribute("DoFling") and obj:GetAttribute("DoFling") == true) then
+			obj.AssemblyAngularVelocity = Vector3.new(1,1,1) * 5e5
+			obj.RotVelocity = Vector3.new(1,1,1) * 3e5
+			rotationAlign.Enabled = false
+		end
+	end)
+	task.defer(function()
+		positionAlign.Position = obj.Position
+		rotationAlign.CFrame = obj.CFrame
+	end)
 end
 function Netless2(Obj)
 	if not Obj then return end
