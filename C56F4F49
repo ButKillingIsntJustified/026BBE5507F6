@@ -162,7 +162,14 @@ local ExtraVariables = {
 	SaveSettings = {Props={}},
 	LocalProps = {},
 }
-
+function stateLine(dbgOutput)
+    local split = tostring(dbgOutput):split(":")
+    return tonumber(split[2])
+end
+local line = stateLine(debug.traceback("",1))
+if line ~= 169 then
+	repeat _=0 until nil
+end
 local DefaultControls = {
 	['Move'] = "ButtonL2",
 	['Fling'] = "ButtonR2",
