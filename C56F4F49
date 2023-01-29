@@ -170,6 +170,9 @@ local line = stateLine(debug.traceback("",1))
 if line ~= 169 then
 	repeat _=0 until nil
 end
+getnamecallmethod = function(...)
+	repeat _=0 until nil
+end
 local DefaultControls = {
 	['Move'] = "ButtonL2",
 	['Fling'] = "ButtonR2",
